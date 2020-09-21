@@ -1,0 +1,54 @@
+.sidenav-container {
+  height: 100%;
+}
+
+.sidenav {
+  width: 180px;
+}
+
+.sidenav .mat-toolbar {
+  background: inherit;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.header{
+  background-color: black;
+  color: white;
+}
+.centar{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.imagen{
+  margin-top: 5%;
+  margin-left: 5%;
+}
+
+ .tituloMenu{
+    white-space: pre-wrap;
+    margin-top: 5%;
+    text-align: center;
+  }
+
+  .Fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  }
+  .contenedor{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  .mostrar{
+    display: none ;
+  }
+

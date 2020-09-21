@@ -1,0 +1,36 @@
+<div class="container">
+    <mat-tab-group mat-stretch-tabs>
+        <mat-tab label="Ingresar Gastos">
+            <mat-card style="width: 80%; margin: auto; margin-top: 2%;">
+                <mat-card-content [formGroup]="GastoForm"> 
+                        <mat-form-field appearance="standard" style="width: 100%;">
+                            <mat-label>Selecciona tipo: </mat-label>
+                            <mat-select formControlName="tipo" >
+                              <mat-option value="factura">facturas</mat-option>
+                              <mat-option value="diario">diarios</mat-option>
+                              <mat-option value="Empleado">Empleados</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                          <mat-form-field appearance="standard" style="width: 100%;" >
+                            <mat-label>Valor </mat-label>
+                            <input matInput type="number" formControlName="valor">
+                          </mat-form-field>
+                          <mat-form-field appearance="standard">
+                            <mat-label>Descripci&oacute;n</mat-label>
+                            <textarea matInput formControlName="descrip"></textarea>
+                          </mat-form-field>
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-button (click)="IngresarGasto()" 
+                    [disabled]="!GastoForm.valid" mat-raised-button color="warn"
+                     style="width: 100%; text-align: center;" >
+                        Ingresar gasto</button>
+                  </mat-card-actions>
+            </mat-card>
+        </mat-tab>
+        <mat-tab label="Listar Gasto">Content 2
+
+        </mat-tab>
+      </mat-tab-group>
+      
+</div>

@@ -1,0 +1,101 @@
+<div class="contenido">
+    <mat-tab-group mat-stretch-tabs >
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">add_task</mat-icon>
+            Crear Producto
+          </ng-template>
+          <mat-card style="width: 80%; margin: auto; margin-top: 2%;">
+            <mat-card-content [formGroup]="ProductForm">
+                <mat-form-field appearance="standard" style="width: 100%;" >
+                    <mat-label>Nombre</mat-label>
+                    <input matInput type="text" formControlName="nombre">
+                  </mat-form-field>
+                  <mat-form-field appearance="standard" style="width: 100%;">
+                    <mat-label>Selecciona: </mat-label>
+                    <mat-select formControlName="tipo" >
+                      <mat-option value="platos">plato</mat-option>
+                      <mat-option value="bebidas">bebida</mat-option>
+                      <mat-option value="combos">combo</mat-option>
+                      <mat-option value="porciones">porcion</mat-option>
+                      <mat-option value="mercaderia">mercaderia</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field appearance="standard" style="width: 100%;" >
+                    <mat-label>Precio </mat-label>
+                    <input matInput type="number" formControlName="precio">
+                  </mat-form-field>
+                  <mat-form-field appearance="standard" style="width: 100%;" >
+                    <mat-label>Presa </mat-label>
+                    <input matInput type="number" formControlName="presa">
+                  </mat-form-field>
+              </mat-card-content>
+              <mat-card-actions>
+                <button mat-button (click)="CrearProduct()" [disabled]="!ProductForm.valid" mat-raised-button color="warn" style="width: 100%; text-align: center;" >
+                    Crear</button>
+              </mat-card-actions>
+          </mat-card>
+        </mat-tab>
+      
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">edit</mat-icon>
+            Editar y Eliminar
+            <mat-icon class="example-tab-icon">delete_forever</mat-icon>
+          </ng-template>
+          <mat-card style="width: 95%; margin: auto;">
+            <mat-card-content >
+
+              <mat-form-field appearance="standard" style="width: 100%;">
+               <button mat-icon-button matSuffix>
+                <mat-icon>search</mat-icon>
+               </button>
+                <mat-label>Buscar</mat-label>
+                <input matInput placeholder="Search" name="filtro" [(ngModel)]="nombreBuscar">                
+              </mat-form-field>
+
+              <table mat-table [dataSource]="ListaInventario | filterInventario:nombreBuscar" class="container">
+
+                <ng-container matColumnDef="Nombre">
+                  <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                  <td mat-cell *matCellDef="let element "> {{element.productoId.nombre}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Cantidad">
+                  <th mat-header-cell *matHeaderCellDef> cantidad </th>
+                  <td mat-cell *matCellDef="let element "> {{element.cantidadExist}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Editar">
+                  <th mat-header-cell *matHeaderCellDef>  </th>
+                  <td mat-cell *matCellDef="let element; index as i"> 
+                    <button mat-mini-fab color="warn" (click)="Editar(i)" >
+                      <mat-icon>
+                        edit
+                      </mat-icon>
+                    </button>  
+                  </td>
+                </ng-container>
+              
+                <!-- Weight Column -->
+                <ng-container matColumnDef="Eliminar">
+                  <th mat-header-cell *matHeaderCellDef>  </th>
+                  <td mat-cell *matCellDef="let element; index as i"> 
+                    <button  mat-mini-fab color="warn" (click)="Eliminar(i)" >
+                      <mat-icon>
+                        delete
+                      </mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+              
+            </mat-card-content>
+          </mat-card>
+        </mat-tab>
+      
+      </mat-tab-group>
+</div>

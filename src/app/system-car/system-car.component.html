@@ -1,0 +1,28 @@
+<mat-card style="margin-top: 70px; ">
+    <mat-card-title>Carrito</mat-card-title>
+    <mat-card-subtitle>Subtotal: ({{total}} productos) $ {{valor}} </mat-card-subtitle>
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item *ngFor="let list of lista; index as i" >
+          <button mat-mini-fab color="primary"  (click)="Eliminar(i);"  >
+              <mat-icon >delete</mat-icon>
+           </button>
+          <p style="margin-right:2%; margin-left: 2%;">{{list.nombre}} </p>
+            
+           <button  mat-mini-fab color="primary"  (click)="restar(i)">
+             <mat-icon> remove</mat-icon>
+           </button>
+
+           <input [(ngModel)]="list.cantidad" disabled type="number" style="width: 12px; margin: 2%;" min="0" max="1">
+
+           <button  mat-mini-fab color="primary" (click)="sumar(i)">
+             <mat-icon> add</mat-icon>
+           </button>
+           <mat-divider></mat-divider>
+         </mat-list-item>
+      </mat-list>
+      <mat-card-actions>
+        <button mat-raised-button (click)="Facturar()" style="width: 100%; margin-top: 2%;">Pagar</button>
+      </mat-card-actions>
+    </mat-card-content>
+</mat-card>

@@ -1,0 +1,31 @@
+<div *ngIf="completar; else progress">
+  <mat-card class="centar">
+    <mat-card-header style="text-align: center;">
+       <h2>Iniciar Sesi&oacute;n</h2> 
+    </mat-card-header>
+    <mat-card-content [formGroup]="UserForm" >
+        <mat-form-field appearance="fill" style="width: 100%;" >
+            <mat-label>Usuario</mat-label>
+            <input matInput type="text" formControlName="usuario">
+          </mat-form-field>
+            <mat-form-field appearance="fill" style="width: 100%; margin-top: 15px;">
+              <mat-label>password</mat-label>
+              <input matInput [type]="hide ? 'password' : 'text'" formControlName="contrasena">
+              <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+              <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+          </mat-form-field>
+          <mat-error *ngIf="Validar" style="margin-bottom:5%;">
+            contrase&ntilde;a o usuario incorrecto
+          </mat-error>
+    </mat-card-content>
+    <mat-card-actions >
+        <button (click)="LogIn()" [disabled]="!UserForm.valid" mat-raised-button color="warn" style="width: 100%; text-align: center; margin: 0% 0% 3% 0;" >
+          <mat-icon>login</mat-icon>
+          Log in</button>
+      </mat-card-actions>
+</mat-card>
+</div>
+<ng-template #progress >
+  <mat-spinner color="warn" style="margin: auto; margin-top: 200px;"></mat-spinner>
+</ng-template>

@@ -1,0 +1,81 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="open">
+
+      <mat-toolbar class="tituloMenu">
+        Asadero de Pollos Andy's
+      </mat-toolbar>
+      
+        <img src="../../assets/imagenes/pollo.png" class="imagen" alt="Logotipo Da&ntilde;ado" width="150">
+      
+       
+    <mat-nav-list >
+        <a mat-list-item routerLinkActive="active">
+          <mat-icon>
+            person
+          </mat-icon>  
+          <span> {{__Data.nombreUsuario}} </span>
+          
+        </a>
+       <a mat-list-item>
+        <span>Pollo: {{__Data.pollo}} </span>
+        <span style="margin-left: 5%;">Presa: {{__Data.presa}} </span>
+       </a>
+      <mat-divider></mat-divider>
+      <a mat-list-item [routerLink]="['/inicio']" (click)="drawer.toggle()" routerLinkActive="active">
+        <mat-icon>
+          home
+        </mat-icon> 
+        Inicio
+      </a>
+      <a mat-list-item routerLinkActive="active" *ngIf="__Data.ver" [routerLink]="['/inventario']" (click)="drawer.toggle()">
+        <mat-icon>
+          list_alt
+        </mat-icon>
+        Inventario
+      </a>
+      <a mat-list-item routerLinkActive="active" [routerLink]="['/gastos']" (click)="drawer.toggle()">
+        <mat-icon>
+          pending_actions
+        </mat-icon>
+        Gastos
+      </a>
+      <a mat-list-item routerLinkActive="active" [routerLink]="['/ControlSold']" (click)="drawer.toggle()">
+        <mat-icon>
+          fact_check
+        </mat-icon>
+        Control de Ventas</a>
+      <a mat-list-item routerLinkActive="active" (click)="logOut()"(click)="drawer.toggle()">
+        <mat-icon>
+          exit_to_app
+        </mat-icon>
+        Log Out</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content class="contenedor">
+    <mat-toolbar class="header Fixed" >
+      <button id="boton"
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+         [ngClass]=" {'mostrar': valor} ">
+        <mat-icon >menu</mat-icon>
+      </button>
+      <span class="centar">Sistema de Ventas</span>
+
+  
+        <span id="botonCarro" [ngClass]=" {'mostrar': valor} " [matBadge]="notificacion" matBadgeOverlap="false" [matBadgeHidden]="notificacion===0" style="margin-right: 2%;">
+          <a id="botonCarro" [routerLink]="['/carrito']" style="color:white ;"> 
+          <mat-icon>
+            shopping_cart
+          </mat-icon>
+        </a>
+      </span>
+    </mat-toolbar>
+    <!-- Add Content Here -->
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

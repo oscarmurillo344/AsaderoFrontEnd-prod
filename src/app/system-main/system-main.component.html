@@ -1,0 +1,168 @@
+<div class="contenedor">
+  <div *ngIf="complete; else progress">
+    <mat-form-field appearance="standard" style="width: 95%; margin-left: 2%;" >
+      <mat-label>Buscar</mat-label>
+      <input matInput type="text" name="buscar" [(ngModel)]="buscar">
+    </mat-form-field>
+
+    <mat-tab-group mat-stretch-tabs mat-align-tabs="center">
+
+      <mat-tab label="Platos"> 
+        <table mat-table [dataSource]="platos | filter:buscar " style="width: 100%;">
+
+          <ng-container matColumnDef="agregar">
+            <th mat-header-cell *matHeaderCellDef> </th>
+            <td mat-cell *matCellDef="let element ;index as i"> 
+               <button mat-mini-fab color="primary"  (click)="AgregarCarrito(i,element.tipo);" >
+              <mat-icon >add_shopping_cart</mat-icon>
+           </button>
+         </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Nombre">
+            <th mat-header-cell *matHeaderCellDef>Nombre </th>
+            <td mat-cell *matCellDef="let element "> 
+           {{element.nombre}} 
+         </td>
+          </ng-container>
+
+          <ng-container matColumnDef="sumar">
+            <th mat-header-cell *matHeaderCellDef> </th>
+            <td mat-cell *matCellDef="let element ;index as i"> 
+              <button  mat-mini-fab color="primary" style="margin-left: 5%;" (click)="restar(i,element.tipo)">
+                <mat-icon>remove</mat-icon>
+              </button>
+
+              <input [(ngModel)]="element.cantidad" disabled type="number" style="width: 12px; margin: 1.5%;" min="1" pattern="^[0-9]+">
+
+              <button  mat-mini-fab color="primary" (click)="sumar(i,element.tipo)">
+                <mat-icon>add</mat-icon>
+              </button>
+         </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        </table>
+      </mat-tab>
+      <mat-tab label="Bebidas"> 
+        <table mat-table [dataSource]="bebidas | filter:buscar " style="width: 100%;">
+
+          <ng-container matColumnDef="agregar">
+            <th mat-header-cell *matHeaderCellDef> </th>
+            <td mat-cell *matCellDef="let element ;index as i"> 
+               <button mat-mini-fab color="primary"  (click)="AgregarCarrito(i,element.tipo);" >
+              <mat-icon >add_shopping_cart</mat-icon>
+           </button>
+         </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Nombre">
+            <th mat-header-cell *matHeaderCellDef>Nombre </th>
+            <td mat-cell *matCellDef="let element "> 
+           {{element.nombre}} 
+         </td>
+          </ng-container>
+
+          <ng-container matColumnDef="sumar">
+            <th mat-header-cell *matHeaderCellDef> </th>
+            <td mat-cell *matCellDef="let element ;index as i"> 
+              <button  mat-mini-fab color="primary" style="margin-left: 5%;" (click)="restar(i,element.tipo)">
+                <mat-icon>remove</mat-icon>
+              </button>
+
+              <input [(ngModel)]="element.cantidad" disabled type="number" style="width: 12px; margin: 1.5%;" min="1" pattern="^[0-9]+">
+
+              <button  mat-mini-fab color="primary" (click)="sumar(i,element.tipo)">
+                <mat-icon>add</mat-icon>
+              </button>
+         </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        </table>
+      </mat-tab>
+      <mat-tab label="Combos">
+        <table mat-table [dataSource]="combos | filter:buscar " style="width: 100%;">
+
+          <ng-container matColumnDef="agregar">
+            <th mat-header-cell *matHeaderCellDef> </th>
+            <td mat-cell *matCellDef="let element ;index as i"> 
+               <button mat-mini-fab color="primary"  (click)="AgregarCarrito(i,element.tipo);" >
+              <mat-icon >add_shopping_cart</mat-icon>
+           </button>
+         </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Nombre">
+            <th mat-header-cell *matHeaderCellDef>Nombre </th>
+            <td mat-cell *matCellDef="let element "> 
+           {{element.nombre}} 
+         </td>
+          </ng-container>
+
+          <ng-container matColumnDef="sumar">
+            <th mat-header-cell *matHeaderCellDef> </th>
+            <td mat-cell *matCellDef="let element ;index as i"> 
+              <button  mat-mini-fab color="primary" style="margin-left: 5%;" (click)="restar(i,element.tipo)">
+                <mat-icon>remove</mat-icon>
+              </button>
+
+              <input [(ngModel)]="element.cantidad" disabled type="number" style="width: 12px; margin: 1.5%;" min="1" pattern="^[0-9]+">
+
+              <button  mat-mini-fab color="primary" (click)="sumar(i,element.tipo)">
+                <mat-icon>add</mat-icon>
+              </button>
+         </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        </table>
+      </mat-tab>
+      <mat-tab label="Porciones">
+        <table mat-table [dataSource]="porciones | filter:buscar " style="width: 100%;">
+
+          <ng-container matColumnDef="agregar">
+            <th mat-header-cell *matHeaderCellDef> </th>
+            <td mat-cell *matCellDef="let element ;index as i"> 
+               <button mat-mini-fab color="primary"  (click)="AgregarCarrito(i,element.tipo);" >
+              <mat-icon >add_shopping_cart</mat-icon>
+           </button>
+         </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Nombre">
+            <th mat-header-cell *matHeaderCellDef>Nombre </th>
+            <td mat-cell *matCellDef="let element "> 
+           {{element.nombre}} 
+         </td>
+          </ng-container>
+
+          <ng-container matColumnDef="sumar">
+            <th mat-header-cell *matHeaderCellDef> </th>
+            <td mat-cell *matCellDef="let element ;index as i"> 
+              <button  mat-mini-fab color="primary" style="margin-left: 5%;" (click)="restar(i,element.tipo)">
+                <mat-icon>remove</mat-icon>
+              </button>
+
+              <input [(ngModel)]="element.cantidad" disabled type="number" style="width: 12px; margin: 1.5%;" min="1" pattern="^[0-9]+">
+
+              <button  mat-mini-fab color="primary" (click)="sumar(i,element.tipo)">
+                <mat-icon>add</mat-icon>
+              </button>
+         </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        </table>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+  <ng-template #progress >
+    <mat-spinner color="warn" style="margin: auto; margin-top: 200px;"></mat-spinner>
+  </ng-template>
+    
+</div>
