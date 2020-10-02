@@ -4,3 +4,11 @@
 .container{
     width: 100%;
 }
+
+.contenedor{
+    height: 100px;
+}
+.margen{
+    margin-right: 100%;
+    padding: 2%;
+}

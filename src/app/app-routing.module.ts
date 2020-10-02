@@ -4,17 +4,18 @@ import { LoginComponent } from "../app/login/login.component";
 import { SystemMainComponent } from "./system-main/system-main.component";
 import { SystemCarComponent } from "./system-car/system-car.component";
 import { ControlVentasComponent } from "./control-ventas/control-ventas.component";
-import { ErrorComponent } from "./error/error.component";
-import { PedidosComponent } from "./pedidos/pedidos.component";
 import { ProductoService } from "./guard/producto.service";
 import { InventarioComponent } from './inventario/inventario.component';
 import { GastosComponent } from './gastos/gastos.component';
+import { UpdatePolloComponent } from './update-pollo/update-pollo.component';
 
 const routes: Routes = 
 [
   {path:'login', component: LoginComponent},
  {path:'inicio',component: SystemMainComponent, 
   canActivate: [ProductoService],data:{ expectedRol:['admin','user']}},
+  {path:'updatep',component:UpdatePolloComponent, 
+  canActivate: [ProductoService],data:{ expectedRol:['admin']}},
   {path:'carrito',component: SystemCarComponent, 
   canActivate: [ProductoService],data:{ expectedRol:['admin','user']}},
   {path:'inventario',component: InventarioComponent, 
@@ -23,8 +24,8 @@ const routes: Routes =
   canActivate: [ProductoService],data:{ expectedRol:['admin','user']}},
   {path:'ControlSold',component: ControlVentasComponent, 
   canActivate: [ProductoService],data:{ expectedRol:['admin']}},
-  {path:'', redirectTo:'/inicio', pathMatch:'full'},
-  {path:'**', component:SystemCarComponent}
+  {path:'', redirectTo:'/login', pathMatch:'full'},
+  {path:'**', component:SystemMainComponent}
 ];
 
 @NgModule({

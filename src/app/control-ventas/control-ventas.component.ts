@@ -7,7 +7,9 @@ import { NuevoUsuario } from '../clases/nuevoUsuario';
 import { VentasDay } from '../clases/VentasDay';
 import { ToastrService } from 'ngx-toastr';
 import { EntreFecha } from '../clases/EntreFecha';
-import {MatAccordion} from '@angular/material/expansion';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatTableDataSource} from '@angular/material/table';
+
 
 
 @Component({
@@ -18,8 +20,10 @@ import {MatAccordion} from '@angular/material/expansion';
 
 export class ControlVentasComponent implements OnInit {
 
+  @ViewChild(MatPaginator,{static:false}) paginator: MatPaginator;
+
   displayedColumns = ['No', 'Producto', 'Cantidad','Precio'];
-  dataSource:Array<VentasDay>;
+  dataSource: MatTableDataSource<VentasDay>;
   local:LocalStorage=new LocalStorage();
   valor:number;
   vista:boolean;
@@ -51,8 +55,8 @@ export class ControlVentasComponent implements OnInit {
   }
   crearFormSecond(){
     return new FormGroup({
-    start:new FormControl('',Validators.required),
-    end: new FormControl('',Validators.required)
+    start:new FormControl(new Date(),Validators.required),
+    end: new FormControl(new Date(),Validators.required)
     });
   }
 
@@ -66,10 +70,12 @@ export class ControlVentasComponent implements OnInit {
   }
   ngOnInit() {
   }
-
+  inicializarPaginator(){
+    this.dataSource.paginator=this.paginator;
+  }
   getTotalCost(){
     this.valor=0;
-    this.dataSource.forEach(ele => {
+    this.dataSource.data.forEach(ele => {
       this.valor=this.valor+(ele.cantidad*ele.precio);
     } );
   }
@@ -80,7 +86,8 @@ export class ControlVentasComponent implements OnInit {
       if (this.UserForm.value.Seleccion === 'dia') {
           this.factura.TotalDay(this.UserForm.value.usuario).subscribe(data=>{
             let d:any=data;
-            this.dataSource=d;
+            this.dataSource=new MatTableDataSource(d);
+            this.inicializarPaginator();
             this.toast.success("Consulta Exitosa","Exito");
             this.getTotalCost();
             this.cerrado=false;
@@ -101,7 +108,8 @@ export class ControlVentasComponent implements OnInit {
 
             this.factura.TotalFechas(this.fechas).subscribe(data=>{
             let d:any=data;
-            this.dataSource=d;
+            this.dataSource=new MatTableDataSource(d);
+            this.inicializarPaginator();
             this.toast.success("Consulta Exitosa","Exito");
             this.getTotalCost();
             this.cerrado=false;

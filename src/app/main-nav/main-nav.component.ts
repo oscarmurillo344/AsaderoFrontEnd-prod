@@ -5,6 +5,7 @@ import { map, shareReplay } from 'rxjs/operators';
 import { LocalStorage } from "../clases/local-storage";
 import { Router } from "@angular/router";
 import { DataService } from '../service/data.service';
+import { updatePollo } from '../clases/updatePollo';
 
 
 @Component({
@@ -20,6 +21,7 @@ export class MainNavComponent implements OnInit  {
           notificacion:number;
           Lista:any;
           vista:boolean;
+          update:updatePollo;
           
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -37,12 +39,12 @@ export class MainNavComponent implements OnInit  {
      ngOnInit(){
      if(this.local.GetStorage("AuthToken")){
       this.valor=false;
+      this.router.navigate(["/inicio"]);
     }else{
        this.valor=true;
      }
     
     }
-
     verificar(){
       setInterval(() => {
         this.notificacion=0;

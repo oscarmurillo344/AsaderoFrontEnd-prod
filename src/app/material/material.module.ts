@@ -19,7 +19,9 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatNativeDateModule } from "@angular/material/core";
 import {MatExpansionModule} from '@angular/material/expansion';
 import { MatPaginatorModule } from '@angular/material/paginator';
-
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 const ModuloMaterial=[
   MatSliderModule,
@@ -41,8 +43,10 @@ const ModuloMaterial=[
   MatDatepickerModule,
   MatNativeDateModule,
   MatExpansionModule,
-  MatPaginatorModule
-  
+  MatPaginatorModule,
+  MatCheckboxModule,
+  MatTooltipModule,
+  ScrollingModule
 ];
 
 @NgModule({

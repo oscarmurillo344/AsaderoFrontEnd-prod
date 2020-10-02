@@ -8,6 +8,7 @@ import { error } from 'protractor';
 import { Producto } from 'src/app/clases/producto';
 import { InventarioService } from 'src/app/service/inventario.service';
 import { Inventario } from 'src/app/clases/inventario';
+import { LocalStorage } from 'src/app/clases/local-storage';
 
 
 @Component({
@@ -20,6 +21,10 @@ export class DialogoUpdateComponent implements OnInit {
   UpdateProductForm: FormGroup;
   producto:Inventario;
   pro:Producto;
+  ListaInventario:Array<Inventario>=new Array();
+  local:LocalStorage=new LocalStorage();
+  lista:string[]=[];
+  
   constructor(
     @Inject(MAT_DIALOG_DATA) public data:Inventario,
     private __servicioProduct:ProductoListService,
@@ -33,6 +38,7 @@ export class DialogoUpdateComponent implements OnInit {
   ngOnInit() {
   }
   crearForm(data){
+    this.lista=data.extras;
     return new FormGroup({
       nombre: new FormControl(data.productoId.nombre,Validators.required),
       tipo: new FormControl(data.productoId.tipo,Validators.required),
@@ -51,10 +57,12 @@ export class DialogoUpdateComponent implements OnInit {
       this.__servicioProduct.ActualizarProducto(id,this.pro).subscribe(date=>{
         this.__servicioInventario.UpdateInventario(idd,
           new Inventario(null,
+          this.lista.toString(),
           this.UpdateProductForm.value.cantidad,
           this.UpdateProductForm.value.cantidad))
           .subscribe(re=>{
             this.mensaje.success(date.mensaje+' e '+re.mensaje,"Exitoso");
+            this.__servicioInventario.filter('Register click');
           },error=>{
             console.log(error)
             this.mensaje.error(error.error.mensaje,"Error");
@@ -65,4 +73,5 @@ export class DialogoUpdateComponent implements OnInit {
       });
     }
   }
+
 }

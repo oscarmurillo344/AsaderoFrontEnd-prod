@@ -12,17 +12,19 @@
       
        
     <mat-nav-list >
-        <a mat-list-item routerLinkActive="active">
-          <mat-icon>
-            person
-          </mat-icon>  
-          <span> {{__Data.nombreUsuario}} </span>
-          
-        </a>
-       <a mat-list-item>
-        <span>Pollo: {{__Data.pollo}} </span>
-        <span style="margin-left: 5%;">Presa: {{__Data.presa}} </span>
-       </a>
+          <mat-expansion-panel mat-list-item routerLinkActive="active" hideToggle>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>
+                  person
+                </mat-icon>  
+                <span> {{__Data.nombreUsuario}} </span>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+              <span style="margin-top: 5%;">Pollo: {{__Data.pollo}} </span>
+              <span style="margin-left: 5%;">Presa: {{__Data.presa}} </span>
+                <button [routerLink]="['/updatep']" mat-button color="warn" (click)="drawer.toggle()" style="width: 100%;">Next</button>
+          </mat-expansion-panel>
       <mat-divider></mat-divider>
       <a mat-list-item [routerLink]="['/inicio']" (click)="drawer.toggle()" routerLinkActive="active">
         <mat-icon>

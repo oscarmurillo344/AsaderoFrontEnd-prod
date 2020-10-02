@@ -7,6 +7,8 @@ import { InventarioService } from '../service/inventario.service';
 import { Inventario } from '../clases/inventario';
 import { TokenServiceService } from '../service/token-service.service';
 import { DataService } from '../service/data.service';
+import { updatePollo } from '../clases/updatePollo';
+
 
 
 @Component({
@@ -24,6 +26,7 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
   productLista:Array<Inventario>=new Array();
   local:LocalStorage=new LocalStorage();
   complete:boolean=false;
+  update:updatePollo;
   buscar:string='';
   displayedColumns:string[] = ['agregar', 'Nombre', 'sumar'];
   roles:string[];
@@ -40,6 +43,7 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
       this.roles=this.token.getAuth();
       this.tokens=this.token.getToken();
       this.__data.nombreUsuario=this.token.getUser();
+      
     }
    
     ngAfterViewInit() {
@@ -61,8 +65,24 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
     {
       this.navegacion.navigate(['/login',{}]);
       this.local.RemoveAll()
-    } 
-  
+    }else{
+      this.navegacion.navigate(['/inicio',{}]);
+    }
+    this.__servicioPro.listarpollo().subscribe(data=>{
+      if(data.pollo!==undefined){
+       this.__data.pollo=data.pollo;
+       this.__data.presa=data.presa;
+       this.local.SetStorage("pollos",new updatePollo(this.__data.pollo,this.__data.presa));
+      }else{
+       this.__data.pollo=0;
+       this.__data.pollo=0;
+       this.local.SetStorage("pollos",new updatePollo(0,0));
+      }
+     },error=>{
+       console.log(error);
+       this.local.SetStorage("pollos",new updatePollo(0,0));
+     });
+
   }
 
   llenarListas()
@@ -79,7 +99,8 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
               1,
               data[index].cantidadExist,
               data[index].productoId.precio,
-              data[index].productoId.presa
+              data[index].productoId.presa,
+              data[index].extras
               ));
             this.platos.sort(function (o1,o2) {
               if (o1.nombre > o2.nombre) { //comparación lexicogŕafica
@@ -98,7 +119,8 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
               1,
               data[index].cantidadExist,
               data[index].productoId.precio,
-              data[index].productoId.presa
+              data[index].productoId.presa,
+              data[index].extras
               ));
             this.bebidas.sort(function (o1,o2) {
               if (o1.nombre > o2.nombre) { //comparación lexicogŕafica
@@ -117,7 +139,8 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
               1,
               data[index].cantidadExist,
               data[index].productoId.precio,
-              data[index].productoId.presa
+              data[index].productoId.presa,
+              data[index].extras
               ));
             this.combos.sort(function (o1,o2) {
               if (o1.nombre > o2.nombre) { //comparación lexicogŕafica
@@ -137,7 +160,8 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
               1,
               data[index].cantidadExist,
               data[index].productoId.precio,
-              data[index].productoId.presa
+              data[index].productoId.presa,
+              data[index].extras
               ));
             this.porciones.sort(function (o1,o2) {
               if (o1.nombre > o2.nombre) { //comparación lexicogŕafica
@@ -211,7 +235,7 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
           if(this.verificar(index,tipo)){
             this.carrito.push(this.platos[index]);
           }
-          this.mensaje.success('Exitoso','Se agrego '+this.platos[index].nombre+' al carrito');
+          this.mensaje.success('Se agrego '+this.platos[index].nombre+' al carrito','Exitoso');
         
                 
         break;
@@ -220,21 +244,21 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
         if(this.verificar(index,tipo)){
           this.carrito.push(this.bebidas[index]);
         }
-    this.mensaje.success('Exitoso','Se agrego '+this.bebidas[index].nombre+' al carrito');
+        this.mensaje.success('Se agrego '+this.bebidas[index].nombre+' al carrito','Exitoso');
       break;
 
       case 'combos':
         if(this.verificar(index,tipo)){
           this.carrito.push(this.combos[index]);
         }
-      this.mensaje.success('Exitoso','Se agrego '+this.combos[index].nombre+' al carrito');
+        this.mensaje.success('Se agrego '+this.combos[index].nombre+' al carrito','Exitoso');
         break;
 
         case 'porciones':
           if(this.verificar(index,tipo)){
             this.carrito.push(this.porciones[index]);
           }
-          this.mensaje.success('Exitoso','Se agrego '+this.porciones[index].nombre+' al carrito');
+          this.mensaje.success('Se agrego '+this.porciones[index].nombre+' al carrito','Exitoso');
           break;
     }
        this.local.SetStorage('DataCarrito',this.carrito);

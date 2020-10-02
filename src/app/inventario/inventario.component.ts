@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from "@angular/forms";
-import { ProductoListService } from '../service/producto-list.service';
 import { ToastrService } from "ngx-toastr";
 import { LocalStorage } from "../clases/local-storage";
 import {MatDialog} from '@angular/material/dialog';
@@ -17,6 +16,7 @@ import { ListaProducto } from '../clases/lista-producto';
   templateUrl: './inventario.component.html',
   styleUrls: ['./inventario.component.css']
 })
+
 export class InventarioComponent implements OnInit {
 
   ProductForm :FormGroup;
@@ -28,14 +28,15 @@ export class InventarioComponent implements OnInit {
   product:Producto;
   nombreBuscar:string;
   displayedColumns: string[] = ['Nombre', 'Cantidad','Editar', 'Eliminar'];
-
+  lista:string[]=[];
   constructor(
-    private __servicioProduct:ProductoListService,
     private mensaje:ToastrService,
     public dialog: MatDialog,
     private __inventarioService:InventarioService
     ) { 
-    this.cargarCantidad();
+      this.__inventarioService.listen().subscribe((m:any)=>{
+        this.cargarCantidad();
+      });
     this.ProductForm=this.createForm();
     this.nombreBuscar='';
   }
@@ -46,8 +47,19 @@ export class InventarioComponent implements OnInit {
  
   cargarCantidad(){
     this.__inventarioService.listarInventartio().subscribe(da=>
-      {this.local.SetStorage("listaProducto",da);
-       this.ListaInventario=this.local.GetStorage("listaProducto")});
+      {
+        let data:any=da
+        this.ListaInventario=data;
+        this.ListaInventario.sort(function (o1,o2) {
+          if (o1.productoId.nombre > o2.productoId.nombre) { //comparación lexicogŕafica
+            return 1;
+          } else if (o1.productoId.nombre < o2.productoId.nombre) {
+            return -1;
+          } 
+          return 0;
+        });
+        this.local.SetStorage("listaProducto",da);
+      });
   }
   createForm(){
     return new FormGroup({
@@ -65,7 +77,8 @@ export class InventarioComponent implements OnInit {
         this.ProductForm.value.tipo,
         this.ProductForm.value.precio,
         this.ProductForm.value.presa);
-      this.__inventarioService.ingresarInventario(new Inventario(this.product,0,0)).subscribe(d=>{
+     this.__inventarioService.ingresarInventario(new Inventario(this.product,this.lista.toString(),0,0))
+     .subscribe(d=>{
         this.mensaje.success(d.mensaje,"Exitoso",
       {
         timeOut:1500,
@@ -86,12 +99,25 @@ export class InventarioComponent implements OnInit {
       
     }
   }
+  value($event){
+    this.lista=[];
+  }
+  valueChange($event){
+    if($event.checked){
+      this.lista.push($event.source.value);
+    }else if($event.checked===false){
+
+      this.lista.forEach((data:string,i:number)=>{
+        if(data==$event.source.value){
+          this.lista.splice(i,1);
+        }
+      });
+    }
+  }
 
   public Editar(index):void{
     let result=this.dialog.open(DialogoUpdateComponent,{data:this.ListaInventario[index]});
-    result.afterClosed().subscribe(data =>{
-        this.cargarCantidad();
-    });
+    result.afterClosed().subscribe(data =>{});
   }
 
   public Eliminar(index):void{

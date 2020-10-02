@@ -13,7 +13,7 @@
                   </mat-form-field>
                   <mat-form-field appearance="standard" style="width: 100%;">
                     <mat-label>Selecciona: </mat-label>
-                    <mat-select formControlName="tipo" >
+                    <mat-select formControlName="tipo" (selectionChange)="value($event)" >
                       <mat-option value="platos">plato</mat-option>
                       <mat-option value="bebidas">bebida</mat-option>
                       <mat-option value="combos">combo</mat-option>
@@ -21,6 +21,14 @@
                       <mat-option value="mercaderia">mercaderia</mat-option>
                     </mat-select>
                   </mat-form-field>
+                  <cdk-virtual-scroll-viewport *ngIf="ProductForm.value.tipo === 'combos'" 
+                  itemSize="10" class="contenedor mat-elevation-z2">
+                  <mat-label class="margen">Seleccione producto: </mat-label>
+                  <mat-checkbox  *ngFor="let producto of ListaInventario"
+                  (change)="valueChange($event)" [value]="producto.id" class="margen">
+                       {{ producto.productoId.nombre }}
+                  </mat-checkbox> 
+                  </cdk-virtual-scroll-viewport>
                   <mat-form-field appearance="standard" style="width: 100%;" >
                     <mat-label>Precio </mat-label>
                     <input matInput type="number" formControlName="precio">
@@ -54,7 +62,7 @@
                 <input matInput placeholder="Search" name="filtro" [(ngModel)]="nombreBuscar">                
               </mat-form-field>
 
-              <table mat-table [dataSource]="ListaInventario | filterInventario:nombreBuscar" class="container">
+              <table mat-table [dataSource]="ListaInventario | filterInventario:nombreBuscar " class="container">
 
                 <ng-container matColumnDef="Nombre">
                   <th mat-header-cell *matHeaderCellDef> Nombre </th>

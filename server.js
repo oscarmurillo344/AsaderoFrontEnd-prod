@@ -1,12 +1,10 @@
-const express = require('express');
+const express =  require('express');
 const path = require('path');
 
 const app=express();
 
-app.use(express.static(__dirname+'./dist/sistemaventasapp'));
-app.listen(process.env.PORT || 8080);
-
+app.use(express.static(__dirname+'./dist/sistema-ventas-app'));
 app.get('/*',function (req,res) {
-    res.sendFile(path.join(__dirname+'./dist/sistemaventasapp/index.html'));
+    res.sendFile(path.join(__dirname+'./dist/sistema-ventas-app/index.html'));
 })
-console.log('console listen');
+app.listen(8080);

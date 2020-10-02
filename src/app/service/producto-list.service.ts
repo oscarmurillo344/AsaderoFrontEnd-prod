@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import {  ListaProducto} from "../clases/lista-producto";
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Mensaje } from '../clases/mensaje';
@@ -11,7 +10,8 @@ import { Producto } from '../clases/producto';
 })
 export class ProductoListService {
 
-  ProductURL="http://192.168.100.20:8080/producto/";
+  ip="https://serviceasadero.herokuapp.com/";
+  ProductURL=this.ip+"producto/";
 
   constructor(private http:HttpClient) { }
 

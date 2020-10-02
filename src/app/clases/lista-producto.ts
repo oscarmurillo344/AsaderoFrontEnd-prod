@@ -6,7 +6,10 @@ export class ListaProducto {
     cantidadExiste:number;
     precio:number
     presa:number
-    constructor(id:number,producto:string,tipo:string,cantidad:number,cantidadexiste:number,precio:number,p:number){
+    extra:string;
+    
+    constructor(id:number,producto:string,tipo:string,cantidad:number,cantidadexiste:number,precio:number,p:number
+        ,extra:string){
         this.id=id;
         this.nombre=producto;
         this.tipo=tipo;
@@ -14,6 +17,7 @@ export class ListaProducto {
         this.cantidadExiste=cantidadexiste;
         this.precio=precio;
         this.presa=p;
+        this.extra=extra;
     }
 
     public setProducto(product:string){

@@ -22,7 +22,7 @@
          </mat-list-item>
       </mat-list>
       <mat-card-actions>
-        <button mat-raised-button (click)="Facturar()" style="width: 100%; margin-top: 2%;">Pagar</button>
+        <button mat-raised-button (click)="Facturar()" [disabled]="bloqueo" style="width: 100%; margin-top: 2%;">Pagar</button>
       </mat-card-actions>
     </mat-card-content>
 </mat-card>

@@ -46,7 +46,7 @@ export class LoginComponent implements OnInit {
   LogIn(){
     if(this.UserForm.valid){
       this.completar=false;
-    this.loginusu=new LoginUsuario(this.UserForm.value.usuario,this.UserForm.value.contrasena);
+    this.loginusu=new LoginUsuario(this.minuscula(this.UserForm.value.usuario),this.UserForm.value.contrasena);
     this.Servicio_login.LogIn(this.loginusu).subscribe(
       data =>{
         this.Validar=false;
@@ -68,6 +68,10 @@ export class LoginComponent implements OnInit {
     );
      
     }
+  }
+
+  public minuscula(texto:string):string{
+   return texto.toLocaleLowerCase();
   }
 
 

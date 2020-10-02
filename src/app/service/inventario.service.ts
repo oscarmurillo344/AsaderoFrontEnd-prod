@@ -3,13 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Mensaje } from '../clases/mensaje';
 import { Inventario } from '../clases/inventario';
-
+import { updatePollo } from '../clases/updatePollo';
+import { Subject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
 export class InventarioService {
-
-  urlInven="http://192.168.100.20:8080/inventario/";
+  
+  ip="https://serviceasadero.herokuapp.com/";
+  urlInven=this.ip+"inventario/";
   constructor(private http:HttpClient) { }
 
   public ingresarInventario(inven:Inventario):Observable<Mensaje>{
@@ -26,4 +28,27 @@ export class InventarioService {
   public EliminarInventario(id:number):Observable<Mensaje>{
  return this.http.delete<Mensaje>(this.urlInven+'delete/'+id); 
   }
+
+  public UpdatePollo(id:number,inven:updatePollo):Observable<Mensaje>{
+    return this.http.put<Mensaje>(this.urlInven+'updatepollo/'+id,inven);
+  }
+
+  public TablePollo(inven:updatePollo):Observable<Mensaje>{
+    return this.http.put<Mensaje>(this.urlInven+'pollotable/',inven);  
+  }
+
+  public listarpollo():Observable<updatePollo>{
+    return this.http.get<updatePollo>(this.urlInven+'pollopresa');
+  }
+
+  private _listen=new Subject<any>();
+  
+    listen():Observable<any>{
+    return this._listen.asObservable();
+      }
+
+    filter(filterBy:string){
+      this._listen.next(filterBy);
+    }
+
 }
