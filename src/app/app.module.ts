@@ -31,6 +31,7 @@ import { GastosComponent } from './gastos/gastos.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { UpdatePolloComponent } from './update-pollo/update-pollo.component';
+import { LastSoldComponent } from './last-sold/last-sold.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { UpdatePolloComponent } from './update-pollo/update-pollo.component';
     DialogoUpdateComponent,
     FilterInventario,
     GastosComponent,
-    UpdatePolloComponent
+    UpdatePolloComponent,
+    LastSoldComponent
   ],
   entryComponents:[DialogoYesNoComponent,DialogoUpdateComponent],
   imports: [

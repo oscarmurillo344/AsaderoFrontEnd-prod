@@ -137,4 +137,8 @@ export class SystemCarComponent implements OnInit {
         this.verificarCarrito();
       }
     }
+
+    went(){
+      this.route.navigate(["/lastsold"]);
+    }
 }

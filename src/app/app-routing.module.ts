@@ -8,6 +8,7 @@ import { ProductoService } from "./guard/producto.service";
 import { InventarioComponent } from './inventario/inventario.component';
 import { GastosComponent } from './gastos/gastos.component';
 import { UpdatePolloComponent } from './update-pollo/update-pollo.component';
+import { LastSoldComponent } from './last-sold/last-sold.component';
 
 const routes: Routes = 
 [
@@ -18,6 +19,8 @@ const routes: Routes =
   canActivate: [ProductoService],data:{ expectedRol:['admin']}},
   {path:'carrito',component: SystemCarComponent, 
   canActivate: [ProductoService],data:{ expectedRol:['admin','user']}},
+  {path:'lastsold', component:LastSoldComponent,
+  canActivate: [ProductoService],data:{ expectedRol:['admin']}},
   {path:'inventario',component: InventarioComponent, 
   canActivate: [ProductoService],data:{ expectedRol:['admin']}},
   {path:'gastos',component: GastosComponent, 
@@ -25,7 +28,7 @@ const routes: Routes =
   {path:'ControlSold',component: ControlVentasComponent, 
   canActivate: [ProductoService],data:{ expectedRol:['admin']}},
   {path:'', redirectTo:'/login', pathMatch:'full'},
-  {path:'**', component:SystemMainComponent}
+  {path:'**', component:LoginComponent}
 ];
 
 @NgModule({
