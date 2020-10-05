@@ -3,8 +3,8 @@ const path = require('path');
 
 const app=express();
 
-app.use(express.static('/dist/sistema-ventas-app', { root: __dirname }));
+app.use(express.static('dist/sistema-ventas-app'));
 app.get('/*',function (req,res) {
-    res.sendFile(path.join('/dist/sistema-ventas-app/index.html', { root: __dirname }));
+    res.sendFile(path.join('dist/sistema-ventas-app/index.html'));
 })
 app.listen(process.env.PORT || 8080);

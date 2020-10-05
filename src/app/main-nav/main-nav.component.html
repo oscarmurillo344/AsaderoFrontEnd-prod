@@ -49,6 +49,11 @@
           fact_check
         </mat-icon>
         Control de Ventas</a>
+        <a mat-list-item routerLinkActive="active" [routerLink]="['/usuarios']" (click)="drawer.toggle()">
+          <mat-icon>
+            person_add
+          </mat-icon>
+          Usuarios</a>
       <a mat-list-item routerLinkActive="active" (click)="logOut()"(click)="drawer.toggle()">
         <mat-icon>
           exit_to_app

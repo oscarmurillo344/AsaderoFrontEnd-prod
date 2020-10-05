@@ -10,8 +10,8 @@ import { Subject } from 'rxjs';
 })
 export class InventarioService {
   
-  ip="https://serviceasadero.herokuapp.com/";
-  urlInven=this.ip+"inventario/";
+  ip="192.168.100.20"
+  urlInven="http://"+this.ip+":8080/inventario/";
   constructor(private http:HttpClient) { }
 
   public ingresarInventario(inven:Inventario):Observable<Mensaje>{

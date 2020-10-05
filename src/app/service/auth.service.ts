@@ -10,8 +10,8 @@ import { jwtDTO } from '../clases/jwt-to';
   providedIn: 'root'
 })
 export class AuthService {
-  ip="https://serviceasadero.herokuapp.com/";
-  authURL=this.ip+"auth/";
+  ip="192.168.100.20";
+  authURL="http://"+this.ip+":8080/auth/";
 
   constructor(private http:HttpClient) { }
 

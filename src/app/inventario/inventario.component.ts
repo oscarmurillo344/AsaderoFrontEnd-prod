@@ -29,6 +29,7 @@ export class InventarioComponent implements OnInit {
   nombreBuscar:string;
   displayedColumns: string[] = ['Nombre', 'Cantidad','Editar', 'Eliminar'];
   lista:string[]=[];
+
   constructor(
     private mensaje:ToastrService,
     public dialog: MatDialog,
@@ -121,7 +122,8 @@ export class InventarioComponent implements OnInit {
   }
 
   public Eliminar(index):void{
-    let resultado=this.dialog.open(DialogoYesNoComponent,{data:{nombre:this.ListaInventario[index].productoId.nombre}});
+    let resultado=this.dialog.open(DialogoYesNoComponent,
+      {data:{nombre:this.ListaInventario[index].productoId.nombre,titulo:'producto'}});
    resultado.afterClosed().subscribe(result=>{
     if(result=='true'){
         this.__inventarioService.EliminarInventario(this.ListaInventario[index].id).subscribe(data =>{

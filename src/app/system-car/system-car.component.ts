@@ -41,6 +41,8 @@ export class SystemCarComponent implements OnInit {
     this.__servicioPagar.maximoValor().subscribe(data=>{
       this.numeroFactura=data;
       this.numeroFactura+=1;
+     },error=>{
+       console.log(error)
      });
      this.bloqueo=false;
    }

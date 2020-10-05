@@ -32,6 +32,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { UpdatePolloComponent } from './update-pollo/update-pollo.component';
 import { LastSoldComponent } from './last-sold/last-sold.component';
+import { UsuarioComponent } from './usuario/usuario.component';
+import { FilterArray } from './Pipe/filterArray';
 
 @NgModule({
   declarations: [
@@ -48,9 +50,11 @@ import { LastSoldComponent } from './last-sold/last-sold.component';
     DialogoYesNoComponent,
     DialogoUpdateComponent,
     FilterInventario,
+    FilterArray,
     GastosComponent,
     UpdatePolloComponent,
-    LastSoldComponent
+    LastSoldComponent,
+    UsuarioComponent
   ],
   entryComponents:[DialogoYesNoComponent,DialogoUpdateComponent],
   imports: [

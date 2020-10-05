@@ -8,7 +8,8 @@ import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 })
 export class DialogoYesNoComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data:any) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data:any) { 
+  }
 
   ngOnInit() {
   }

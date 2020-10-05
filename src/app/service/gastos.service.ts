@@ -12,8 +12,8 @@ import { GastosX } from "../clases/gastosX";
 })
 export class GastosService {
 
-  ip="https://serviceasadero.herokuapp.com/";
-  URLgasto=this.ip+"gastos/";
+  ip="192.168.100.20";
+  URLgasto="http://"+this.ip+":8080/gastos/";
 
   constructor(private http:HttpClient) { }
 

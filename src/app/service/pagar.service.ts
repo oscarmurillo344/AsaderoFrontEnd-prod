@@ -12,8 +12,8 @@ import { EntreFecha } from '../clases/EntreFecha';
 })
 export class PagarService {
 
-  ip="https://serviceasadero.herokuapp.com/";
-  pagarURL=this.ip+"factura/";
+  ip="192.168.100.20"
+  pagarURL="http://"+this.ip+":8080/factura/";
 
   constructor(private http:HttpClient) { }
 

@@ -10,8 +10,8 @@ import { Producto } from '../clases/producto';
 })
 export class ProductoListService {
 
-  ip="https://serviceasadero.herokuapp.com/";
-  ProductURL=this.ip+"producto/";
+  ip="192.168.100.20"
+  ProductURL="http://"+this.ip+":8080/producto/";
 
   constructor(private http:HttpClient) { }
 
