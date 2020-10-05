@@ -19,7 +19,11 @@ export class FilterArray implements PipeTransform{
             }
          }
             if(post.rolNombre ==='ROLE_ADMIN'){
+                if(value.length===1){
                     restult+='Admin';
+                }else{
+                    restult+='Admin,';
+                }
             }
         }
         return restult;
