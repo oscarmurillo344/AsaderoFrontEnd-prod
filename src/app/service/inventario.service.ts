@@ -2,16 +2,17 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Mensaje } from '../clases/mensaje';
-import { Inventario } from '../clases/inventario';
-import { updatePollo } from '../clases/updatePollo';
+import { Inventario } from '../clases/productos/inventario';
+import { updatePollo } from '../clases/productos/updatePollo';
 import { Subject } from 'rxjs';
+import { environment } from 'src/environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class InventarioService {
   
-  ip="192.168.100.20"
-  urlInven="http://"+this.ip+":8080/inventario/";
+  urlInven=environment.url+"inventario/";
   constructor(private http:HttpClient) { }
 
   public ingresarInventario(inven:Inventario):Observable<Mensaje>{

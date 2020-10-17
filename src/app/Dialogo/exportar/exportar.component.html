@@ -1,0 +1,16 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Exportar Datos</mat-card-title>
+        <mat-card-subtitle>Excel</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-form-field appearance="standard" style="width: 100%;" >
+            <mat-label>Nombre del Archivo</mat-label>
+            <input matInput type="text" [(ngModel)]="Filename">
+          </mat-form-field>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button color="Warn" mat-dialog-close mat-dialog-close="true" (click)="Exportar()"> <mat-icon>cloud_download</mat-icon>
+             Exportar</button>
+      </mat-card-actions>
+</mat-card>

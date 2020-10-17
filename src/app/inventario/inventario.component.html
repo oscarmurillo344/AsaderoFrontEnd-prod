@@ -5,7 +5,7 @@
             <mat-icon class="example-tab-icon">add_task</mat-icon>
             Crear Producto
           </ng-template>
-          <mat-card style="width: 80%; margin: auto; margin-top: 2%;">
+          <mat-card>
             <mat-card-content [formGroup]="ProductForm">
                 <mat-form-field appearance="standard" style="width: 100%;" >
                     <mat-label>Nombre</mat-label>
@@ -24,7 +24,7 @@
                   <cdk-virtual-scroll-viewport *ngIf="ProductForm.value.tipo === 'combos'" 
                   itemSize="10" class="contenedor mat-elevation-z2">
                   <mat-label class="margen">Seleccione producto: </mat-label>
-                  <mat-checkbox  *ngFor="let producto of ListaInventario"
+                  <mat-checkbox  *ngFor="let producto of ComboInventario"
                   (change)="valueChange($event)" [value]="producto.id" class="margen">
                        {{ producto.productoId.nombre }}
                   </mat-checkbox> 
@@ -51,7 +51,7 @@
             Editar y Eliminar
             <mat-icon class="example-tab-icon">delete_forever</mat-icon>
           </ng-template>
-          <mat-card style="width: 95%; margin: auto;">
+          <mat-card style="width: 100%;">
             <mat-card-content >
 
               <mat-form-field appearance="standard" style="width: 100%;">
@@ -62,7 +62,7 @@
                 <input matInput placeholder="Search" name="filtro" [(ngModel)]="nombreBuscar">                
               </mat-form-field>
 
-              <table mat-table [dataSource]="ListaInventario | filterInventario:nombreBuscar " class="container">
+          <table mat-table [dataSource]="ListaInventario | filterInventario:nombreBuscar " class="container">
 
                 <ng-container matColumnDef="Nombre">
                   <th mat-header-cell *matHeaderCellDef> Nombre </th>

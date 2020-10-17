@@ -1,17 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { NuevoUsuario } from "../clases/nuevoUsuario";
-import { LoginUsuario } from "../clases/loginUsuario";
+import { NuevoUsuario } from "../clases/usuarios/nuevoUsuario";
+import { LoginUsuario } from "../clases/usuarios/loginUsuario";
 import { Observable } from 'rxjs';
 import { jwtDTO } from '../clases/jwt-to';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  ip="192.168.100.20";
-  authURL="http://"+this.ip+":8080/auth/";
+  
+  authURL=environment.url+"auth/";
 
   constructor(private http:HttpClient) { }
 

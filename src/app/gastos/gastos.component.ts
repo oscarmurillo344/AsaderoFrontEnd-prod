@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { Gastos } from '../clases/gastos';
+import { Gastos } from '../clases/gasto/gastos';
 import { AuthService } from '../service/auth.service';
 import { GastosService } from '../service/gastos.service';
-import { NuevoUsuario } from '../clases/nuevoUsuario';
+import { NuevoUsuario } from '../clases/usuarios/nuevoUsuario';
 import { TokenServiceService } from '../service/token-service.service';
-import { GastosX } from '../clases/gastosX';
+import { GastosX } from '../clases/gasto/gastosX';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 
@@ -28,11 +28,13 @@ export class GastosComponent implements OnInit {
   valorGasto:number;
   cerrado:boolean;
   gastox:GastosX;
+  complete:boolean;
 
   constructor(private __GastosService:GastosService,
     private toast:ToastrService,
     private usuario:AuthService,
-    private token:TokenServiceService) { 
+    private token:TokenServiceService)
+     { 
     this.GastoForm=this.crearForm();
     this.tipoForm=this.crearFormSecond();
 
@@ -40,6 +42,7 @@ export class GastosComponent implements OnInit {
       let lista:any=data
       this.user=lista;
     });
+    this.complete=true;
   }
 
   ngOnInit() {
@@ -52,7 +55,7 @@ export class GastosComponent implements OnInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
-
+    this.getTotalCost();
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
@@ -60,7 +63,7 @@ export class GastosComponent implements OnInit {
 
   getTotalCost(){
     this.valorGasto=0;
-    this.dataSource.data.forEach(ele => {
+    this.dataSource.filteredData.forEach(ele => {
       this.valorGasto=this.valorGasto+ele.valor;
     } );
   }
@@ -96,7 +99,6 @@ export class GastosComponent implements OnInit {
           this.toast.error(error.error.mensaje,"Error");
         }else{
           this.toast.error("Error en la consulta","Error");
-          console.log(error);
         }
       }
       );
@@ -105,7 +107,8 @@ export class GastosComponent implements OnInit {
 
   ListarGastos(){
     if (this.tipoForm.valid){
-      this.cerrado=undefined;
+      this.complete=false;
+      this.cerrado=false;
       this.gastox=new GastosX(
         this.tipoForm.value.usuario,
         this.tipoForm.value.elegir,
@@ -118,7 +121,8 @@ export class GastosComponent implements OnInit {
           this.dataSource=new MatTableDataSource(datos);
           this.inicializarPaginator();
           this.getTotalCost();
-          this.cerrado=false;
+          this.complete=true;
+          this.cerrado=undefined;
         });
       }else if(this.tipoForm.value.elegir==='todo' && this.tipoForm.value.usuario!=='todo'){
         this.__GastosService.listarUserFecha(this.gastox).subscribe(data=>{
@@ -126,7 +130,8 @@ export class GastosComponent implements OnInit {
           this.dataSource=new MatTableDataSource(datos);
           this.inicializarPaginator();
           this.getTotalCost();
-          this.cerrado=false;
+          this.complete=true;
+          this.cerrado=undefined;
         });
       }else if(this.tipoForm.value.elegir==='todo' && this.tipoForm.value.usuario==='todo'){
         this.__GastosService.listarFecha(this.gastox).subscribe(data=>{
@@ -134,7 +139,8 @@ export class GastosComponent implements OnInit {
           this.dataSource=new MatTableDataSource(datos);
           this.inicializarPaginator();
           this.getTotalCost();
-          this.cerrado=false;
+          this.complete=true;
+          this.cerrado=undefined;
         });
       }
      }
@@ -142,7 +148,19 @@ export class GastosComponent implements OnInit {
   
 
   Eliminar(i){
-    
+    let id=this.dataSource.data[i].id;
+    this.dataSource.data.splice(i,1);
+    this.__GastosService.Eliminar(id).subscribe(data=>{
+      this.toast.success(data.mensaje,"Exitoso");
+      this.inicializarPaginator();
+      this.getTotalCost();
+    },error=>{
+      if(error.error.mensaje===undefined){
+        this.toast.error("Error en la consulta","Error");
+      }else{
+        this.toast.error(error.error.mensaje,"Error");
+      }
+    });
   }
 
 }

@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalStorage } from "../clases/local-storage";
-import { ListaProducto } from "../clases/lista-producto";
+import { ListaProducto } from "../clases/productos/lista-producto";
 import { PagarService } from '../service/pagar.service';
 import { ToastrService } from 'ngx-toastr';
-import { Factura } from '../clases/factura';
+import { Factura } from '../clases/factura/factura';
 import { TokenServiceService } from '../service/token-service.service';
 import { Mensaje } from '../clases/mensaje';
-import { Inventario } from '../clases/inventario';
-import { Producto } from '../clases/producto';
+import { Producto } from '../clases/productos/producto';
 import { Router } from '@angular/router';
-import { updatePollo } from '../clases/updatePollo';
+import { updatePollo } from '../clases/productos/updatePollo';
 import { InventarioService } from '../service/inventario.service';
 
 @Component({
@@ -37,6 +36,7 @@ export class SystemCarComponent implements OnInit {
     private __serviceInven:InventarioService) {
 
       this.local=new LocalStorage();
+      this.lista=new Array();
       this.verificarCarrito();
     this.__servicioPagar.maximoValor().subscribe(data=>{
       this.numeroFactura=data;
@@ -50,10 +50,10 @@ export class SystemCarComponent implements OnInit {
   ngOnInit() {
     
   }
-    
+
   public Facturar(){
     
-    if(this.lista.length > -1)
+    if(this.lista.length > 0)
     {
       this.contador=this.lista.length-1;
       this.polloMerca=this.local.GetStorage("pollos");
@@ -64,7 +64,7 @@ export class SystemCarComponent implements OnInit {
          {
           this.factura=new Factura(
             this.numeroFactura,
-            null,
+            new Date(),
             this.token.getUser(),
             new Producto(this.lista[index].id,this.lista[index].nombre,
               this.lista[index].tipo,
@@ -91,10 +91,10 @@ export class SystemCarComponent implements OnInit {
             }
           },error=>{
             if(error.error.mensaje===undefined){
-              this.mensaje.success("Pago no realizado","Error");
+              this.mensaje.error("Pago no realizado","Error");
               console.log(error)
             }else{
-              this.mensaje.success(error.error.mensaje,"Error");
+              this.mensaje.error(error.error.mensaje,"Error");
             }
             this.bloqueo=false;
           });

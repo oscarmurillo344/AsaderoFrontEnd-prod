@@ -1,13 +1,13 @@
 import { Component, OnInit, AfterViewInit} from '@angular/core';
-import { ListaProducto } from "../clases/lista-producto";
+import { ListaProducto } from "../clases/productos/lista-producto";
 import { LocalStorage } from "../clases/local-storage";
 import { ToastrService } from "ngx-toastr";
 import { Router } from "@angular/router";
 import { InventarioService } from '../service/inventario.service';
-import { Inventario } from '../clases/inventario';
+import { Inventario } from '../clases/productos/inventario';
 import { TokenServiceService } from '../service/token-service.service';
 import { DataService } from '../service/data.service';
-import { updatePollo } from '../clases/updatePollo';
+import { updatePollo } from '../clases/productos/updatePollo';
 
 
 
@@ -87,93 +87,16 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
 
   llenarListas()
   {
+    this.productLista=this.local.GetStorage("listaProducto");
+    if(this.productLista){
+      this.productLista=this.local.GetStorage("listaProducto");
+      this.llenarTabla(this.productLista);
+      this.complete=true;
+    }else{  
     this.__servicioPro.listarInventartio().subscribe(data => {
       this.local.SetStorage("listaProducto",data);
      this.productLista=this.local.GetStorage("listaProducto");
-      for (let index = 0; index < this.productLista.length ;index++) {
-        switch (data[index].productoId.tipo) {
-          case 'platos':
-            this.platos.push(new ListaProducto(data[index].productoId.id,
-              data[index].productoId.nombre,
-              data[index].productoId.tipo,
-              1,
-              data[index].cantidadExist,
-              data[index].productoId.precio,
-              data[index].productoId.presa,
-              data[index].extras
-              ));
-            this.platos.sort(function (o1,o2) {
-              if (o1.nombre > o2.nombre) { //comparación lexicogŕafica
-                return 1;
-              } else if (o1.nombre < o2.nombre) {
-                return -1;
-              } 
-              return 0;
-            });
-            break;
-        
-          case 'bebidas':
-            this.bebidas.push(new ListaProducto(data[index].productoId.id,
-              data[index].productoId.nombre,
-              data[index].productoId.tipo,
-              1,
-              data[index].cantidadExist,
-              data[index].productoId.precio,
-              data[index].productoId.presa,
-              data[index].extras
-              ));
-            this.bebidas.sort(function (o1,o2) {
-              if (o1.nombre > o2.nombre) { //comparación lexicogŕafica
-                return 1;
-              } else if (o1.nombre < o2.nombre) {
-                return -1;
-              } 
-              return 0;
-            });
-            break;
-            
-          case 'combos':
-            this.combos.push(new ListaProducto(data[index].productoId.id,
-              data[index].productoId.nombre,
-              data[index].productoId.tipo,
-              1,
-              data[index].cantidadExist,
-              data[index].productoId.precio,
-              data[index].productoId.presa,
-              data[index].extras
-              ));
-            this.combos.sort(function (o1,o2) {
-              if (o1.nombre > o2.nombre) { //comparación lexicogŕafica
-                return 1;
-              } else if (o1.nombre < o2.nombre) {
-                return -1;
-              } 
-              return 0;
-            });
-            break;
-            
-          case 'porciones':
-            data[index].cantidad=1;
-            this.porciones.push(new ListaProducto(data[index].productoId.id,
-              data[index].productoId.nombre,
-              data[index].productoId.tipo,
-              1,
-              data[index].cantidadExist,
-              data[index].productoId.precio,
-              data[index].productoId.presa,
-              data[index].extras
-              ));
-            this.porciones.sort(function (o1,o2) {
-              if (o1.nombre > o2.nombre) { //comparación lexicogŕafica
-                return 1;
-              } else if (o1.nombre < o2.nombre) {
-                return -1;
-              } 
-              return 0;
-            });
-            break;
-        }        
-      }
+     this.llenarTabla(this.productLista);
       this.complete=true;
     },err =>{
       this.mensaje.error("Cargando los productos","Error",{
@@ -182,7 +105,96 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
         this.complete=false;
     }
     );
+    }
   }
+
+  llenarTabla(data:any){
+    for (let index = 0; index < this.productLista.length ;index++) {
+      switch (data[index].productoId.tipo) {
+        case 'platos':
+          this.platos.push(new ListaProducto(data[index].productoId.id,
+            data[index].productoId.nombre,
+            data[index].productoId.tipo,
+            1,
+            data[index].cantidadExist,
+            data[index].productoId.precio,
+            data[index].productoId.presa,
+            data[index].extras
+            ));
+          this.platos.sort(function (o1,o2) {
+            if (o1.nombre > o2.nombre) { //comparación lexicogŕafica
+              return 1;
+            } else if (o1.nombre < o2.nombre) {
+              return -1;
+            } 
+            return 0;
+          });
+          break;
+      
+        case 'bebidas':
+          this.bebidas.push(new ListaProducto(data[index].productoId.id,
+            data[index].productoId.nombre,
+            data[index].productoId.tipo,
+            1,
+            data[index].cantidadExist,
+            data[index].productoId.precio,
+            data[index].productoId.presa,
+            data[index].extras
+            ));
+          this.bebidas.sort(function (o1,o2) {
+            if (o1.nombre > o2.nombre) { //comparación lexicogŕafica
+              return 1;
+            } else if (o1.nombre < o2.nombre) {
+              return -1;
+            } 
+            return 0;
+          });
+          break;
+          
+        case 'combos':
+          this.combos.push(new ListaProducto(data[index].productoId.id,
+            data[index].productoId.nombre,
+            data[index].productoId.tipo,
+            1,
+            data[index].cantidadExist,
+            data[index].productoId.precio,
+            data[index].productoId.presa,
+            data[index].extras
+            ));
+          this.combos.sort(function (o1,o2) {
+            if (o1.nombre > o2.nombre) { //comparación lexicogŕafica
+              return 1;
+            } else if (o1.nombre < o2.nombre) {
+              return -1;
+            } 
+            return 0;
+          });
+          break;
+          
+        case 'porciones':
+          data[index].cantidad=1;
+          this.porciones.push(new ListaProducto(data[index].productoId.id,
+            data[index].productoId.nombre,
+            data[index].productoId.tipo,
+            1,
+            data[index].cantidadExist,
+            data[index].productoId.precio,
+            data[index].productoId.presa,
+            data[index].extras
+            ));
+          this.porciones.sort(function (o1,o2) {
+            if (o1.nombre > o2.nombre) { //comparación lexicogŕafica
+              return 1;
+            } else if (o1.nombre < o2.nombre) {
+              return -1;
+            } 
+            return 0;
+          });
+          break;
+      }        
+    }
+  }
+
   sumar(val,plato){
 
      switch (plato) {
@@ -235,7 +247,11 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
           if(this.verificar(index,tipo)){
             this.carrito.push(this.platos[index]);
           }
-          this.mensaje.success('Se agrego '+this.platos[index].nombre+' al carrito','Exitoso');
+          if(this.platos[index].cantidadExiste <= 0){
+            this.mensaje.warning('Actualice inventario de'+this.platos[index].nombre,'Advertencia');
+          }else{
+            this.mensaje.success('Se agrego '+this.platos[index].nombre+' al carrito','Exitoso');
+          }
         
                 
         break;
@@ -244,21 +260,36 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
         if(this.verificar(index,tipo)){
           this.carrito.push(this.bebidas[index]);
         }
-        this.mensaje.success('Se agrego '+this.bebidas[index].nombre+' al carrito','Exitoso');
-      break;
+        if(this.bebidas[index].cantidadExiste <= 0){
+          this.mensaje.warning('Actualice inventario de'+this.bebidas[index].nombre,'Advertencia');
+        }else{
+          this.mensaje.success('Se agrego '+this.bebidas[index].nombre+' al carrito','Exitoso');
+        }     
+        
+        break;
 
       case 'combos':
         if(this.verificar(index,tipo)){
           this.carrito.push(this.combos[index]);
         }
-        this.mensaje.success('Se agrego '+this.combos[index].nombre+' al carrito','Exitoso');
+
+        if(this.combos[index].cantidadExiste <= 0){
+          this.mensaje.warning('Actualice inventario de'+this.combos[index].nombre,'Advertencia');
+        }else{
+          this.mensaje.success('Se agrego '+this.combos[index].nombre+' al carrito','Exitoso');
+        }
         break;
 
         case 'porciones':
           if(this.verificar(index,tipo)){
             this.carrito.push(this.porciones[index]);
           }
-          this.mensaje.success('Se agrego '+this.porciones[index].nombre+' al carrito','Exitoso');
+
+          if(this.porciones[index].cantidadExiste <= 0){
+            this.mensaje.warning('Actualice inventario de'+this.porciones[index].nombre,'Advertencia');
+          }else{
+            this.mensaje.success('Se agrego '+this.porciones[index].nombre+' al carrito','Exitoso');
+          }
           break;
     }
        this.local.SetStorage('DataCarrito',this.carrito);

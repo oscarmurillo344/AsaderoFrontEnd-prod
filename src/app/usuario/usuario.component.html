@@ -46,9 +46,7 @@
             Eliminar
             <mat-icon class="example-tab-icon">delete_forever</mat-icon>
           </ng-template>
-          <mat-card>
-            <mat-card-content >
-
+         
               <table mat-table [dataSource]="ListaUsuario" style="width: 100%;" >
 
                 <ng-container matColumnDef="nombre">
@@ -59,7 +57,7 @@
                 <ng-container matColumnDef="usuario">
                   <th mat-header-cell *matHeaderCellDef> Usuario </th>
                   <td mat-cell *matCellDef="let element ">
-                      <a [matTooltip]="element.email">
+                      <a [matTooltip]="element.email" matTooltipPosition="above">
                         {{element.nombreUsuario}} 
                       </a>
                     </td>
@@ -67,13 +65,13 @@
 
                   <ng-container matColumnDef="roles">
                     <th mat-header-cell *matHeaderCellDef> Roles </th>
-                    <td mat-cell *matCellDef="let element "> {{element.roles | convertir }} </td>
+                    <td mat-cell *matCellDef="let element " style="width: 25%;"> {{element.roles | convertir }} </td>
                   </ng-container>
 
                 <!-- Weight Column -->
-                <ng-container matColumnDef="Eliminar">
+                <ng-container matColumnDef="Eliminar" >
                   <th mat-header-cell *matHeaderCellDef>  </th>
-                  <td mat-cell *matCellDef="let element; index as i"> 
+                  <td mat-cell *matCellDef="let element; index as i" style="width: 2%;"> 
                     <button  mat-mini-fab color="warn" (click)="Eliminar(i)" >
                       <mat-icon>
                         delete
@@ -85,9 +83,7 @@
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
               </table>
-              
-            </mat-card-content>
-          </mat-card>
+
         </mat-tab>
       
       </mat-tab-group>

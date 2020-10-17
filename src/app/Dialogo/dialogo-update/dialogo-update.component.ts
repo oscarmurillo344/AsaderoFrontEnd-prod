@@ -1,13 +1,11 @@
 import { Component, OnInit,Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {MAT_DIALOG_DATA  } from  '@angular/material/dialog';
-import { ListaProducto } from 'src/app/clases/lista-producto';
 import { ProductoListService } from 'src/app/service/producto-list.service';
 import { ToastrService } from 'ngx-toastr';
-import { error } from 'protractor';
-import { Producto } from 'src/app/clases/producto';
+import { Producto } from 'src/app/clases/productos/producto';
 import { InventarioService } from 'src/app/service/inventario.service';
-import { Inventario } from 'src/app/clases/inventario';
+import { Inventario } from 'src/app/clases/productos/inventario';
 import { LocalStorage } from 'src/app/clases/local-storage';
 
 
@@ -38,7 +36,11 @@ export class DialogoUpdateComponent implements OnInit {
   ngOnInit() {
   }
   crearForm(data){
-    this.lista=data.extras;
+    if(data.extras!==null){
+      this.lista=data.extras;
+    }else{
+      this.lista=[];
+    }
     return new FormGroup({
       nombre: new FormControl(data.productoId.nombre,Validators.required),
       tipo: new FormControl(data.productoId.tipo,Validators.required),

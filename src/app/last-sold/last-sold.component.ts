@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Factura } from '../clases/factura';
+import { Factura } from '../clases/factura/factura';
 import { PagarService } from '../service/pagar.service';
 
 @Component({
@@ -12,9 +12,8 @@ import { PagarService } from '../service/pagar.service';
 export class LastSoldComponent implements OnInit {
 
   ListaFactura:Array<Factura>=new Array();;
-  displayedColumns=['Nombre','Cantidad','Fecha'];
+  displayedColumns=['Nombre','Cantidad','Fecha','Hora'];
   numeroFact:number=0;
-  fecha:Date;
   bloqueo:boolean;
   constructor(
     private __servicioPago:PagarService,
@@ -62,8 +61,6 @@ export class LastSoldComponent implements OnInit {
       },error=>{
         if(error.error.mensaje===undefined){
           this.toast.error("no eliminado","Error");
-          console.log(error)
-          
         }else{
           this.toast.error(error.error.mensaje,"Error");
         }

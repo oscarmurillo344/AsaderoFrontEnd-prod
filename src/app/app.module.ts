@@ -13,8 +13,6 @@ import { LoginComponent } from './login/login.component';
 import { SystemMainComponent } from './system-main/system-main.component';
 import { SystemCarComponent } from './system-car/system-car.component';
 import { ControlVentasComponent } from './control-ventas/control-ventas.component';
-import { ErrorComponent } from './error/error.component';
-import { PedidosComponent } from './pedidos/pedidos.component';
 
 import { TokenServiceService } from "./service/token-service.service";
 import { AuthService } from "./service/auth.service";
@@ -34,6 +32,8 @@ import { UpdatePolloComponent } from './update-pollo/update-pollo.component';
 import { LastSoldComponent } from './last-sold/last-sold.component';
 import { UsuarioComponent } from './usuario/usuario.component';
 import { FilterArray } from './Pipe/filterArray';
+import { ExcelExportService } from './service/excel-export.service';
+import { ExportarComponent } from './Dialogo/exportar/exportar.componentes';
 
 @NgModule({
   declarations: [
@@ -43,20 +43,20 @@ import { FilterArray } from './Pipe/filterArray';
     SystemMainComponent,
     SystemCarComponent,
     ControlVentasComponent,
-    ErrorComponent,
-    PedidosComponent,
     InventarioComponent,
     FilterPipe,
     DialogoYesNoComponent,
     DialogoUpdateComponent,
+    ExportarComponent,
     FilterInventario,
     FilterArray,
     GastosComponent,
     UpdatePolloComponent,
     LastSoldComponent,
     UsuarioComponent
+    
   ],
-  entryComponents:[DialogoYesNoComponent,DialogoUpdateComponent],
+  entryComponents:[DialogoYesNoComponent,DialogoUpdateComponent,ExportarComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -83,7 +83,8 @@ providers: [
             ProductoService,
             ProductoListService,
             TokenServiceService,
-            AuthService
+            AuthService,
+            ExcelExportService
           ],
   bootstrap: [AppComponent]
 })

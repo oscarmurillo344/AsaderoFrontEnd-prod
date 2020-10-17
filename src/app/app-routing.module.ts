@@ -9,6 +9,7 @@ import { InventarioComponent } from './inventario/inventario.component';
 import { GastosComponent } from './gastos/gastos.component';
 import { UpdatePolloComponent } from './update-pollo/update-pollo.component';
 import { LastSoldComponent } from './last-sold/last-sold.component';
+import { UsuarioComponent } from './usuario/usuario.component';
 
 const routes: Routes = 
 [
@@ -26,6 +27,8 @@ const routes: Routes =
   {path:'gastos',component: GastosComponent, 
   canActivate: [ProductoService],data:{ expectedRol:['admin','user']}},
   {path:'ControlSold',component: ControlVentasComponent, 
+  canActivate: [ProductoService],data:{ expectedRol:['admin']}},
+  {path:'usuarios',component:UsuarioComponent,
   canActivate: [ProductoService],data:{ expectedRol:['admin']}},
   {path:'', redirectTo:'/login', pathMatch:'full'},
   {path:'**', component:LoginComponent}

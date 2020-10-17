@@ -4,7 +4,9 @@ export class VentasDay{
      nombre:string;
      precio:number;
      cantidad:number;
-
+     fecha:string;
+     hora:string;
+     
      constructor(usuario:string,
         producto:string,
         precio:number,

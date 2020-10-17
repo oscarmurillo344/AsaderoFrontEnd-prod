@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Mensaje } from '../clases/mensaje';
-import { Gastos } from '../clases/gastos';
+import { Gastos } from '../clases/gasto/gastos';
 import { Observable } from 'rxjs';
-import { GastosX } from "../clases/gastosX";
+import { GastosX } from "../clases/gasto/gastosX";
+import { environment } from 'src/environments/environment';
 
 
 
@@ -12,8 +13,7 @@ import { GastosX } from "../clases/gastosX";
 })
 export class GastosService {
 
-  ip="192.168.100.20";
-  URLgasto="http://"+this.ip+":8080/gastos/";
+  URLgasto=environment.url+"gastos/";
 
   constructor(private http:HttpClient) { }
 

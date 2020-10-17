@@ -1,6 +1,7 @@
 .contenido{
     margin-top: 60px;
 }
+
 .container{
     width: 100%;
 }
@@ -8,7 +9,11 @@
 .contenedor{
     height: 100px;
 }
+
 .margen{
     margin-right: 100%;
     padding: 2%;
+}
+mat-card{
+    width: 80%; margin: auto; margin-top: 2%;
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { NuevoUsuario } from '../clases/nuevoUsuario';
+import { NuevoUsuario } from '../clases/usuarios/nuevoUsuario';
 import { UsuariosService } from '../service/usuarios.service';
 import {MatDialog} from '@angular/material/dialog';
 import { DialogoYesNoComponent } from '../Dialogo/dialogo-yes-no/dialogo-yes-no.component';
@@ -54,17 +54,17 @@ export class UsuarioComponent implements OnInit {
     if(this.UsuarioForm.valid){
       if(this.UsuarioForm.value.tipo==='user'){
         this.User=new NuevoUsuario(
-          this.UsuarioForm.value.nombre,
-          this.UsuarioForm.value.usuario,
-          this.UsuarioForm.value.email,
+          this.minuscula(this.UsuarioForm.value.nombre),
+          this.minuscula(this.UsuarioForm.value.usuario),
+          this.minuscula(this.UsuarioForm.value.email),
           this.UsuarioForm.value.pass,
           ['user']
         );
       }else{
         this.User=new NuevoUsuario(
-          this.UsuarioForm.value.nombre,
-          this.UsuarioForm.value.usuario,
-          this.UsuarioForm.value.email,
+          this.minuscula(this.UsuarioForm.value.nombre),
+          this.minuscula(this.UsuarioForm.value.usuario),
+          this.minuscula(this.UsuarioForm.value.email),
           this.UsuarioForm.value.pass,
           ['user',this.UsuarioForm.value.tipo]
         );
@@ -89,6 +89,9 @@ export class UsuarioComponent implements OnInit {
       });
     }
   }
+  public minuscula(texto:string):string{
+    return texto.toLocaleLowerCase();
+   }
 
   Eliminar(i){
 

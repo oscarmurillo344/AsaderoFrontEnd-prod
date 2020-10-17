@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Mensaje } from '../clases/mensaje';
-import { NuevoUsuario } from '../clases/nuevoUsuario';
+import { NuevoUsuario } from '../clases/usuarios/nuevoUsuario';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable({
@@ -10,8 +11,7 @@ import { Observable } from 'rxjs';
 })
 export class UsuariosService {
 
-  ip="192.168.100.20"
-  ProductURL="http://"+this.ip+":8080/auth/";
+  ProductURL=environment.url+"auth/";
 
   constructor(private http:HttpClient) { }
 

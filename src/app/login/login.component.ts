@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl,FormGroup, Validators} from '@angular/forms';
 import { Router } from "@angular/router";
-import { LocalStorage } from "../clases/local-storage";
 import { ToastrService } from "ngx-toastr";
 import { TokenServiceService } from "../service/token-service.service";
 import { AuthService } from "../service/auth.service";
-import { LoginUsuario } from '../clases/loginUsuario';
+import { LoginUsuario } from '../clases/usuarios/loginUsuario';
 
 @Component({
   selector: 'app-login',
@@ -17,11 +16,11 @@ export class LoginComponent implements OnInit {
 
   UserForm: FormGroup;
   Validar: boolean;
-  local=new LocalStorage();
   hide = true;
   roles:string[]=[];
   loginusu:LoginUsuario;
   completar:boolean;
+  
   constructor(private route:Router,private mensaje:ToastrService, 
     private token:TokenServiceService,private Servicio_login:AuthService) 
     {

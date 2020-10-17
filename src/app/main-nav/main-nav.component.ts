@@ -1,11 +1,10 @@
-import { Component,OnInit,AfterContentChecked  } from '@angular/core';
+import { Component,OnInit  } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { LocalStorage } from "../clases/local-storage";
 import { Router } from "@angular/router";
 import { DataService } from '../service/data.service';
-import { updatePollo } from '../clases/updatePollo';
 
 
 @Component({
@@ -21,7 +20,6 @@ export class MainNavComponent implements OnInit  {
           notificacion:number;
           Lista:any;
           vista:boolean;
-          update:updatePollo;
           
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -56,7 +54,10 @@ export class MainNavComponent implements OnInit  {
         }
       }, 1500);
     }
-
+    refresh(){
+      window.location.replace(window.location.origin);
+    }
+    
     logOut(){
       this.local.RemoveAll();
       this.router.navigate(['/login']);

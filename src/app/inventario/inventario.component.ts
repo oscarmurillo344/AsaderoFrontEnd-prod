@@ -5,10 +5,10 @@ import { LocalStorage } from "../clases/local-storage";
 import {MatDialog} from '@angular/material/dialog';
 import { DialogoYesNoComponent } from '../Dialogo/dialogo-yes-no/dialogo-yes-no.component';
 import { DialogoUpdateComponent } from '../Dialogo/dialogo-update/dialogo-update.component';
-import { Producto } from '../clases/producto';
+import { Producto } from '../clases/productos/producto';
 import { InventarioService } from "../service/inventario.service";
-import { Inventario } from '../clases/inventario';
-import { ListaProducto } from '../clases/lista-producto';
+import { Inventario } from '../clases/productos/inventario';
+import { ListaProducto } from '../clases/productos/lista-producto';
 
 
 @Component({
@@ -21,9 +21,8 @@ export class InventarioComponent implements OnInit {
 
   ProductForm :FormGroup;
   BuscarProductForm: FormGroup;
-  ProductoArray:Array<ListaProducto>=new Array();
-  ListaInventario:Array<Inventario>=new Array();
-  ListaProducto:Array<Producto>=new Array();
+  ListaInventario:Array<Inventario>;
+  ComboInventario:Array<Inventario>;
   local:LocalStorage=new LocalStorage();
   product:Producto;
   nombreBuscar:string;
@@ -35,6 +34,9 @@ export class InventarioComponent implements OnInit {
     public dialog: MatDialog,
     private __inventarioService:InventarioService
     ) { 
+      this.ListaInventario=new Array();
+      this.ComboInventario=new Array();
+      this.cargarCantidad();
       this.__inventarioService.listen().subscribe((m:any)=>{
         this.cargarCantidad();
       });
@@ -43,14 +45,16 @@ export class InventarioComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.cargarCantidad();
+    
   }
  
   cargarCantidad(){
-    this.__inventarioService.listarInventartio().subscribe(da=>
-      {
-        let data:any=da
-        this.ListaInventario=data;
+    this.__inventarioService.listarInventartio().subscribe(
+      data=>{
+        let da:any=data;
+        this.local.SetStorage("listaProducto",data);
+        this.CargarCombo();
+        this.ListaInventario=da;
         this.ListaInventario.sort(function (o1,o2) {
           if (o1.productoId.nombre > o2.productoId.nombre) { //comparación lexicogŕafica
             return 1;
@@ -59,9 +63,26 @@ export class InventarioComponent implements OnInit {
           } 
           return 0;
         });
-        this.local.SetStorage("listaProducto",da);
       });
+       
   }
+  
+      CargarCombo(){
+          this.ComboInventario=this.local.GetStorage("listaProducto");
+          this.ComboInventario.forEach((data,index)=>{
+            if(data.productoId.tipo=='combos'){
+              this.ComboInventario.splice(index,1);
+            }
+          });
+          this.ComboInventario.sort(function (o1,o2) {
+            if (o1.productoId.nombre > o2.productoId.nombre) { //comparación lexicogŕafica
+              return 1;
+            } else if (o1.productoId.nombre < o2.productoId.nombre) {
+              return -1;
+            } 
+            return 0;
+          });
+      }
   createForm(){
     return new FormGroup({
       nombre: new FormControl('',Validators.required),
@@ -90,11 +111,19 @@ export class InventarioComponent implements OnInit {
           {this.local.SetStorage("listaProducto",da);
            this.ListaInventario=this.local.GetStorage("listaProducto")});
       },error=>{
+       if(error.error.mensaje!== undefined){
         this.mensaje.error(error.error.mensaje,"Error",
-      {
-        timeOut:1500,
-        positionClass:'toast-top-center'
-      });
+        {
+          timeOut:1500,
+          positionClass:'toast-top-center'
+        });
+       }else{
+        this.mensaje.error("Error en la consulta","Error",
+        {
+          timeOut:1500,
+          positionClass:'toast-top-center'
+        });
+       }
       
       });
       
@@ -117,8 +146,7 @@ export class InventarioComponent implements OnInit {
   }
 
   public Editar(index):void{
-    let result=this.dialog.open(DialogoUpdateComponent,{data:this.ListaInventario[index]});
-    result.afterClosed().subscribe(data =>{});
+    this.dialog.open(DialogoUpdateComponent,{data:this.ListaInventario[index]});
   }
 
   public Eliminar(index):void{
@@ -130,7 +158,11 @@ export class InventarioComponent implements OnInit {
         this.mensaje.success(data.mensaje,"Exitoso");
        this.cargarCantidad();
       },error =>{
-        this.mensaje.error(error.error.mensaje,"Error");
+        if(error.error.mensaje!==undefined){
+          this.mensaje.error(error.error.mensaje,"Error");
+        }else{
+          this.mensaje.error("Error en la consulta","Error");
+        }
       }
       );
     }else{

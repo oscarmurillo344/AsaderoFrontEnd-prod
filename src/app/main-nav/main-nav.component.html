@@ -4,12 +4,11 @@
       [mode]="(isHandset$ | async) ? 'over' : 'side'"
       [opened]="open">
 
-      <mat-toolbar class="tituloMenu">
-        Asadero de Pollos Andy's
-      </mat-toolbar>
-      
-        <img src="../../assets/imagenes/pollo.png" class="imagen" alt="Logotipo Da&ntilde;ado" width="150">
-      
+      <img src="../../assets/imagenes/pollo.png" class="imagen" alt="Logotipo Da&ntilde;ado" width="150">
+
+      <h1 class="tituloMenu">
+      Pollos Andy's
+      </h1>      
        
     <mat-nav-list >
           <mat-expansion-panel mat-list-item routerLinkActive="active" hideToggle>
@@ -44,12 +43,12 @@
         </mat-icon>
         Gastos
       </a>
-      <a mat-list-item routerLinkActive="active" [routerLink]="['/ControlSold']" (click)="drawer.toggle()">
+      <a mat-list-item routerLinkActive="active" *ngIf="__Data.ver" [routerLink]="['/ControlSold']" (click)="drawer.toggle()">
         <mat-icon>
           fact_check
         </mat-icon>
         Control de Ventas</a>
-        <a mat-list-item routerLinkActive="active" [routerLink]="['/usuarios']" (click)="drawer.toggle()">
+        <a mat-list-item routerLinkActive="active" *ngIf="__Data.ver" [routerLink]="['/usuarios']" (click)="drawer.toggle()">
           <mat-icon>
             person_add
           </mat-icon>
@@ -71,7 +70,7 @@
          [ngClass]=" {'mostrar': valor} ">
         <mat-icon >menu</mat-icon>
       </button>
-      <span class="centar">Sistema de Ventas</span>
+      <span class="centar"><a (click)="refresh()"> Sistema de Ventas</a></span>
 
   
         <span id="botonCarro" [ngClass]=" {'mostrar': valor} " [matBadge]="notificacion" matBadgeOverlap="false" [matBadgeHidden]="notificacion===0" style="margin-right: 2%;">

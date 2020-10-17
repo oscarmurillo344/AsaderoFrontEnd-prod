@@ -1,4 +1,4 @@
-import { Producto } from './producto';
+import { Producto } from '../productos/producto';
 
 export class Factura{
 

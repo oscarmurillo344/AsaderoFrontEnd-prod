@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { updatePollo } from '../clases/updatePollo';
+import { updatePollo } from '../clases/productos/updatePollo';
 import { DataService } from '../service/data.service';
 import { InventarioService } from '../service/inventario.service';
 import { LocalStorage } from "../clases/local-storage";
 import { Router } from '@angular/router';
-import { Inventario } from '../clases/inventario';
+import { Inventario } from '../clases/productos/inventario';
 
 @Component({
   selector: 'app-update-pollo',
@@ -59,8 +59,9 @@ this.local=new LocalStorage();
           this.update2=new updatePollo(this.datas.pollo,this.datas.presa);
           this.toast.success(data.mensaje,"Exitoso");
           this.PollosForm.reset();
-          this.__serviceinven.TablePollo(this.update2).subscribe(data=>{});
-          this.route.navigate(["/inicio"]);
+          this.__serviceinven.TablePollo(this.update2).subscribe(data=>{
+            this.route.navigate(["/inicio"]);
+          });
         },error=>{
           if(error.error.mensaje===undefined){
             this.toast.error("Error en la consulta","Error");
@@ -69,12 +70,13 @@ this.local=new LocalStorage();
           }
         });
       }else{
-        this.__serviceinven.TablePollo(this.update).subscribe(data=>{});
+        this.__serviceinven.TablePollo(this.update).subscribe(data=>{
+          this.route.navigate(["/inicio"]);
+        });
         this.datas.pollo=this.PollosForm.value.pollo;
         this.datas.presa=this.PollosForm.value.presa;
         this.toast.success("Pollo actualizado","Exitoso");
         this.PollosForm.reset();
-        this.route.navigate(["/inicio"]);
       }
    }
  }

@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Factura } from '../clases/factura';
+import { Factura } from '../clases/factura/factura';
 import { Mensaje } from '../clases/mensaje';
 import { Observable } from 'rxjs';
 import { VentasDay } from '../clases/VentasDay';
-import { EntreFecha } from '../clases/EntreFecha';
+import { EntreFecha } from '../clases/factura/EntreFecha';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable({
@@ -12,8 +13,7 @@ import { EntreFecha } from '../clases/EntreFecha';
 })
 export class PagarService {
 
-  ip="192.168.100.20"
-  pagarURL="http://"+this.ip+":8080/factura/";
+  pagarURL=environment.url+"factura/";
 
   constructor(private http:HttpClient) { }
 
@@ -35,6 +35,10 @@ export class PagarService {
 
   public TotalDay(usuario:string):Observable<VentasDay>{
     return this.http.get<VentasDay>(this.pagarURL+'totalDay/'+usuario);
+  }
+
+  public TotalFechasUser(Fecha:EntreFecha):Observable<VentasDay>{
+    return this.http.post<VentasDay>(this.pagarURL+'totalfechaUser',Fecha);
   }
 
   public TotalFechas(Fecha:EntreFecha):Observable<VentasDay>{
