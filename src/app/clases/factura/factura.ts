@@ -5,7 +5,8 @@ export class Factura{
     id:number;
     numeroFact:number;
     usuarioId:string;
-    registroDate:Date;    
+    registroDate:Date; 
+    registroTime:Date;   
     productoId:Producto;
     cantidad:number;
     extras:string;
