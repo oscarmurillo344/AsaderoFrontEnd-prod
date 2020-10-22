@@ -30,13 +30,13 @@
           <ng-container matColumnDef="Fecha">
             <th mat-header-cell *matHeaderCellDef> Fecha  </th>
             <td mat-cell *matCellDef="let element; index as i"> 
-             {{element.registroDate | date:'dd/MM/yyyy' }}
+             {{element.fechaactual | date:'dd/MM/yyyy' }}
             </td>
           </ng-container>
           <ng-container matColumnDef="Hora">
             <th mat-header-cell *matHeaderCellDef> Fecha  </th>
             <td mat-cell *matCellDef="let element; index as i"> 
-             {{element.registroTime }}
+             {{element.tiempoactual }}
             </td>
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
