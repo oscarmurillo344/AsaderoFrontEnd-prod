@@ -9,6 +9,7 @@ import { Producto } from '../clases/productos/producto';
 import { InventarioService } from "../service/inventario.service";
 import { Inventario } from '../clases/productos/inventario';
 import { ListaProducto } from '../clases/productos/lista-producto';
+import { AppComponent } from '../app.component';
 
 
 @Component({
@@ -48,6 +49,8 @@ export class InventarioComponent implements OnInit {
     
   }
  
+  
+
   cargarCantidad(){
     this.__inventarioService.listarInventartio().subscribe(
       data=>{
@@ -55,14 +58,8 @@ export class InventarioComponent implements OnInit {
         this.local.SetStorage("listaProducto",data);
         this.CargarCombo();
         this.ListaInventario=da;
-        this.ListaInventario.sort(function (o1,o2) {
-          if (o1.productoId.nombre > o2.productoId.nombre) { //comparación lexicogŕafica
-            return 1;
-          } else if (o1.productoId.nombre < o2.productoId.nombre) {
-            return -1;
-          } 
-          return 0;
-        });
+        AppComponent.OrdenarData(this.ListaInventario);
+        this.ListaInventario
       });
        
   }
@@ -74,14 +71,7 @@ export class InventarioComponent implements OnInit {
               this.ComboInventario.splice(index,1);
             }
           });
-          this.ComboInventario.sort(function (o1,o2) {
-            if (o1.productoId.nombre > o2.productoId.nombre) { //comparación lexicogŕafica
-              return 1;
-            } else if (o1.productoId.nombre < o2.productoId.nombre) {
-              return -1;
-            } 
-            return 0;
-          });
+          AppComponent.OrdenarData(this.ComboInventario);
       }
   createForm(){
     return new FormGroup({
@@ -112,17 +102,9 @@ export class InventarioComponent implements OnInit {
            this.ListaInventario=this.local.GetStorage("listaProducto")});
       },error=>{
        if(error.error.mensaje!== undefined){
-        this.mensaje.error(error.error.mensaje,"Error",
-        {
-          timeOut:1500,
-          positionClass:'toast-top-center'
-        });
+        this.mensaje.error(error.error.mensaje,"Error");
        }else{
-        this.mensaje.error("Error en la consulta","Error",
-        {
-          timeOut:1500,
-          positionClass:'toast-top-center'
-        });
+        this.mensaje.error("Error en la consulta","Error");
        }
       
       });

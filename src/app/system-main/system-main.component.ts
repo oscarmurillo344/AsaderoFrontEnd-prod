@@ -8,6 +8,7 @@ import { Inventario } from '../clases/productos/inventario';
 import { TokenServiceService } from '../service/token-service.service';
 import { DataService } from '../service/data.service';
 import { updatePollo } from '../clases/productos/updatePollo';
+import { AppComponent } from '../app.component';
 
 
 
@@ -99,9 +100,7 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
      this.llenarTabla(this.productLista);
       this.complete=true;
     },err =>{
-      this.mensaje.error("Cargando los productos","Error",{
-        timeOut:1000,
-        positionClass:'toast-top-center'});
+      this.mensaje.error("Cargando los productos","Error");
         this.complete=false;
     }
     );
@@ -121,14 +120,7 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
             data[index].productoId.presa,
             data[index].extras
             ));
-          this.platos.sort(function (o1,o2) {
-            if (o1.nombre > o2.nombre) { //comparación lexicogŕafica
-              return 1;
-            } else if (o1.nombre < o2.nombre) {
-              return -1;
-            } 
-            return 0;
-          });
+            AppComponent.OrdenarData(this.platos);
           break;
       
         case 'bebidas':
@@ -141,14 +133,7 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
             data[index].productoId.presa,
             data[index].extras
             ));
-          this.bebidas.sort(function (o1,o2) {
-            if (o1.nombre > o2.nombre) { //comparación lexicogŕafica
-              return 1;
-            } else if (o1.nombre < o2.nombre) {
-              return -1;
-            } 
-            return 0;
-          });
+            AppComponent.OrdenarData(this.bebidas);
           break;
           
         case 'combos':
@@ -161,14 +146,7 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
             data[index].productoId.presa,
             data[index].extras
             ));
-          this.combos.sort(function (o1,o2) {
-            if (o1.nombre > o2.nombre) { //comparación lexicogŕafica
-              return 1;
-            } else if (o1.nombre < o2.nombre) {
-              return -1;
-            } 
-            return 0;
-          });
+            AppComponent.OrdenarData(this.combos);
           break;
           
         case 'porciones':
@@ -182,14 +160,7 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
             data[index].productoId.presa,
             data[index].extras
             ));
-          this.porciones.sort(function (o1,o2) {
-            if (o1.nombre > o2.nombre) { //comparación lexicogŕafica
-              return 1;
-            } else if (o1.nombre < o2.nombre) {
-              return -1;
-            } 
-            return 0;
-          });
+            AppComponent.OrdenarData(this.porciones);
           break;
       }        
     }
