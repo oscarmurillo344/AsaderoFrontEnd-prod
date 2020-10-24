@@ -80,7 +80,6 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
        this.local.SetStorage("pollos",new updatePollo(0,0));
       }
      },error=>{
-       console.log(error);
        this.local.SetStorage("pollos",new updatePollo(0,0));
      });
 
@@ -120,7 +119,7 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
             data[index].productoId.presa,
             data[index].extras
             ));
-            AppComponent.OrdenarData(this.platos);
+            AppComponent.OrdenarData2(this.platos);
           break;
       
         case 'bebidas':
@@ -133,7 +132,7 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
             data[index].productoId.presa,
             data[index].extras
             ));
-            AppComponent.OrdenarData(this.bebidas);
+            AppComponent.OrdenarData2(this.bebidas);
           break;
           
         case 'combos':
@@ -146,7 +145,7 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
             data[index].productoId.presa,
             data[index].extras
             ));
-            AppComponent.OrdenarData(this.combos);
+            AppComponent.OrdenarData2(this.combos);
           break;
           
         case 'porciones':
@@ -160,7 +159,7 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
             data[index].productoId.presa,
             data[index].extras
             ));
-            AppComponent.OrdenarData(this.porciones);
+            AppComponent.OrdenarData2(this.porciones);
           break;
       }        
     }

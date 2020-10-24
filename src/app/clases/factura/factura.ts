@@ -5,7 +5,7 @@ export class Factura{
     id:number;
     numeroFact:number;
     usuarioId:string;
-    fechaactual:Date; 
+    datenow:Date; 
     tiempoactual:Date;   
     productoId:Producto;
     cantidad:number;
@@ -13,13 +13,13 @@ export class Factura{
 
     constructor(
         numeroFact:number,
-        registroDate:Date,
+        datenow:Date,
         usuarioId:string,
         producto:Producto,
         cantidad:number,
         extras:string){
             this.numeroFact=numeroFact;
-            this.fechaactual=registroDate;
+            this.datenow=datenow;
             this.usuarioId=usuarioId;
             this.productoId=producto;
             this.cantidad=cantidad;
