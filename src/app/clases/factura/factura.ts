@@ -5,8 +5,8 @@ export class Factura{
     id:number;
     numeroFact:number;
     usuarioId:string;
-    datenow:Date; 
-    tiempoactual:Date;   
+    RegistroDate:Date; 
+    RegistroTime:Date;   
     productoId:Producto;
     cantidad:number;
     extras:string;
@@ -19,7 +19,7 @@ export class Factura{
         cantidad:number,
         extras:string){
             this.numeroFact=numeroFact;
-            this.datenow=datenow;
+            this.RegistroDate=datenow;
             this.usuarioId=usuarioId;
             this.productoId=producto;
             this.cantidad=cantidad;
