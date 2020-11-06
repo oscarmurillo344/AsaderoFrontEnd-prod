@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit} from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy} from '@angular/core';
 import { ListaProducto } from "../clases/productos/lista-producto";
 import { LocalStorage } from "../clases/local-storage";
 import { ToastrService } from "ngx-toastr";
@@ -9,6 +9,7 @@ import { TokenServiceService } from '../service/token-service.service';
 import { DataService } from '../service/data.service';
 import { updatePollo } from '../clases/productos/updatePollo';
 import { AppComponent } from '../app.component';
+import { Subscription } from 'rxjs';
 
 
 
@@ -17,21 +18,22 @@ import { AppComponent } from '../app.component';
   templateUrl: './system-main.component.html',
   styleUrls: ['./system-main.component.css']
 })
-export class SystemMainComponent implements OnInit, AfterViewInit  {
+export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
 
-  platos:Array<ListaProducto>=new Array();
-  bebidas:Array<ListaProducto>=new Array();
-  combos:Array<ListaProducto>=new Array();
-  porciones:Array<ListaProducto>=new Array();
-  carrito:Array<ListaProducto>=new Array();
-  productLista:Array<Inventario>=new Array();
-  local:LocalStorage=new LocalStorage();
+  platos:Array<ListaProducto>;
+  bebidas:Array<ListaProducto>;
+  combos:Array<ListaProducto>;
+  porciones:Array<ListaProducto>;
+  carrito:Array<ListaProducto>;
+  productLista:Array<Inventario>;
+  local:LocalStorage;
   complete:boolean=false;
   update:updatePollo;
   buscar:string='';
   displayedColumns:string[] = ['agregar', 'Nombre', 'sumar'];
   roles:string[];
   tokens:string;
+  unsuscribir:Subscription;
 
   constructor(private mensaje:ToastrService,
               private navegacion:Router,
@@ -40,12 +42,22 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
               private __data:DataService
               ) 
   {
+      this.platos=new Array();
+      this.bebidas=new Array();
+      this.combos=new Array();
+      this.porciones=new Array();
+      this.carrito=new Array();
+      this.productLista=new Array();
+      this.local=new LocalStorage();
       this.llenarListas();
       this.roles=this.token.getAuth();
       this.tokens=this.token.getToken();
       this.__data.nombreUsuario=this.token.getUser();
       
     }
+  ngOnDestroy(): void {
+    this.unsuscribir.unsubscribe();
+  }
    
     ngAfterViewInit() {
       setTimeout(() => {
@@ -69,7 +81,7 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
     }else{
       this.navegacion.navigate(['/inicio',{}]);
     }
-    this.__servicioPro.listarpollo().subscribe(data=>{
+    this.unsuscribir=this.__servicioPro.listarpollo().subscribe(data=>{
       if(data.pollo!==undefined){
        this.__data.pollo=data.pollo;
        this.__data.presa=data.presa;
@@ -263,7 +275,7 @@ export class SystemMainComponent implements OnInit, AfterViewInit  {
           break;
     }
        this.local.SetStorage('DataCarrito',this.carrito);
-
+       this.__data.notification.emit(1);
   }
    
   verificar(i,tipo):boolean

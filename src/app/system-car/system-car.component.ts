@@ -10,6 +10,7 @@ import { Producto } from '../clases/productos/producto';
 import { Router } from '@angular/router';
 import { updatePollo } from '../clases/productos/updatePollo';
 import { InventarioService } from '../service/inventario.service';
+import { DataService } from '../service/data.service';
 
 @Component({
   selector: 'app-system-car',
@@ -33,22 +34,22 @@ export class SystemCarComponent implements OnInit {
     private mensaje:ToastrService,
     private token:TokenServiceService,
     private route:Router,
-    private __serviceInven:InventarioService) {
+    private __serviceInven:InventarioService,
+    private __Data:DataService) {
 
       this.local=new LocalStorage();
       this.lista=new Array();
       this.verificarCarrito();
+     this.bloqueo=false;
+   }
+
+  ngOnInit() {
     this.__servicioPagar.maximoValor().subscribe(data=>{
       this.numeroFactura=data;
       this.numeroFactura+=1;
      },error=>{
        console.log(error)
      });
-     this.bloqueo=false;
-   }
-
-  ngOnInit() {
-    
   }
 
   public Facturar(){
@@ -86,6 +87,7 @@ export class SystemCarComponent implements OnInit {
               this.local.RemoveStorage('DataCarrito');
               this.__serviceInven.TablePollo(this.polloMerca).subscribe(data=>{});
               this.local.SetStorage("pollos",this.polloMerca)
+              this.__Data.notification.emit(1);
               this.route.navigate(['/inicio']);
               this.bloqueo=false;
             }
@@ -126,17 +128,20 @@ export class SystemCarComponent implements OnInit {
       this.lista.splice(index,1);
       this.local.SetStorage('DataCarrito',this.lista);
       this.verificarCarrito();
+      this.__Data.notification.emit(1);
     }
     sumar(i){
       this.lista[i].cantidad++;
       this.local.SetStorage('DataCarrito',this.lista);
       this.verificarCarrito();
+      this.__Data.notification.emit(1);
     }
     restar(i){
       if(this.lista[i].cantidad > 1){
         this.lista[i].cantidad--;
         this.local.SetStorage('DataCarrito',this.lista);
         this.verificarCarrito();
+        this.__Data.notification.emit(1);
       }
     }
 

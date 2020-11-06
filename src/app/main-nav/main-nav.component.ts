@@ -27,9 +27,9 @@ export class MainNavComponent implements OnInit  {
       shareReplay()
     );
 
-  constructor(private breakpointObserver: BreakpointObserver,private router:Router,
-    public __Data:DataService) {
-    this.verificar();
+  constructor(private breakpointObserver: BreakpointObserver,
+            private router:Router,
+            public __Data:DataService) {
     this.local=new LocalStorage();
   } 
 
@@ -41,10 +41,10 @@ export class MainNavComponent implements OnInit  {
     }else{
        this.valor=true;
      }
-    
+    this.__Data.notification.subscribe(numero=>{this.verificar();});
     }
+
     verificar(){
-      setInterval(() => {
         this.notificacion=0;
        if(this.local.GetStorage('DataCarrito') != null){
          this.Lista=this.local.GetStorage('DataCarrito');
@@ -52,8 +52,8 @@ export class MainNavComponent implements OnInit  {
            this.notificacion+=this.Lista[i].cantidad
          }
         }
-      }, 1500);
     }
+
     refresh(){
       window.location.replace(window.location.origin);
     }

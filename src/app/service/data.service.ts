@@ -1,6 +1,4 @@
-import { Injectable } from '@angular/core';
-import { LocalStorage } from '../clases/local-storage';
-import { TokenServiceService } from './token-service.service';
+import { EventEmitter, Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +9,8 @@ export class DataService {
   pollo:number=0;
   presa:number=0;
   ver:boolean=false;
-
+  notification = new EventEmitter<number>();
+  
   constructor() { 
   }
 }
