@@ -46,17 +46,6 @@
              style="width: 10%; margin-left: 2%; margin-right: 2%;" (click)="ExportarExcel()" [disabled]="!UserForm.valid">
               <mat-icon>import_export</mat-icon>
             </button>
-            <button mat-mini-fab color="warn"  matTooltip="Agregar nuevos filtros"
-             style="width: 10%; margin-right: 2%;" ([ngModel])="ver" [disabled]="!UserForm.valid">
-              <mat-icon>queue</mat-icon>
-            </button>
-            <section class="example-section" *ngIf="!ver">
-              <mat-slide-toggle
-                  class="example-margin"
-                  color="warn" *ngFor="let filtro of Filtros">
-               {{filtro}}
-              </mat-slide-toggle>
-            </section>
             <button mat-raised-button style="width: 80%;" (click)="ListarVentas()"
             [disabled]="!UserForm.valid">
               Listar
