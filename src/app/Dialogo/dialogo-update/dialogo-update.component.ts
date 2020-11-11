@@ -7,6 +7,8 @@ import { Producto } from 'src/app/clases/productos/producto';
 import { InventarioService } from 'src/app/service/inventario.service';
 import { Inventario } from 'src/app/clases/productos/inventario';
 import { LocalStorage } from 'src/app/clases/local-storage';
+import { AppComponent } from 'src/app/app.component';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -22,7 +24,8 @@ export class DialogoUpdateComponent implements OnInit {
   ListaInventario:Array<Inventario>=new Array();
   local:LocalStorage=new LocalStorage();
   lista:string[]=[];
-  
+  CombInventario:Array<Inventario>;
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data:Inventario,
     private __servicioProduct:ProductoListService,
@@ -31,16 +34,20 @@ export class DialogoUpdateComponent implements OnInit {
   ) { 
     this.UpdateProductForm=this.crearForm(data);
     this.producto=data;
+    this.CombInventario=new Array();
+    this.CargarCombo();
   }
-
+ 
   ngOnInit() {
   }
+  
   crearForm(data){
     if(data.extras!==null){
-      this.lista=data.extras;
+      this.lista.push(data.extras);
     }else{
       this.lista=[];
     }
+
     return new FormGroup({
       nombre: new FormControl(data.productoId.nombre,Validators.required),
       tipo: new FormControl(data.productoId.tipo,Validators.required),
@@ -75,5 +82,30 @@ export class DialogoUpdateComponent implements OnInit {
       });
     }
   }
+  Reiniciar(){
+    this.lista=[];
+    this.mensaje.warning("Restablecio los productos","Advertencia");
+  }
+  ValorCambio($event):void{
+    if($event.checked){
+      this.lista.push(""+$event.source.value);
+    }else if($event.checked===false){
 
+      this.lista.forEach((data:string,i:number)=>{
+        if(data==$event.source.value){
+          this.lista.splice(i,1);
+        }
+      });
+  }
+  }
+
+  CargarCombo(){
+    this.CombInventario=this.local.GetStorage("listaProducto");
+    this.CombInventario.forEach((data,index)=>{
+      if(data.productoId.tipo=='combos'){
+        this.CombInventario.splice(index,1);
+      }
+    });
+    AppComponent.OrdenarData(this.CombInventario);
+}
 }

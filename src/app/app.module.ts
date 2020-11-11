@@ -54,7 +54,6 @@ import { ExportarComponent } from './Dialogo/exportar/exportar.componentes';
     UpdatePolloComponent,
     LastSoldComponent,
     UsuarioComponent
-    
   ],
   entryComponents:[DialogoYesNoComponent,DialogoUpdateComponent,ExportarComponent],
   imports: [

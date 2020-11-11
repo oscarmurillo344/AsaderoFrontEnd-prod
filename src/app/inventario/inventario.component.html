@@ -39,8 +39,10 @@
                   </mat-form-field>
               </mat-card-content>
               <mat-card-actions>
-                <button mat-button (click)="CrearProduct()" [disabled]="!ProductForm.valid" mat-raised-button color="warn" style="width: 100%; text-align: center;" >
-                    Crear</button>
+                <button mat-button (click)="CrearProduct()" [disabled]="!ProductForm.valid" 
+                mat-raised-button color="warn" style="width: 100%; text-align: center;" >
+                    Crear
+                  </button>
               </mat-card-actions>
           </mat-card>
         </mat-tab>
@@ -51,16 +53,17 @@
             Editar y Eliminar
             <mat-icon class="example-tab-icon">delete_forever</mat-icon>
           </ng-template>
-          <mat-card class="container">
-            <mat-card-content >
-              <mat-form-field appearance="standard" style="width: 85%;">
+          <mat-card>
+            <mat-card-content>
+              <mat-form-field appearance="standard" style="width: 100%;">
                <button mat-icon-button matSuffix>
                 <mat-icon>search</mat-icon>
                </button>
                 <mat-label>Buscar</mat-label>
                 <input matInput placeholder="Search" name="filtro" [(ngModel)]="nombreBuscar">                
               </mat-form-field>
-
+            </mat-card-content>
+          </mat-card>
           <table mat-table [dataSource]="ListaInventario | filterInventario:nombreBuscar " class="container">
 
                 <ng-container matColumnDef="Nombre">
@@ -99,9 +102,6 @@
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
               </table>
-              
-            </mat-card-content>
-          </mat-card>
         </mat-tab>
       
       </mat-tab-group>

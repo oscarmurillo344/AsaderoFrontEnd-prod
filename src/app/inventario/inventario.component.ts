@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { ToastrService } from "ngx-toastr";
 import { LocalStorage } from "../clases/local-storage";
@@ -10,6 +10,7 @@ import { InventarioService } from "../service/inventario.service";
 import { Inventario } from '../clases/productos/inventario';
 import { ListaProducto } from '../clases/productos/lista-producto';
 import { AppComponent } from '../app.component';
+import { Subscribable, Subscription } from 'rxjs';
 
 
 @Component({
@@ -18,7 +19,7 @@ import { AppComponent } from '../app.component';
   styleUrls: ['./inventario.component.css']
 })
 
-export class InventarioComponent implements OnInit {
+export class InventarioComponent implements OnInit,OnDestroy {
 
   ProductForm :FormGroup;
   BuscarProductForm: FormGroup;
@@ -29,7 +30,8 @@ export class InventarioComponent implements OnInit {
   nombreBuscar:string;
   displayedColumns: string[] = ['Nombre', 'Cantidad','Editar', 'Eliminar'];
   lista:string[]=[];
-
+  undescribe:Subscription;
+  
   constructor(
     private mensaje:ToastrService,
     public dialog: MatDialog,
@@ -39,10 +41,13 @@ export class InventarioComponent implements OnInit {
       this.ComboInventario=new Array();
       this.cargarCantidad();
       this.__inventarioService.listen().subscribe((m:any)=>{
-        this.cargarCantidad();
+      this.cargarCantidad();
       });
     this.ProductForm=this.createForm();
     this.nombreBuscar='';
+  }
+  ngOnDestroy(): void {
+    this.undescribe.unsubscribe();
   }
 
   ngOnInit() {
@@ -52,7 +57,7 @@ export class InventarioComponent implements OnInit {
   
 
   cargarCantidad(){
-    this.__inventarioService.listarInventartio().subscribe(
+   this.undescribe=this.__inventarioService.listarInventartio().subscribe(
       data=>{
         let da:any=data;
         this.local.SetStorage("listaProducto",data);
@@ -111,10 +116,10 @@ export class InventarioComponent implements OnInit {
       
     }
   }
-  value($event){
+  public value($event){
     this.lista=[];
   }
-  valueChange($event){
+  public valueChange($event){
     if($event.checked){
       this.lista.push($event.source.value);
     }else if($event.checked===false){

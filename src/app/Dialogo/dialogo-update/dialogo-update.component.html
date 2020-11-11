@@ -6,15 +6,27 @@
                 <mat-label>Nombre</mat-label>
                 <input matInput type="text" formControlName="nombre">
               </mat-form-field>
-              <mat-form-field appearance="standard" style="width: 100%;">
+              <mat-form-field appearance="standard" style="width: 100%;" >
                 <mat-label>Selecciona: </mat-label>
                 <mat-select formControlName="tipo" >
                   <mat-option value="platos">plato</mat-option>
                   <mat-option value="bebidas">bebida</mat-option>
                   <mat-option value="combos">combo</mat-option>
                   <mat-option value="porciones">porcion</mat-option>
+                  <mat-option value="mercaderia">mercaderia</mat-option>
                 </mat-select>
               </mat-form-field>
+              <cdk-virtual-scroll-viewport *ngIf="UpdateProductForm.value.tipo === 'combos'" 
+              itemSize="10" class="contenedor mat-elevation-z2">
+              <mat-label style="padding-left: 2%; padding-right: 2%;">Seleccione producto: </mat-label>
+               <button mat-mini-fab color="warn" (click)="Reiniciar()">
+                <mat-icon>restore</mat-icon>
+              </button>
+              <mat-checkbox class="margen" *ngFor="let producto of CombInventario"
+              (change)="ValorCambio($event)" [value]="producto.id" class="margen">
+                   {{ producto.productoId.nombre }}
+              </mat-checkbox> 
+              </cdk-virtual-scroll-viewport>
               <mat-form-field appearance="standard" style="width: 100%;" >
                 <mat-label>Cantidad </mat-label>
                 <input matInput type="number" formControlName="cantidad">
