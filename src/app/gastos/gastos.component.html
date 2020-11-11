@@ -61,18 +61,14 @@
                     </mat-select>
                   </mat-form-field>
 
-                  <mat-form-field appearance="fill" style="width: 47%;">
-                    <mat-label>Selecciona la fecha: </mat-label>
-                    <input matInput [matDatepicker]="picker" formControlName="fecha">
-                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                  </mat-form-field>
-
-                  <mat-form-field appearance="fill" style="width: 47%;margin-left: 2%;">
-                    <mat-label>Selecciona la fecha: </mat-label>
-                    <input matInput [matDatepicker]="picker1" formControlName="fin">
-                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                    <mat-datepicker #picker1></mat-datepicker>
+                  <mat-form-field appearance="fill" style="width: 90%;">
+                    <mat-label>Ingrese rango de fechas: </mat-label>
+                <mat-date-range-input [rangePicker]="picker">
+                  <input matStartDate formControlName="start" placeholder="Start date">
+                  <input matEndDate formControlName="end" placeholder="End date">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
                   </mat-form-field>
 
                   <button mat-raised-button style="width: 100%;" (click)="ListarGastos()"
@@ -85,8 +81,7 @@
 
               <mat-form-field  style="width: 95%; margin-left: 2%; padding-top: 3%;" >
                 <mat-label>filtro por descripci&oacute;n</mat-label>
-                <input matInput (keyup)="applyFilter($event)"
-                #input>
+                <input matInput (keyup)="applyFilter($event)" #input>
               </mat-form-field>
 
    <table *ngIf="complete; else progress" class="mat-elevation-z8" mat-table [dataSource]="dataSource">
@@ -133,6 +128,9 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
 
+                <tr class="mat-row" *matNoDataRow>
+                  <td class="mat-cell" colspan="4">No hay datos encontrados: "{{input.value}}"</td>
+                </tr>
                 </table>
                 <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
                 <ng-template #progress >

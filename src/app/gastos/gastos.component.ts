@@ -54,10 +54,12 @@ export class GastosComponent implements OnInit {
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-    this.getTotalCost();
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+    if(this.dataSource !== undefined){
+      this.dataSource.filter = filterValue.trim().toLowerCase();
+      this.getTotalCost();
+      if (this.dataSource.paginator) {
+        this.dataSource.paginator.firstPage();
+      }
     }
   }
 
@@ -80,8 +82,8 @@ export class GastosComponent implements OnInit {
     return new FormGroup({
       elegir:new FormControl('',Validators.required),
       usuario:new FormControl('',Validators.required),
-      fecha:new FormControl(new Date(),Validators.required),
-      fin:new FormControl(new Date(),Validators.required)
+      start:new FormControl(new Date(),Validators.required),
+      end:new FormControl(new Date(),Validators.required)
 
     });
   }
@@ -112,8 +114,8 @@ export class GastosComponent implements OnInit {
       this.gastox=new GastosX(
         this.tipoForm.value.usuario,
         this.tipoForm.value.elegir,
-        this.tipoForm.value.fecha,
-        this.tipoForm.value.fin
+        this.tipoForm.value.start,
+        this.tipoForm.value.end
       );
       if(this.tipoForm.value.elegir!=='todo' && this.tipoForm.value.usuario!=='todo'){
         this.__GastosService.listarTipoUserFecha(this.gastox).subscribe(data=>{

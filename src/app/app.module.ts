@@ -55,7 +55,6 @@ import { ExportarComponent } from './Dialogo/exportar/exportar.componentes';
     LastSoldComponent,
     UsuarioComponent
   ],
-  entryComponents:[DialogoYesNoComponent,DialogoUpdateComponent,ExportarComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

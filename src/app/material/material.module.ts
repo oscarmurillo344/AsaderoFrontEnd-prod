@@ -22,6 +22,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 const ModuloMaterial=[
   MatSliderModule,
@@ -46,7 +47,8 @@ const ModuloMaterial=[
   MatPaginatorModule,
   MatCheckboxModule,
   MatTooltipModule,
-  ScrollingModule
+  ScrollingModule,
+  MatSlideToggleModule
 ];
 
 @NgModule({

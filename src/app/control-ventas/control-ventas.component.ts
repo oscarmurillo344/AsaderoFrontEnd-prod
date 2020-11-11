@@ -24,7 +24,8 @@ export class ControlVentasComponent implements OnInit {
 
   @ViewChild(MatPaginator,{static:false}) paginator: MatPaginator;
 
-  displayedColumns = ['No', 'Producto', 'Cantidad','Precio'];
+  displayedColumns: string[] = ['No', 'Producto', 'Cantidad','Precio'];
+  columnsToDisplay: string[] = this.displayedColumns.slice();
   dataSource: MatTableDataSource<VentasDay>;
   valor:number;
   vista:boolean;
@@ -34,7 +35,9 @@ export class ControlVentasComponent implements OnInit {
   fechaForm:FormGroup;
   cerrado:boolean;
   complete:boolean;
-  
+  ver:boolean=true;
+  Filtros:string[]=['dia','fecha','hora'];
+
   constructor(
     private usuario:AuthService,
     private factura:PagarService,
@@ -62,6 +65,12 @@ export class ControlVentasComponent implements OnInit {
     start:new FormControl(new Date(),Validators.required),
     end: new FormControl(new Date(),Validators.required)
     });
+  }
+
+  addColumn() {
+    this.ver=false;
+    
+    this.columnsToDisplay.push();
   }
 
   select(event){

@@ -31,23 +31,32 @@
             </mat-form-field>
           </form>
           <form [formGroup]="fechaForm">
-            <mat-form-field appearance="fill" *ngIf="vista" class="cuadro">
-              <mat-label>Selecciona la fecha: </mat-label>
-              <input matInput [matDatepicker]="picker" formControlName="start" >
-              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
+
+            <mat-form-field appearance="fill" *ngIf="vista" style="width: 70%;">
+                <mat-label>Ingrese rango de fechas: </mat-label>
+                <mat-date-range-input [rangePicker]="picker">
+                  <input matStartDate formControlName="start" placeholder="Start date">
+                  <input matEndDate formControlName="end" placeholder="End date">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
             </mat-form-field>
-            
-            <mat-form-field appearance="fill" *ngIf="vista" class="cuadro" >
-              <mat-label>Selecciona la fecha: </mat-label>
-              <input matInput [matDatepicker]="picker" formControlName="end">
-              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
-            <button mat-mini-fab color="warn"  matTooltip="Exportar datos a excel" style="width: 10%; margin-right: 2%;" (click)="ExportarExcel()"
-            [disabled]="!UserForm.valid">
+
+            <button mat-mini-fab color="warn"  matTooltip="Exportar datos a excel"
+             style="width: 10%; margin-left: 2%; margin-right: 2%;" (click)="ExportarExcel()" [disabled]="!UserForm.valid">
               <mat-icon>import_export</mat-icon>
             </button>
+            <button mat-mini-fab color="warn"  matTooltip="Agregar nuevos filtros"
+             style="width: 10%; margin-right: 2%;" ([ngModel])="ver" [disabled]="!UserForm.valid">
+              <mat-icon>queue</mat-icon>
+            </button>
+            <section class="example-section" *ngIf="!ver">
+              <mat-slide-toggle
+                  class="example-margin"
+                  color="warn" *ngFor="let filtro of Filtros">
+               {{filtro}}
+              </mat-slide-toggle>
+            </section>
             <button mat-raised-button style="width: 80%;" (click)="ListarVentas()"
             [disabled]="!UserForm.valid">
               Listar
@@ -83,9 +92,10 @@
         <td mat-footer-cell *matFooterCellDef> {{valor | currency}} </td>
       </ng-container>
   
-      <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-header-row *matHeaderRowDef="columnsToDisplay;"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+      <tr mat-footer-row *matFooterRowDef="columnsToDisplay; sticky: true"></tr>
+
 
     </table>
     <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>

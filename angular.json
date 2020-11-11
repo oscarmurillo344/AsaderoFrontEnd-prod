@@ -129,5 +129,8 @@
       }
     }
   },
-  "defaultProject": "SistemaVentasApp"
+  "defaultProject": "SistemaVentasApp",
+  "cli": {
+    "analytics": "35047ea5-f641-4e20-9d91-ba72c981dbad"
+  }
 }

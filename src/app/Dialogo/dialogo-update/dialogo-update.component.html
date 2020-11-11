@@ -18,7 +18,9 @@
               </mat-form-field>
               <cdk-virtual-scroll-viewport *ngIf="UpdateProductForm.value.tipo === 'combos'" 
               itemSize="10" class="contenedor mat-elevation-z2">
-              <mat-label style="padding-left: 2%; padding-right: 2%;">Seleccione producto: </mat-label>
+              <mat-label style="padding-left: 2%; padding-right: 2%;">
+                Seleccione producto: 
+              </mat-label>
                <button mat-mini-fab color="warn" (click)="Reiniciar()">
                 <mat-icon>restore</mat-icon>
               </button>
