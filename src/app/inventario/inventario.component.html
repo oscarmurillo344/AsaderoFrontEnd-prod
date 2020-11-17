@@ -53,18 +53,7 @@
             Editar y Eliminar
             <mat-icon class="example-tab-icon">delete_forever</mat-icon>
           </ng-template>
-          <mat-card>
-            <mat-card-content>
-              <mat-form-field appearance="standard" style="width: 100%;">
-               <button mat-icon-button matSuffix>
-                <mat-icon>search</mat-icon>
-               </button>
-                <mat-label>Buscar</mat-label>
-                <input matInput placeholder="Search" name="filtro" [(ngModel)]="nombreBuscar">                
-              </mat-form-field>
-            </mat-card-content>
-          </mat-card>
-          <table mat-table [dataSource]="ListaInventario | filterInventario:nombreBuscar " class="container">
+          <table mat-table [dataSource]="ListaInventario | filterInventario:filtro"  class="container">
 
                 <ng-container matColumnDef="Nombre">
                   <th mat-header-cell *matHeaderCellDef> Nombre </th>
@@ -101,6 +90,9 @@
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+               <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">No hay datos encontrados: "{{filtro}}"</td>
+              </tr>
               </table>
         </mat-tab>
       

@@ -23,6 +23,8 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatGridListModule} from '@angular/material/grid-list';
+
 
 const ModuloMaterial=[
   MatSliderModule,
@@ -48,7 +50,8 @@ const ModuloMaterial=[
   MatCheckboxModule,
   MatTooltipModule,
   ScrollingModule,
-  MatSlideToggleModule
+  MatSlideToggleModule,
+  MatGridListModule
 ];
 
 @NgModule({

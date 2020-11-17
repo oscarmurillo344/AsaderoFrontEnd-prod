@@ -21,7 +21,6 @@ import { InterceptorService } from './interceptor/interceptor.service';
 import { ProductoListService } from "./service/producto-list.service";
 import {  ProductoService} from "./guard/producto.service";
 import { InventarioComponent } from './inventario/inventario.component';
-import { FilterPipe } from './Pipe/filter';
 import { DialogoYesNoComponent } from './Dialogo/dialogo-yes-no/dialogo-yes-no.component';
 import { DialogoUpdateComponent } from './Dialogo/dialogo-update/dialogo-update.component';
 import { FilterInventario } from './Pipe/filtroInventario';
@@ -44,7 +43,6 @@ import { ExportarComponent } from './Dialogo/exportar/exportar.componentes';
     SystemCarComponent,
     ControlVentasComponent,
     InventarioComponent,
-    FilterPipe,
     DialogoYesNoComponent,
     DialogoUpdateComponent,
     ExportarComponent,

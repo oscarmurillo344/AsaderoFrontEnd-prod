@@ -8,9 +8,9 @@ import { DialogoUpdateComponent } from '../Dialogo/dialogo-update/dialogo-update
 import { Producto } from '../clases/productos/producto';
 import { InventarioService } from "../service/inventario.service";
 import { Inventario } from '../clases/productos/inventario';
-import { ListaProducto } from '../clases/productos/lista-producto';
 import { AppComponent } from '../app.component';
-import { Subscribable, Subscription } from 'rxjs';
+import {  Subscription } from 'rxjs';
+import { MatTableDataSource } from '@angular/material/table';
 
 
 @Component({
@@ -23,22 +23,23 @@ export class InventarioComponent implements OnInit,OnDestroy {
 
   ProductForm :FormGroup;
   BuscarProductForm: FormGroup;
-  ListaInventario:Array<Inventario>;
+  ListaInventario:MatTableDataSource<Inventario>;
   ComboInventario:Array<Inventario>;
-  local:LocalStorage=new LocalStorage();
+  local:LocalStorage;
   product:Producto;
   nombreBuscar:string;
   displayedColumns: string[] = ['Nombre', 'Cantidad','Editar', 'Eliminar'];
   lista:string[]=[];
   undescribe:Subscription;
-  
+  filtro:string='';
+
   constructor(
     private mensaje:ToastrService,
     public dialog: MatDialog,
     private __inventarioService:InventarioService
     ) { 
-      this.ListaInventario=new Array();
       this.ComboInventario=new Array();
+      this.local=new LocalStorage();
       this.cargarCantidad();
       this.__inventarioService.listen().subscribe((m:any)=>{
       this.cargarCantidad();
@@ -53,18 +54,22 @@ export class InventarioComponent implements OnInit,OnDestroy {
   ngOnInit() {
     
   }
- 
   
+  aplicarFiltro(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    if(this.ListaInventario !== undefined){
+      this.ListaInventario.filter = filterValue.trim().toLowerCase();
+    }
+  }
 
   cargarCantidad(){
    this.undescribe=this.__inventarioService.listarInventartio().subscribe(
       data=>{
         let da:any=data;
-        this.local.SetStorage("listaProducto",data);
+        this.ListaInventario=new MatTableDataSource(da);
+        this.local.SetStorage("listaProducto",da);
         this.CargarCombo();
-        this.ListaInventario=da;
-        AppComponent.OrdenarData(this.ListaInventario);
-        this.ListaInventario
+        AppComponent.OrdenarData(this.ListaInventario.filteredData);
       });
        
   }
@@ -133,15 +138,15 @@ export class InventarioComponent implements OnInit,OnDestroy {
   }
 
   public Editar(index):void{
-    this.dialog.open(DialogoUpdateComponent,{data:this.ListaInventario[index]});
+    this.dialog.open(DialogoUpdateComponent,{data:this.ListaInventario.data[index]});
   }
 
   public Eliminar(index):void{
     let resultado=this.dialog.open(DialogoYesNoComponent,
-      {data:{nombre:this.ListaInventario[index].productoId.nombre,titulo:'producto'}});
+      {data:{nombre:this.ListaInventario.filteredData[index].productoId.nombre,titulo:'producto'}});
    resultado.afterClosed().subscribe(result=>{
     if(result=='true'){
-        this.__inventarioService.EliminarInventario(this.ListaInventario[index].id).subscribe(data =>{
+        this.__inventarioService.EliminarInventario(this.ListaInventario.filteredData[index].id).subscribe(data =>{
         this.mensaje.success(data.mensaje,"Exitoso");
        this.cargarCantidad();
       },error =>{

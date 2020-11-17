@@ -2,13 +2,13 @@
   <div *ngIf="complete; else progress">
     <mat-form-field appearance="standard" style="width: 95%; margin-left: 2%;" >
       <mat-label>Buscar</mat-label>
-      <input matInput type="text" name="buscar" [(ngModel)]="buscar">
+      <input matInput type="text" name="buscar" [(ngModel)]="buscar" (keyup)="aplicarFilter()">
     </mat-form-field>
 
     <mat-tab-group mat-stretch-tabs mat-align-tabs="center">
 
       <mat-tab label="Platos"> 
-        <table mat-table [dataSource]="platos | filter:buscar " style="width: 100%;">
+        <table mat-table [dataSource]="platos2" style="width: 100%;">
 
           <ng-container matColumnDef="agregar" >
             <th mat-header-cell *matHeaderCellDef> </th>
@@ -52,7 +52,7 @@
         </table>
       </mat-tab>
       <mat-tab label="Bebidas"> 
-        <table mat-table [dataSource]="bebidas | filter:buscar " style="width: 100%;">
+        <table mat-table [dataSource]="bebidas2" style="width: 100%;">
 
           <ng-container matColumnDef="agregar">
             <th mat-header-cell *matHeaderCellDef> </th>
@@ -89,11 +89,13 @@
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">No hay datos encontrados: "{{buscar}}"</td>
+          </tr>
         </table>
       </mat-tab>
       <mat-tab label="Combos">
-        <table mat-table [dataSource]="combos | filter:buscar " style="width: 100%;">
+        <table mat-table [dataSource]="combos2" style="width: 100%;">
 
           <ng-container matColumnDef="agregar">
             <th mat-header-cell *matHeaderCellDef> </th>
@@ -130,11 +132,13 @@
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">No hay datos encontrados: "{{buscar}}"</td>
+          </tr>
         </table>
       </mat-tab>
       <mat-tab label="Porciones">
-        <table mat-table [dataSource]="porciones | filter:buscar " style="width: 100%;">
+        <table mat-table [dataSource]="porciones2" style="width: 100%;">
 
           <ng-container matColumnDef="agregar">
             <th mat-header-cell *matHeaderCellDef> </th>
@@ -171,7 +175,9 @@
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">No hay datos encontrados: "{{buscar}}"</td>
+          </tr>
         </table>
       </mat-tab>
     </mat-tab-group>

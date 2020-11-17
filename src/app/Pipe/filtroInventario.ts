@@ -10,9 +10,9 @@ export class FilterInventario implements PipeTransform{
     transform(value: any, args: string):any {
         if(args === '' || args.length < 2)return value;
         const restult=[];
-        for(const post of value){
-            if(post.productoId.nombre.toLowerCase().indexOf(args.toLowerCase()) > -1){
-            restult.push(post);
+        for(let i=0;i < value.filteredData.length;i++){
+            if(value.filteredData[i].productoId.nombre.toLowerCase().indexOf(args.toLowerCase()) > -1){
+            restult.push(value.filteredData[i]);
             }
         }
         return restult;

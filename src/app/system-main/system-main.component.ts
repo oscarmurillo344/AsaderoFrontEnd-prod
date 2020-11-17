@@ -10,6 +10,8 @@ import { DataService } from '../service/data.service';
 import { updatePollo } from '../clases/productos/updatePollo';
 import { AppComponent } from '../app.component';
 import { Subscription } from 'rxjs';
+import {MatTableDataSource} from '@angular/material/table';
+import { Directionality } from '@angular/cdk/bidi';
 
 
 
@@ -20,6 +22,10 @@ import { Subscription } from 'rxjs';
 })
 export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
 
+  platos2:MatTableDataSource<ListaProducto>;
+  bebidas2:MatTableDataSource<ListaProducto>;
+  combos2:MatTableDataSource<ListaProducto>;
+  porciones2:MatTableDataSource<ListaProducto>;
   platos:Array<ListaProducto>;
   bebidas:Array<ListaProducto>;
   combos:Array<ListaProducto>;
@@ -34,15 +40,16 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
   roles:string[];
   tokens:string;
   unsuscribir:Subscription;
-
+ 
   constructor(private mensaje:ToastrService,
               private navegacion:Router,
               private __servicioPro:InventarioService,
               private token:TokenServiceService,
-              private __data:DataService
+              private __data:DataService,
+              dir: Directionality
               ) 
   {
-      this.platos=new Array();
+     this.platos=new Array();
       this.bebidas=new Array();
       this.combos=new Array();
       this.porciones=new Array();
@@ -53,7 +60,6 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
       this.roles=this.token.getAuth();
       this.tokens=this.token.getToken();
       this.__data.nombreUsuario=this.token.getUser();
-      
     }
   ngOnDestroy(): void {
     this.unsuscribir.unsubscribe();
@@ -67,6 +73,7 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
            this.__data.ver=true;
           }
         }); 
+        this.__data.notification.emit(1);
       });
     }
 
@@ -94,10 +101,25 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
      },error=>{
        this.local.SetStorage("pollos",new updatePollo(0,0));
      });
-
   }
 
-  llenarListas()
+  aplicarFilter():void{
+    const filterValue=this.buscar;
+    if(this.platos2!==undefined){
+      this.platos2.filter=filterValue.trim().toLowerCase();
+    }
+    if(this.bebidas2!==undefined){
+      this.bebidas2.filter=filterValue.trim().toLowerCase();
+    }
+    if(this.combos2!==undefined){
+      this.combos2.filter=filterValue.trim().toLowerCase();
+    }
+    if(this.porciones2!==undefined){
+      this.porciones2.filter=filterValue.trim().toLowerCase();
+    }
+  }
+
+  llenarListas():void
   {
     this.productLista=this.local.GetStorage("listaProducto");
     if(this.productLista){
@@ -118,7 +140,7 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
     }
   }
 
-  llenarTabla(data:any){
+  llenarTabla(data:any):void{
     for (let index = 0; index < this.productLista.length ;index++) {
       switch (data[index].productoId.tipo) {
         case 'platos':
@@ -175,9 +197,14 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
           break;
       }        
     }
+    this.platos2=new MatTableDataSource(this.platos);
+    this.bebidas2=new MatTableDataSource(this.bebidas);
+    this.combos2=new MatTableDataSource(this.combos);
+    this.porciones2==new MatTableDataSource(this.porciones);
+
   }
 
-  sumar(val,plato){
+  sumar(val,plato):void{
 
      switch (plato) {
        case 'platos':
@@ -196,43 +223,43 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
     
 
   }
-  restar(val,pla){
+  restar(val,pla):void{
     switch (pla) {
       case 'platos':
-        if(this.platos[val].cantidad > 1){
-          this.platos[val].cantidad--; 
+        if(this.platos2.filteredData[val].cantidad > 1){
+          this.platos2.filteredData[val].cantidad--; 
         }
         break;
       case 'bebidas':
-        if(this.bebidas[val].cantidad > 1){
-          this.bebidas[val].cantidad--; 
+        if(this.bebidas2.filteredData[val].cantidad > 1){
+          this.bebidas2.filteredData[val].cantidad--; 
         }
       break;
       case 'combos':
-        if(this.combos[val].cantidad > 1){
-          this.combos[val].cantidad--;
+        if(this.combos2.filteredData[val].cantidad > 1){
+          this.combos2.filteredData[val].cantidad--;
         }
         
        break;
        case 'porciones':
-         if(this.porciones[val].cantidad > 1){
-          this.porciones[val].cantidad--; 
+         if(this.porciones2.filteredData[val].cantidad > 1){
+          this.porciones2.filteredData[val].cantidad--; 
         }
          break;
           }
   }
 
-  AgregarCarrito(index,tipo){
+  AgregarCarrito(index,tipo):void{
 
     switch (tipo) {
       case 'platos': 
           if(this.verificar(index,tipo)){
-            this.carrito.push(this.platos[index]);
+            this.carrito.push(this.platos2.filteredData[index]);
           }
           if(this.platos[index].cantidadExiste <= 0){
-            this.mensaje.warning('Actualice inventario de'+this.platos[index].nombre,'Advertencia');
+            this.mensaje.warning('Actualice inventario de '+this.platos2.filteredData[index].nombre,'Advertencia');
           }else{
-            this.mensaje.success('Se agrego '+this.platos[index].nombre+' al carrito','Exitoso');
+            this.mensaje.success('Se agrego '+this.platos2.filteredData[index].nombre+' al carrito','Exitoso');
           }
         
                 
@@ -240,37 +267,37 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
     
       case 'bebidas':
         if(this.verificar(index,tipo)){
-          this.carrito.push(this.bebidas[index]);
+          this.carrito.push(this.bebidas2.filteredData[index]);
         }
-        if(this.bebidas[index].cantidadExiste <= 0){
-          this.mensaje.warning('Actualice inventario de'+this.bebidas[index].nombre,'Advertencia');
+        if(this.bebidas2.filteredData[index].cantidadExiste <= 0){
+          this.mensaje.warning('Actualice inventario de '+this.bebidas2.filteredData[index].nombre,'Advertencia');
         }else{
-          this.mensaje.success('Se agrego '+this.bebidas[index].nombre+' al carrito','Exitoso');
+          this.mensaje.success('Se agrego '+this.bebidas2.filteredData[index].nombre+' al carrito','Exitoso');
         }     
         
         break;
 
       case 'combos':
         if(this.verificar(index,tipo)){
-          this.carrito.push(this.combos[index]);
+          this.carrito.push(this.combos2.filteredData[index]);
         }
 
-        if(this.combos[index].cantidadExiste <= 0){
-          this.mensaje.warning('Actualice inventario de'+this.combos[index].nombre,'Advertencia');
+        if(this.combos2.filteredData[index].cantidadExiste <= 0){
+          this.mensaje.warning('Actualice inventario de '+this.combos2.filteredData[index].nombre,'Advertencia');
         }else{
-          this.mensaje.success('Se agrego '+this.combos[index].nombre+' al carrito','Exitoso');
+          this.mensaje.success('Se agrego '+this.combos2.filteredData[index].nombre+' al carrito','Exitoso');
         }
         break;
 
         case 'porciones':
           if(this.verificar(index,tipo)){
-            this.carrito.push(this.porciones[index]);
+            this.carrito.push(this.porciones2.filteredData[index]);
           }
 
-          if(this.porciones[index].cantidadExiste <= 0){
-            this.mensaje.warning('Actualice inventario de'+this.porciones[index].nombre,'Advertencia');
+          if(this.porciones2.filteredData[index].cantidadExiste <= 0){
+            this.mensaje.warning('Actualice inventario de '+this.porciones2.filteredData[index].nombre,'Advertencia');
           }else{
-            this.mensaje.success('Se agrego '+this.porciones[index].nombre+' al carrito','Exitoso');
+            this.mensaje.success('Se agrego '+this.porciones2.filteredData[index].nombre+' al carrito','Exitoso');
           }
           break;
     }
@@ -285,8 +312,8 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
       switch (tipo) {
         case 'platos':
           this.carrito.forEach(car => {
-           if(car.nombre===this.platos[i].nombre){
-             car.cantidad+=this.platos[i].cantidad;
+           if(car.nombre===this.platos2.filteredData[i].nombre){
+             car.cantidad+=this.platos2.filteredData[i].cantidad;
              val=false;
              this.local.SetStorage('DataCarrito',this.carrito);
            }
@@ -295,8 +322,8 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
       
         case 'bebidas':
      this.carrito.forEach(car => {
-      if(car.nombre===this.bebidas[i].nombre){
-        car.cantidad+=this.bebidas[i].cantidad;
+      if(car.nombre===this.bebidas2.filteredData[i].nombre){
+        car.cantidad+=this.bebidas2.filteredData[i].cantidad;
         val=false;
         this.local.SetStorage('DataCarrito',this.carrito);
       }
@@ -305,8 +332,8 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
   
           case 'combos':
             this.carrito.forEach(car => {
-              if(car.nombre===this.combos[i].nombre){
-                car.cantidad+=this.combos[i].cantidad;
+              if(car.nombre===this.combos2.filteredData[i].nombre){
+                car.cantidad+=this.combos2.filteredData[i].cantidad;
                 val=false;
                 this.local.SetStorage('DataCarrito',this.carrito);
               }
@@ -314,8 +341,8 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
              break;
           case 'porciones':
             this.carrito.forEach(car => {
-              if(car.nombre===this.porciones[i].nombre){
-                car.cantidad+=this.porciones[i].cantidad;
+              if(car.nombre===this.porciones2.filteredData[i].nombre){
+                car.cantidad+=this.porciones2.filteredData[i].cantidad;
                 val=false;
                 this.local.SetStorage('DataCarrito',this.carrito);
               }

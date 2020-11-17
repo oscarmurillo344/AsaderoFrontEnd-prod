@@ -11,6 +11,9 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatDialog} from '@angular/material/dialog';
 import { ExportarComponent } from '../Dialogo/exportar/exportar.componentes';
+import { GastosService } from '../service/gastos.service';
+import { GastosX } from '../clases/gasto/gastosX';
+import { Gastos } from '../clases/gasto/gastos';
 
 
 
@@ -23,29 +26,36 @@ import { ExportarComponent } from '../Dialogo/exportar/exportar.componentes';
 export class ControlVentasComponent implements OnInit {
 
   @ViewChild(MatPaginator,{static:false}) paginator: MatPaginator;
+  @ViewChild(MatPaginator,{static:false}) paginator2: MatPaginator;
 
   displayedColumns: string[] = ['No', 'Producto', 'Cantidad','Precio'];
-  columnsToDisplay: string[] = this.displayedColumns.slice();
+  displayedColumn2: string[] = ['No', 'tipo', 'valor','descripcion','eliminar'];
   dataSource: MatTableDataSource<VentasDay>;
-  valor:number;
+  dataSources: MatTableDataSource<Gastos>;
+  tipoForm:FormGroup;
+  valor:number=0;
+  valorGasto:number=0;
+  selected:number=0;
   vista:boolean;
-  user:Array<NuevoUsuario>
+  user:Array<NuevoUsuario>;
   fechas:EntreFecha;
   UserForm:FormGroup;
   fechaForm:FormGroup;
   cerrado:boolean;
   complete:boolean;
   ver:boolean=true;
-  Filtros:string[]=['dia','fecha','hora'];
+  gastosx:GastosX;
 
   constructor(
     private usuario:AuthService,
-    private factura:PagarService,
+    private __factura:PagarService,
+    private __gastos:GastosService,
     private toast:ToastrService,
     public dialogo:MatDialog
   ) { 
     this.UserForm=this.crearFormMain();
     this.fechaForm=this.crearFormSecond();
+    this.tipoForm=this.crearFormThree();
     this.user=new Array();
     this.usuario.ListarUsuario().subscribe(data=>{
       let lista:any=data
@@ -66,12 +76,19 @@ export class ControlVentasComponent implements OnInit {
     end: new FormControl(new Date(),Validators.required)
     });
   }
+  crearFormThree(){
+    return new FormGroup({
+      elegir:new FormControl('',Validators.required),
+      usuario:new FormControl('',Validators.required),
+      start:new FormControl(new Date(),Validators.required),
+      end:new FormControl(new Date(),Validators.required)
 
-  addColumn() {
-    this.ver=false;
-    
-    this.columnsToDisplay.push();
+    });
   }
+
+  cambiar(){
+    this.selected=this.selected+1;
+  } 
 
   select(event){
     if(event=='semanas'){
@@ -114,8 +131,8 @@ export class ControlVentasComponent implements OnInit {
     if(this.UserForm.valid){
       this.cerrado=false;
       this.complete=false;
-      if (this.UserForm.value.Seleccion === 'dia') {
-          this.factura.TotalDay(this.UserForm.value.usuario).subscribe(data=>{
+      if (this.UserForm.value.Seleccion === 'dia' && this.UserForm.value.usuario != 'todos') {
+          this.__factura.TotalDay(this.UserForm.value.usuario).subscribe(data=>{
             let d:any=data;
             this.dataSource=new MatTableDataSource(d);
             this.inicializarPaginator();
@@ -140,7 +157,7 @@ export class ControlVentasComponent implements OnInit {
             this.fechaForm.value.end)
 
            if(this.UserForm.value.usuario != 'todos'){
-            this.factura.TotalFechasUser(this.fechas).subscribe(data=>{
+            this.__factura.TotalFechasUser(this.fechas).subscribe(data=>{
               let d:any=data;
               this.dataSource=new MatTableDataSource(d);
               this.inicializarPaginator();
@@ -158,7 +175,7 @@ export class ControlVentasComponent implements OnInit {
               }
               );
            }else{
-            this.factura.TotalFechas(this.fechas).subscribe(data=>{
+            this.__factura.TotalFechas(this.fechas).subscribe(data=>{
               let d:any=data;
               this.dataSource=new MatTableDataSource(d);
               this.inicializarPaginator();
@@ -176,10 +193,114 @@ export class ControlVentasComponent implements OnInit {
               }
               );
            }
-        }
-        
+        }  
+      }
+      this.ListarGastos();
+    }
+  }
+
+  ListarGastos():void{
+    this.gastosx=new GastosX
+    (this.UserForm.value.usuario,
+                              '',
+      this.fechaForm.value.start,
+      this.fechaForm.value.end);
+      this.valorGasto=0;
+    if(this.UserForm.value.usuario!=='todos'){
+      this.__gastos.listarUserFecha(this.gastosx).subscribe(data=>{
+        let datos:any=data;
+        this.dataSources=new MatTableDataSource(datos);
+        this.inicializarPaginator2();
+        this.getTotalCostos();
+      });
+    }else if(this.UserForm.value.usuario==='todos'){
+      this.__gastos.listarFecha(this.gastosx).subscribe(data=>{
+        let datos:any=data;
+        this.dataSources=new MatTableDataSource(datos);
+        this.inicializarPaginator2();
+        this.getTotalCostos();
+      });
+    }
+  }
+
+  ListarGastos2(){
+    if (this.tipoForm.valid){
+      this.complete=false;
+      this.cerrado=false;
+      this.gastosx=new GastosX(
+        this.tipoForm.value.usuario,
+        this.tipoForm.value.elegir,
+        this.tipoForm.value.start,
+        this.tipoForm.value.end
+      );
+      if(this.tipoForm.value.elegir!=='todo' && this.tipoForm.value.usuario!=='todo'){
+        this.__gastos.listarTipoUserFecha(this.gastosx).subscribe(data=>{
+          let datos:any=data;
+          this.dataSources=new MatTableDataSource(datos);
+          this.inicializarPaginator2();
+          this.getTotalCostos();
+          this.complete=true;
+          this.cerrado=undefined;
+        });
+      }else if(this.tipoForm.value.elegir==='todo' && this.tipoForm.value.usuario!=='todo'){
+        this.__gastos.listarUserFecha(this.gastosx).subscribe(data=>{
+          let datos:any=data;
+          this.dataSources=new MatTableDataSource(datos);
+          this.inicializarPaginator2();
+          this.getTotalCostos();
+          this.complete=true;
+          this.cerrado=undefined;
+        });
+      }else if(this.tipoForm.value.elegir==='todo' && this.tipoForm.value.usuario==='todo'){
+        this.__gastos.listarFecha(this.gastosx).subscribe(data=>{
+          let datos:any=data;
+          this.dataSources=new MatTableDataSource(datos);
+          this.inicializarPaginator2();
+          this.getTotalCostos();
+          this.complete=true;
+          this.cerrado=undefined; 
+        });
+      }
+     }
+  }
+  
+  Eliminar(i){
+    let id=this.dataSources.data[i].id;
+    this.dataSources.data.splice(i,1);
+    this.__gastos.Eliminar(id).subscribe(data=>{
+      this.toast.success(data.mensaje,"Exitoso");
+      this.inicializarPaginator();
+      this.getTotalCost();
+    },error=>{
+      if(error.error.mensaje===undefined){
+        this.toast.error("Error en la consulta","Error");
+      }else{
+        this.toast.error(error.error.mensaje,"Error");
+      }
+    });
+  }
+  
+  inicializarPaginator2() {
+    this.dataSources.paginator = this.paginator2;
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    if(this.dataSources !== undefined){
+      this.dataSources.filter = filterValue.trim().toLowerCase();
+      this.getTotalCostos();
+      if (this.dataSources.paginator) {
+        this.dataSources.paginator.firstPage();
       }
     }
   }
 
+  getTotalCostos(){
+    this.valorGasto=0;
+    this.dataSources.filteredData.forEach(ele => {
+      this.valorGasto=this.valorGasto+ele.valor;
+    } );
+  }
+
+  
 }
