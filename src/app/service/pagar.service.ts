@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Factura } from '../clases/factura/factura';
 import { Mensaje } from '../clases/mensaje';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { VentasDay } from '../clases/VentasDay';
 import { EntreFecha } from '../clases/factura/EntreFecha';
 import { environment } from 'src/environments/environment';
@@ -14,7 +14,7 @@ import { environment } from 'src/environments/environment';
 export class PagarService {
 
   pagarURL=environment.url+"factura/";
-
+  
   constructor(private http:HttpClient) { }
 
   public pagar(newProduct:Factura): Observable<Mensaje>{
@@ -44,5 +44,6 @@ export class PagarService {
   public TotalFechas(Fecha:EntreFecha):Observable<VentasDay>{
     return this.http.post<VentasDay>(this.pagarURL+'totalfecha',Fecha);
   }
+
 
 }

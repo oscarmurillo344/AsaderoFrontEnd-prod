@@ -33,6 +33,7 @@ import { UsuarioComponent } from './usuario/usuario.component';
 import { FilterArray } from './Pipe/filterArray';
 import { ExcelExportService } from './service/excel-export.service';
 import { ExportarComponent } from './Dialogo/exportar/exportar.componentes';
+import { TablegastosComponent } from './control-ventas/tablegastos/tablegastos.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { ExportarComponent } from './Dialogo/exportar/exportar.componentes';
     GastosComponent,
     UpdatePolloComponent,
     LastSoldComponent,
-    UsuarioComponent
+    UsuarioComponent,
+    TablegastosComponent
   ],
   imports: [
     BrowserModule,
