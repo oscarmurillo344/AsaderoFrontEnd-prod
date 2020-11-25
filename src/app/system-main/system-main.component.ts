@@ -9,9 +9,10 @@ import { TokenServiceService } from '../service/token-service.service';
 import { DataService } from '../service/data.service';
 import { updatePollo } from '../clases/productos/updatePollo';
 import { AppComponent } from '../app.component';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import {MatTableDataSource} from '@angular/material/table';
 import { Directionality } from '@angular/cdk/bidi';
+import { takeUntil } from 'rxjs/operators';
 
 
 
@@ -39,17 +40,16 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
   displayedColumns:string[] = ['agregar', 'Nombre', 'sumar'];
   roles:string[];
   tokens:string;
-  unsuscribir:Subscription;
+  private unsuscribir = new Subject<void>();
  
   constructor(private mensaje:ToastrService,
               private navegacion:Router,
               private __servicioPro:InventarioService,
               private token:TokenServiceService,
               private __data:DataService,
-              dir: Directionality
               ) 
   {
-     this.platos=new Array();
+      this.platos=new Array();
       this.bebidas=new Array();
       this.combos=new Array();
       this.porciones=new Array();
@@ -62,7 +62,8 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
       this.__data.nombreUsuario=this.token.getUser();
     }
   ngOnDestroy(): void {
-    this.unsuscribir.unsubscribe();
+    this.unsuscribir.next();
+    this.unsuscribir.complete();
   }
    
     ngAfterViewInit() {
@@ -88,7 +89,9 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
     }else{
       this.navegacion.navigate(['/inicio',{}]);
     }
-    this.unsuscribir=this.__servicioPro.listarpollo().subscribe(data=>{
+    this.__servicioPro.listarpollo().
+    pipe( takeUntil(this.unsuscribir))
+    .subscribe(data=>{
       if(data.pollo!==undefined){
        this.__data.pollo=data.pollo;
        this.__data.presa=data.presa;
@@ -127,7 +130,9 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
       this.llenarTabla(this.productLista);
       this.complete=true;
     }else{  
-    this.__servicioPro.listarInventartio().subscribe(data => {
+    this.__servicioPro.listarInventartio().
+    pipe( takeUntil(this.unsuscribir))
+    .subscribe(data => {
       this.local.SetStorage("listaProducto",data);
      this.productLista=this.local.GetStorage("listaProducto");
      this.llenarTabla(this.productLista);

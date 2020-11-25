@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { updatePollo } from '../clases/productos/updatePollo';
@@ -7,19 +7,22 @@ import { InventarioService } from '../service/inventario.service';
 import { LocalStorage } from "../clases/local-storage";
 import { Router } from '@angular/router';
 import { Inventario } from '../clases/productos/inventario';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-update-pollo',
   templateUrl: './update-pollo.component.html',
   styleUrls: ['./update-pollo.component.css']
 })
-export class UpdatePolloComponent implements OnInit {
+export class UpdatePolloComponent implements OnInit, OnDestroy {
 
   PollosForm:FormGroup;
   update:updatePollo;
   update2:updatePollo;
   local:LocalStorage;
   productLista:Array<Inventario>=new Array();
+  undescriber=new Subject<void>();
   constructor(
     private __serviceinven:InventarioService,
     private toast:ToastrService,
@@ -29,6 +32,11 @@ export class UpdatePolloComponent implements OnInit {
   { 
 this.PollosForm=this.crearForm();
 this.local=new LocalStorage();
+  }
+
+  ngOnDestroy(): void {
+    this.undescriber.next();
+    this.undescriber.complete();
   }
 
   ngOnInit() {
@@ -53,13 +61,17 @@ this.local=new LocalStorage();
             id=data.id;
           }
         });
-        this.__serviceinven.UpdatePollo(id,this.update).subscribe(data=>{
+        this.__serviceinven.UpdatePollo(id,this.update).
+        pipe( takeUntil(this.undescriber)).
+        subscribe(data=>{
           this.datas.pollo+=this.PollosForm.value.pollo;
           this.datas.presa+=this.PollosForm.value.presa;
           this.update2=new updatePollo(this.datas.pollo,this.datas.presa);
           this.toast.success(data.mensaje,"Exitoso");
           this.PollosForm.reset();
-          this.__serviceinven.TablePollo(this.update2).subscribe(data=>{
+          this.__serviceinven.TablePollo(this.update2).
+          pipe( takeUntil(this.undescriber)).
+          subscribe(data=>{
             this.route.navigate(["/inicio"]);
           });
         },error=>{
@@ -70,7 +82,9 @@ this.local=new LocalStorage();
           }
         });
       }else{
-        this.__serviceinven.TablePollo(this.update).subscribe(data=>{
+        this.__serviceinven.TablePollo(this.update).
+        pipe( takeUntil(this.undescriber)). // liberando memoria
+        subscribe(data=>{
           this.route.navigate(["/inicio"]);
         });
         this.datas.pollo=this.PollosForm.value.pollo;

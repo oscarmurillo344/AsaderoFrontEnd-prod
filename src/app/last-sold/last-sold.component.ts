@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Factura } from '../clases/factura/factura';
 import { PagarService } from '../service/pagar.service';
 
@@ -9,12 +11,14 @@ import { PagarService } from '../service/pagar.service';
   templateUrl: './last-sold.component.html',
   styleUrls: ['./last-sold.component.css']
 })
-export class LastSoldComponent implements OnInit {
+export class LastSoldComponent implements OnInit ,OnDestroy{
 
   ListaFactura:Array<Factura>=new Array();;
   displayedColumns=['Nombre','Cantidad','Fecha','Hora'];
   numeroFact:number=0;
   bloqueo:boolean;
+  private unsuscribir = new Subject<void>();
+
   constructor(
     private __servicioPago:PagarService,
     private toast:ToastrService,
@@ -26,9 +30,15 @@ export class LastSoldComponent implements OnInit {
   ngOnInit() {
   }
 
+  ngOnDestroy(): void {
+    this.unsuscribir.next();
+    this.unsuscribir.complete();
+  }
   buscar(){
     if(this.numeroFact!==0){
-      this.__servicioPago.listar(this.numeroFact).subscribe(
+      this.__servicioPago.listar(this.numeroFact)
+      .pipe(takeUntil(this.unsuscribir))
+      .subscribe(
         data=>{
             let da:any=data;
             if(da.mensaje===undefined){
@@ -54,7 +64,9 @@ export class LastSoldComponent implements OnInit {
 
   Eliminar(){
     if(this.numeroFact!==0){
-      this.__servicioPago.eliminar(this.numeroFact).subscribe(data=>{
+      this.__servicioPago.eliminar(this.numeroFact)
+      .pipe(takeUntil(this.unsuscribir))
+      .subscribe(data=>{
         this.toast.success(data.mensaje,"Exitoso");
         this.bloqueo=false;
         this.route.navigate(["/inicio"]);

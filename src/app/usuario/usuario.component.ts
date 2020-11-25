@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { NuevoUsuario } from '../clases/usuarios/nuevoUsuario';
 import { UsuariosService } from '../service/usuarios.service';
 import {MatDialog} from '@angular/material/dialog';
 import { DialogoYesNoComponent } from '../Dialogo/dialogo-yes-no/dialogo-yes-no.component';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 
 
 @Component({
@@ -12,13 +15,15 @@ import { DialogoYesNoComponent } from '../Dialogo/dialogo-yes-no/dialogo-yes-no.
   templateUrl: './usuario.component.html',
   styleUrls: ['./usuario.component.css']
 })
-export class UsuarioComponent implements OnInit {
+export class UsuarioComponent implements OnInit,OnDestroy {
 
   UsuarioForm:FormGroup;
   ListaUsuario:Array<NuevoUsuario>;
   displayedColumns=['nombre','usuario','roles','Eliminar'];
   User:NuevoUsuario;
   hide:boolean=true;
+  private unsuscribir = new Subject<void>();
+
   constructor(private __serviceUser:UsuariosService,
               private toast:ToastrService,
               public dialog: MatDialog) { 
@@ -29,6 +34,10 @@ export class UsuarioComponent implements OnInit {
 
   ngOnInit() {
     this.listarUser();
+  }
+  ngOnDestroy(): void {
+    this.unsuscribir.next();
+    this.unsuscribir.complete();
   }
 
   crearForm(){
@@ -42,7 +51,9 @@ export class UsuarioComponent implements OnInit {
   }
 
   listarUser(){
-    this.__serviceUser.ListaUser().subscribe(data=>{
+    this.__serviceUser.ListaUser().
+    pipe(takeUntil(this.unsuscribir)).
+    subscribe(data=>{
       let datas:any=data;
       if(datas!==undefined){
         this.ListaUsuario=datas;
@@ -69,7 +80,9 @@ export class UsuarioComponent implements OnInit {
           ['user',this.UsuarioForm.value.tipo]
         );
       }
-      this.__serviceUser.nuevoUser(this.User).subscribe(data=>{
+      this.__serviceUser.nuevoUser(this.User).
+      pipe(takeUntil(this.unsuscribir))
+      .subscribe(data=>{
         let da:any=data;
         if(da.mensaje!==undefined){
           this.toast.success(data.mensaje,"Exitoso");
@@ -99,7 +112,9 @@ export class UsuarioComponent implements OnInit {
       {data:{nombre:this.ListaUsuario[i].nombre,titulo:'usuario'}});
         resultado.afterClosed().subscribe(data=>{
           if(data==='true'){
-            this.__serviceUser.EliminarUser(this.ListaUsuario[i].id).subscribe(data=>{
+            this.__serviceUser.EliminarUser(this.ListaUsuario[i].id).
+            pipe(takeUntil(this.unsuscribir)).
+            subscribe(data=>{
               this.toast.success(data.mensaje,"Exitoso");
               this.listarUser();
             },error=>{

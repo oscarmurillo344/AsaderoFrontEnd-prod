@@ -59,8 +59,8 @@ import { TablegastosComponent } from './control-ventas/tablegastos/tablegastos.c
     BrowserModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot({
-      timeOut:2500,
-      positionClass:'toast-bottom-right',
+      timeOut:2000,
+      positionClass:'toast-top-center',
       preventDuplicates:false
     }),
     MaterialModule,

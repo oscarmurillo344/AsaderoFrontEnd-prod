@@ -1,4 +1,4 @@
-import { Component, OnInit,Inject } from '@angular/core';
+import { Component, OnInit,Inject, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {MAT_DIALOG_DATA  } from  '@angular/material/dialog';
 import { ProductoListService } from 'src/app/service/producto-list.service';
@@ -8,7 +8,8 @@ import { InventarioService } from 'src/app/service/inventario.service';
 import { Inventario } from 'src/app/clases/productos/inventario';
 import { LocalStorage } from 'src/app/clases/local-storage';
 import { AppComponent } from 'src/app/app.component';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -16,7 +17,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './dialogo-update.component.html',
   styleUrls: ['./dialogo-update.component.css']
 })
-export class DialogoUpdateComponent implements OnInit {
+export class DialogoUpdateComponent implements OnInit,OnDestroy {
 
   UpdateProductForm: FormGroup;
   producto:Inventario;
@@ -25,6 +26,7 @@ export class DialogoUpdateComponent implements OnInit {
   local:LocalStorage=new LocalStorage();
   lista:string[]=[];
   CombInventario:Array<Inventario>;
+  private unsuscribir = new Subject<void>();
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data:Inventario,
@@ -40,7 +42,12 @@ export class DialogoUpdateComponent implements OnInit {
  
   ngOnInit() {
   }
-  
+
+  ngOnDestroy(): void {
+    this.unsuscribir.next();
+    this.unsuscribir.complete();
+  }
+
   crearForm(data){
     if(data.extras!==null){
       this.lista.push(data.extras);
@@ -63,12 +70,15 @@ export class DialogoUpdateComponent implements OnInit {
       this.pro=new Producto(id,
         this.UpdateProductForm.value.nombre,this.UpdateProductForm.value.tipo,
         this.UpdateProductForm.value.precio,this.UpdateProductForm.value.presa);
-      this.__servicioProduct.ActualizarProducto(id,this.pro).subscribe(date=>{
+       this.__servicioProduct.ActualizarProducto(id,this.pro)
+      //.pipe( takeUntil(this.unsuscribir))
+      .subscribe(date=>{
         this.__servicioInventario.UpdateInventario(idd,
           new Inventario(null,
           this.lista.toString(),
           this.UpdateProductForm.value.cantidad,
           this.UpdateProductForm.value.cantidad))
+          .pipe( takeUntil(this.unsuscribir))
           .subscribe(re=>{
             this.mensaje.success(date.mensaje+' e '+re.mensaje,"Exitoso");
             this.__servicioInventario.filter('Register click');

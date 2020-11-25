@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LocalStorage } from "../clases/local-storage";
 import { ListaProducto } from "../clases/productos/lista-producto";
 import { PagarService } from '../service/pagar.service';
@@ -11,13 +11,15 @@ import { Router } from '@angular/router';
 import { updatePollo } from '../clases/productos/updatePollo';
 import { InventarioService } from '../service/inventario.service';
 import { DataService } from '../service/data.service';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-system-car',
   templateUrl: './system-car.component.html',
   styleUrls: ['./system-car.component.css']
 })
-export class SystemCarComponent implements OnInit {
+export class SystemCarComponent implements OnInit,OnDestroy {
 
    local:LocalStorage;
    total:number;
@@ -29,6 +31,7 @@ export class SystemCarComponent implements OnInit {
    contador:number;
   polloMerca:updatePollo;
   bloqueo:boolean;
+  private unsuscribir = new Subject<void>();
 
   constructor(private __servicioPagar:PagarService, 
     private mensaje:ToastrService,
@@ -44,12 +47,19 @@ export class SystemCarComponent implements OnInit {
    }
 
   ngOnInit() {
-    this.__servicioPagar.maximoValor().subscribe(data=>{
+    this.__servicioPagar.maximoValor()
+    .pipe(takeUntil(this.unsuscribir))
+    .subscribe(data=>{
       this.numeroFactura=data;
       this.numeroFactura+=1;
      },error=>{
        console.log(error)
      });
+  }
+
+  ngOnDestroy(): void {
+    this.unsuscribir.next();
+    this.unsuscribir.complete();
   }
 
   public Facturar(){
@@ -72,7 +82,9 @@ export class SystemCarComponent implements OnInit {
               this.lista[index].precio,this.lista[index].presa),
             this.lista[index].cantidad,
             this.lista[index].extra);
-          this.__servicioPagar.pagar(this.factura).subscribe(data=>{
+          this.__servicioPagar.pagar(this.factura)
+          .pipe(takeUntil(this.unsuscribir))
+          .subscribe(data=>{
             this.mms=data;
             //validacion de pollos y presas con la vista
             count=this.lista[index].presa*this.lista[index].cantidad;

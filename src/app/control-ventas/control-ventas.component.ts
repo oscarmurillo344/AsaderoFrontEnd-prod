@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { AuthService } from '../service/auth.service';
 import { PagarService } from '../service/pagar.service';
@@ -13,7 +13,8 @@ import { ExportarComponent } from '../Dialogo/exportar/exportar.componentes';
 import { GastosX } from '../clases/gasto/gastosX';
 import { GastosService } from '../service/gastos.service';
 import { Gastos } from '../clases/gasto/gastos';
-import { error } from 'protractor';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-control-ventas',
@@ -21,7 +22,7 @@ import { error } from 'protractor';
   styleUrls: ['./control-ventas.component.css']
 })
 
-export class ControlVentasComponent implements OnInit  {
+export class ControlVentasComponent implements OnInit,OnDestroy  {
 
   @ViewChild(MatPaginator,{static:false}) paginatorVentas: MatPaginator;
   gastoData:MatTableDataSource<Gastos>;
@@ -37,6 +38,7 @@ export class ControlVentasComponent implements OnInit  {
   complete:boolean=true;
   gastosX:GastosX;
   valorGasto:number=0;
+  private unsuscribir = new Subject<void>();
 
   constructor(
     private usuario:AuthService,
@@ -77,7 +79,10 @@ export class ControlVentasComponent implements OnInit  {
   }
   ngOnInit() {
   }
- 
+  ngOnDestroy(): void {
+    this.unsuscribir.next();
+    this.unsuscribir.complete();
+  }
     inicializarPaginatorVentas():void{
       setTimeout(()=>this.DataVentas.paginator=this.paginatorVentas);
     }
@@ -95,7 +100,9 @@ export class ControlVentasComponent implements OnInit  {
           element.precio=element.cantidad*element.precio;
         });
         let respuesta=this.dialogo.open(ExportarComponent,{data:array});
-        respuesta.afterClosed().subscribe(data=>{
+        respuesta.afterClosed().
+        pipe( takeUntil(this.unsuscribir)).
+        subscribe(data=>{
           if(data==="true"){
             respuesta.close();
           }
@@ -110,7 +117,9 @@ export class ControlVentasComponent implements OnInit  {
       this.cerrado=false;
       this.complete=false;
       if (this.UserForm.value.Seleccion === 'dia' && this.UserForm.value.usuario != 'todos') {
-          this.__factura.TotalDay(this.UserForm.value.usuario).subscribe(data=>{
+          this.__factura.TotalDay(this.UserForm.value.usuario).
+          pipe( takeUntil(this.unsuscribir)).
+          subscribe(data=>{
             let d:any=data;
             this.DataVentas=new MatTableDataSource(d);
             this.inicializarPaginatorVentas();
@@ -135,7 +144,9 @@ export class ControlVentasComponent implements OnInit  {
             this.UserForm.value.end)
 
            if(this.UserForm.value.usuario != 'todos'){
-            this.__factura.TotalFechasUser(this.fechas).subscribe(data=>{
+            this.__factura.TotalFechasUser(this.fechas).
+            pipe( takeUntil(this.unsuscribir)).
+            subscribe(data=>{
               let d:any=data;
               this.DataVentas=new MatTableDataSource(d);
               this.inicializarPaginatorVentas();
@@ -153,7 +164,9 @@ export class ControlVentasComponent implements OnInit  {
               }
               );
            }else{
-            this.__factura.TotalFechas(this.fechas).subscribe(data=>{
+            this.__factura.TotalFechas(this.fechas).
+            pipe( takeUntil(this.unsuscribir))
+            .subscribe(data=>{
               let d:any=data;
               this.DataVentas=new MatTableDataSource(d);
               this.inicializarPaginatorVentas();
@@ -186,7 +199,9 @@ export class ControlVentasComponent implements OnInit  {
       this.UserForm.value.end
     );
     if(this.UserForm.value.usuario === 'todos'){
-      this.__gastos.listarFecha(this.gastosX).subscribe((gasto:Gastos)=>{
+      this.__gastos.listarFecha(this.gastosX).
+      pipe( takeUntil(this.unsuscribir)).
+      subscribe((gasto:Gastos)=>{
       let data:any=gasto;
       this.gastoData= new MatTableDataSource(data);
       this.getTotalGastos(data);
@@ -195,7 +210,9 @@ export class ControlVentasComponent implements OnInit  {
         console.log(error)
       });
     }else if(this.UserForm.value.usuario !== 'todos'){
-      this.__gastos.listarUserFecha(this.gastosX).subscribe((gasto:Gastos)=>{
+      this.__gastos.listarUserFecha(this.gastosX).
+      pipe( takeUntil(this.unsuscribir)).
+      subscribe((gasto:Gastos)=>{
         let data:any=gasto;
         this.gastoData= new MatTableDataSource(data);
         this.getTotalGastos(data);

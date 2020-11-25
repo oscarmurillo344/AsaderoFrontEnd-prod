@@ -1,17 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {FormControl,FormGroup, Validators} from '@angular/forms';
 import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { TokenServiceService } from "../service/token-service.service";
 import { AuthService } from "../service/auth.service";
 import { LoginUsuario } from '../clases/usuarios/loginUsuario';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit,OnDestroy {
 
 
   UserForm: FormGroup;
@@ -20,6 +22,7 @@ export class LoginComponent implements OnInit {
   roles:string[]=[];
   loginusu:LoginUsuario;
   completar:boolean;
+  private unsuscribir = new Subject<void>();
   
   constructor(private route:Router,private mensaje:ToastrService, 
     private token:TokenServiceService,private Servicio_login:AuthService) 
@@ -34,7 +37,10 @@ export class LoginComponent implements OnInit {
       contrasena: new FormControl('',Validators.required)
      });
    }
-
+   ngOnDestroy(): void {
+    this.unsuscribir.next();
+    this.unsuscribir.complete();
+  }
   ngOnInit() {
     if(this.token.getToken()){
       this.roles=this.token.getAuth();
@@ -46,7 +52,9 @@ export class LoginComponent implements OnInit {
     if(this.UserForm.valid){
       this.completar=false;
     this.loginusu=new LoginUsuario(this.minuscula(this.UserForm.value.usuario),this.UserForm.value.contrasena);
-    this.Servicio_login.LogIn(this.loginusu).subscribe(
+    this.Servicio_login.LogIn(this.loginusu)
+    .pipe(takeUntil(this.unsuscribir))
+    .subscribe(
       data =>{
         this.Validar=false;
         this.token.setToken(data.token);

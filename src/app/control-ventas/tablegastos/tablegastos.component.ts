@@ -1,9 +1,11 @@
-import { Component, OnInit,ViewChild,Input} from '@angular/core';
+import { Component, OnInit,ViewChild,Input, OnDestroy} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Gastos } from 'src/app/clases/gasto/gastos';
 import { GastosX } from 'src/app/clases/gasto/gastosX';
 import { NuevoUsuario } from 'src/app/clases/usuarios/nuevoUsuario';
@@ -14,7 +16,7 @@ import { GastosService } from 'src/app/service/gastos.service';
   templateUrl: './tablegastos.component.html',
   styleUrls: ['./tablegastos.component.css']
 })
-export class TablegastosComponent implements OnInit {
+export class TablegastosComponent implements OnInit,OnDestroy {
 
   @ViewChild(MatPaginator,{static:false}) paginatorGastos:MatPaginator;
   @Input()  DataGastos: MatTableDataSource<Gastos>;
@@ -25,7 +27,7 @@ export class TablegastosComponent implements OnInit {
   complete:boolean;
   tipoForm:FormGroup;
   gastosx:GastosX;
-  
+  private unsuscribir = new Subject<void>();
 
   constructor(
     private __gastos:GastosService,
@@ -41,6 +43,11 @@ export class TablegastosComponent implements OnInit {
    }
 
   ngOnInit(): void {
+  }
+
+  ngOnDestroy(): void {
+    this.unsuscribir.next();
+    this.unsuscribir.complete();
   }
 
   crearFormThree():FormGroup{
@@ -87,7 +94,9 @@ export class TablegastosComponent implements OnInit {
         this.tipoForm.value.end
       );
       if(this.tipoForm.value.elegir !== 'todo' && this.tipoForm.value.usuario !=='todo'){
-        this.__gastos.listarTipoUserFecha(this.gastosx).subscribe(data=>{
+        this.__gastos.listarTipoUserFecha(this.gastosx).
+        pipe( takeUntil(this.unsuscribir)).
+        subscribe(data=>{
           let datos:any=data;
           this.DataGastos=new MatTableDataSource(datos);
           this.inicializarPaginatorGastos();
@@ -96,7 +105,9 @@ export class TablegastosComponent implements OnInit {
           this.cerrado=undefined;
         });
       }else if(this.tipoForm.value.elegir ==='todo' && this.tipoForm.value.usuario !=='todo'){
-        this.__gastos.listarUserFecha(this.gastosx).subscribe(data=>{
+        this.__gastos.listarUserFecha(this.gastosx).
+        pipe( takeUntil(this.unsuscribir)).
+        subscribe(data=>{
           let datos:any=data;
           this.DataGastos=new MatTableDataSource(datos);
           this.inicializarPaginatorGastos();
@@ -105,7 +116,9 @@ export class TablegastosComponent implements OnInit {
           this.cerrado=undefined;
         });
       }else if(this.tipoForm.value.elegir==='todo' && this.tipoForm.value.usuario==='todo'){
-        this.__gastos.listarFecha(this.gastosx).subscribe(data=>{
+        this.__gastos.listarFecha(this.gastosx).
+        pipe( takeUntil(this.unsuscribir))
+        .subscribe(data=>{
           let datos:any=data;
           this.DataGastos=new MatTableDataSource(datos);
           this.inicializarPaginatorGastos();
@@ -114,7 +127,9 @@ export class TablegastosComponent implements OnInit {
           this.cerrado=undefined; 
         });
       }else if(this.tipoForm.value.elegir !=='todo' && this.tipoForm.value.usuario==='todo'){
-        this.__gastos.ListarTipoFecha(this.gastosx).subscribe(data=>{
+        this.__gastos.ListarTipoFecha(this.gastosx).
+        pipe( takeUntil(this.unsuscribir)).
+        subscribe(data=>{
           let datos:any=data;
           this.DataGastos=new MatTableDataSource(datos);
           this.inicializarPaginatorGastos();
@@ -136,7 +151,9 @@ export class TablegastosComponent implements OnInit {
     }
     let id=this.DataGastos.filteredData[nuevo].id;
     this.DataGastos.filteredData.splice(nuevo,1);
-    this.__gastos.Eliminar(id).subscribe(data=>{
+    this.__gastos.Eliminar(id).
+    pipe( takeUntil(this.unsuscribir)).
+    subscribe(data=>{
       this.toast.success(data.mensaje,"Exitoso");
       this.inicializarPaginatorGastos();
       this.getTotalCostosGastos();

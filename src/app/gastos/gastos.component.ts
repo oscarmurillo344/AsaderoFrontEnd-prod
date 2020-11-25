@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Gastos } from '../clases/gasto/gastos';
@@ -7,13 +7,15 @@ import { GastosService } from '../service/gastos.service';
 import { NuevoUsuario } from '../clases/usuarios/nuevoUsuario';
 import { TokenServiceService } from '../service/token-service.service';
 import { GastosX } from '../clases/gasto/gastosX';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-gastos',
   templateUrl: './gastos.component.html',
   styleUrls: ['./gastos.component.css']
 })
-export class GastosComponent implements OnInit {
+export class GastosComponent implements OnInit,OnDestroy {
 
   GastoForm:FormGroup;
   gasto:Gastos;
@@ -21,10 +23,10 @@ export class GastosComponent implements OnInit {
   cerrado:boolean;
   gastox:GastosX;
   complete:boolean;
+  private unsuscribir = new Subject<void>();
 
   constructor(private __GastosService:GastosService,
     private toast:ToastrService,
-    private usuario:AuthService,
     private token:TokenServiceService)
      { 
     this.GastoForm=this.crearForm();
@@ -34,6 +36,10 @@ export class GastosComponent implements OnInit {
   ngOnInit() {
   }
 
+  ngOnDestroy(): void {
+    this.unsuscribir.next();
+    this.unsuscribir.complete();
+  }
   
   crearForm(){
     return new FormGroup({
@@ -50,7 +56,9 @@ export class GastosComponent implements OnInit {
       this.gasto=new Gastos(this.GastoForm.value.tipo,
         this.GastoForm.value.valor,this.token.getUser(),
         this.GastoForm.value.descrip);
-      this.__GastosService.Ingresar(this.gasto).subscribe(data=>{
+      this.__GastosService.Ingresar(this.gasto).
+      pipe( takeUntil(this.unsuscribir))
+      .subscribe(data=>{
         this.toast.success(data.mensaje,"Exito");
         this.GastoForm.reset();
       },error=>{
