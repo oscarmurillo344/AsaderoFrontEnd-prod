@@ -43,7 +43,9 @@ export class InventarioComponent implements OnInit,OnDestroy {
       this.ComboInventario=new Array();
       this.local=new LocalStorage();
       this.cargarCantidad();
-      this.__inventarioService.listen().subscribe((m:any)=>{
+      this.__inventarioService.listen().pipe(
+        takeUntil(this.unsuscribir)
+      ).subscribe((m:any)=>{
       this.cargarCantidad();
       });
     this.ProductForm=this.createForm();

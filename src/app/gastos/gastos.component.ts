@@ -1,10 +1,8 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Gastos } from '../clases/gasto/gastos';
-import { AuthService } from '../service/auth.service';
 import { GastosService } from '../service/gastos.service';
-import { NuevoUsuario } from '../clases/usuarios/nuevoUsuario';
 import { TokenServiceService } from '../service/token-service.service';
 import { GastosX } from '../clases/gasto/gastosX';
 import { Subject } from 'rxjs';

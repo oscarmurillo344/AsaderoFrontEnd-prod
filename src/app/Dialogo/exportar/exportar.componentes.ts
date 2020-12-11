@@ -6,19 +6,16 @@ import { ExcelExportService } from 'src/app/service/excel-export.service';
 
 @Component({
   selector: 'app-exportar',
-  templateUrl: './exportar.component.html',
-  styleUrls: ['./exportar.component.css']
+  templateUrl: './exportar.component.html'
 })
 export class ExportarComponent implements OnInit {
-
-
-  Filename:string;
+  Filename:string='';
   datos:any[];
+  
   constructor(
     @Inject(MAT_DIALOG_DATA) public data:any[],
     private excelexport:ExcelExportService,
     private toast:ToastrService) {
-      this.Filename='';
       this.datos=data;
      }
 

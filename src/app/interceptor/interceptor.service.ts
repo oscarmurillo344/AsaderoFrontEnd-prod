@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent,HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { TokenServiceService } from '../service/token-service.service';
-import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -13,8 +12,6 @@ export class InterceptorService implements HttpInterceptor {
   constructor(private token:TokenServiceService,private route:Router) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    
-
     let intreq = req;
    const token =this.token.getToken();
 
@@ -28,5 +25,4 @@ export class InterceptorService implements HttpInterceptor {
    }
    return next.handle(intreq);
   }
-
 }

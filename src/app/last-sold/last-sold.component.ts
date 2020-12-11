@@ -8,8 +8,7 @@ import { PagarService } from '../service/pagar.service';
 
 @Component({
   selector: 'app-last-sold',
-  templateUrl: './last-sold.component.html',
-  styleUrls: ['./last-sold.component.css']
+  templateUrl: './last-sold.component.html'
 })
 export class LastSoldComponent implements OnInit ,OnDestroy{
 

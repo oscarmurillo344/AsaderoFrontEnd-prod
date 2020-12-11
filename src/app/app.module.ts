@@ -23,7 +23,6 @@ import {  ProductoService} from "./guard/producto.service";
 import { InventarioComponent } from './inventario/inventario.component';
 import { DialogoYesNoComponent } from './Dialogo/dialogo-yes-no/dialogo-yes-no.component';
 import { DialogoUpdateComponent } from './Dialogo/dialogo-update/dialogo-update.component';
-import { FilterInventario } from './Pipe/filtroInventario';
 import { GastosComponent } from './gastos/gastos.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
@@ -47,7 +46,6 @@ import { TablegastosComponent } from './control-ventas/tablegastos/tablegastos.c
     DialogoYesNoComponent,
     DialogoUpdateComponent,
     ExportarComponent,
-    FilterInventario,
     FilterArray,
     GastosComponent,
     UpdatePolloComponent,

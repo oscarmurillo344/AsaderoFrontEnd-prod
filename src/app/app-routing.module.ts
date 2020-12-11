@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule,ExtraOptions,PreloadAllModules } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from "../app/login/login.component";
 import { SystemMainComponent } from "./system-main/system-main.component";
 import { SystemCarComponent } from "./system-car/system-car.component";
@@ -34,12 +34,12 @@ const routes: Routes =
   {path:'**', component:LoginComponent}
 ];
 
-const config:ExtraOptions={
+/**const config:ExtraOptions={
   preloadingStrategy:PreloadAllModules
-}
+}**/
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes,config)],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

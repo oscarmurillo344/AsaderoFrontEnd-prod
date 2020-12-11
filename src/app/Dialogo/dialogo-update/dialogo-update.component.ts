@@ -8,7 +8,7 @@ import { InventarioService } from 'src/app/service/inventario.service';
 import { Inventario } from 'src/app/clases/productos/inventario';
 import { LocalStorage } from 'src/app/clases/local-storage';
 import { AppComponent } from 'src/app/app.component';
-import { Subject, Subscription } from 'rxjs';
+import { Subject} from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 
