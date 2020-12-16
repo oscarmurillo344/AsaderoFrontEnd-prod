@@ -50,8 +50,7 @@ const ModuloMaterial=[
   MatCheckboxModule,
   MatTooltipModule,
   ScrollingModule,
-  MatSlideToggleModule,
-  MatGridListModule
+  MatSlideToggleModule
 ];
 
 @NgModule({

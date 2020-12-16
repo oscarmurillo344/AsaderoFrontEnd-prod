@@ -157,7 +157,7 @@ export class SystemCarComponent implements OnInit,OnDestroy {
       }
     }
 
-    went(){
+    wentLastControl(){
       this.route.navigate(["/lastsold"]);
     }
 }
