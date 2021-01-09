@@ -4,7 +4,7 @@ import { Mensaje } from '../clases/mensaje';
 import { Gastos } from '../clases/gasto/gastos';
 import { Observable, Subject } from 'rxjs';
 import { GastosX } from "../clases/gasto/gastosX";
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
 
 
 

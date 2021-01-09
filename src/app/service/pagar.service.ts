@@ -5,7 +5,7 @@ import { Mensaje } from '../clases/mensaje';
 import { Observable, Subject } from 'rxjs';
 import { VentasDay } from '../clases/VentasDay';
 import { EntreFecha } from '../clases/factura/EntreFecha';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
 
 
 @Injectable({
