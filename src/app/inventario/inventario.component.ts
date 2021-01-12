@@ -13,7 +13,6 @@ import {  Subject, Subscription } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { takeUntil } from 'rxjs/operators';
 
-
 @Component({
   selector: 'app-inventario',
   templateUrl: './inventario.component.html',
@@ -21,7 +20,6 @@ import { takeUntil } from 'rxjs/operators';
 })
 
 export class InventarioComponent implements OnInit,OnDestroy {
-
   ProductForm :FormGroup;
   BuscarProductForm: FormGroup;
   ListaInventario:MatTableDataSource<Inventario>;
@@ -57,7 +55,6 @@ export class InventarioComponent implements OnInit,OnDestroy {
   }
 
   ngOnInit() {
-    
   }
   
   aplicarFiltro(event: Event) {
@@ -176,4 +173,5 @@ export class InventarioComponent implements OnInit,OnDestroy {
    });
     
   }
+
 }

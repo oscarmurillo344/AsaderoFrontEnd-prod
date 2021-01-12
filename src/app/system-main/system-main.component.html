@@ -3,7 +3,7 @@
     <mat-tab-group mat-stretch-tabs mat-align-tabs="center">
 
       <mat-tab label="Platos"> 
-        <table mat-table [dataSource]="platos2" style="width: 100%;">
+        <table mat-table [dataSource]="platos" style="width: 100%;">
 
           <ng-container matColumnDef="agregar" >
             <th mat-header-cell *matHeaderCellDef> </th>
@@ -31,7 +31,7 @@
               </button>
 
               <input matInput [(ngModel)]="element.cantidad" disabled 
-              type="number" class="count" min="1" pattern="^[0-9]+">
+              type="number" class="count">
 
               <button  mat-mini-fab color="primary" (click)="sumar(i,element.tipo)">
                 <mat-icon>add</mat-icon>
@@ -40,14 +40,10 @@
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-          <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="4">No hay datos encontrados: "{{buscar}}"</td>
-          </tr>
         </table>
       </mat-tab>
       <mat-tab label="Bebidas"> 
-        <table mat-table [dataSource]="bebidas2" style="width: 100%;">
+        <table mat-table [dataSource]="bebidas" style="width: 100%;">
 
           <ng-container matColumnDef="agregar">
             <th mat-header-cell *matHeaderCellDef> </th>
@@ -75,7 +71,7 @@
               </button>
 
               <input matInput [(ngModel)]="element.cantidad" 
-              disabled type="number" class="count" min="1" pattern="^[0-9]+">
+              disabled type="number" class="count">
 
               <button  mat-mini-fab color="primary" (click)="sumar(i,element.tipo)">
                 <mat-icon>add</mat-icon>
@@ -84,13 +80,10 @@
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="4">No hay datos encontrados: "{{buscar}}"</td>
-          </tr>
         </table>
       </mat-tab>
       <mat-tab label="Combos">
-        <table mat-table [dataSource]="combos2" style="width: 100%;">
+        <table mat-table [dataSource]="combos" style="width: 100%;">
 
           <ng-container matColumnDef="agregar">
             <th mat-header-cell *matHeaderCellDef> </th>
@@ -118,7 +111,7 @@
               </button>
 
               <input matInput [(ngModel)]="element.cantidad" 
-              disabled type="number" class="count" min="1" pattern="^[0-9]+">
+              disabled type="number" class="count">
 
               <button  mat-mini-fab color="primary" (click)="sumar(i,element.tipo)">
                 <mat-icon>add</mat-icon>
@@ -127,13 +120,10 @@
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="4">No hay datos encontrados: "{{buscar}}"</td>
-          </tr>
         </table>
       </mat-tab>
       <mat-tab label="Porciones">
-        <table mat-table [dataSource]="porciones2" style="width: 100%;">
+        <table mat-table [dataSource]="porciones" style="width: 100%;">
 
           <ng-container matColumnDef="agregar">
             <th mat-header-cell *matHeaderCellDef> </th>
@@ -161,7 +151,7 @@
               </button>
 
               <input matInput [(ngModel)]="element.cantidad" 
-              disabled type="number" class="count" min="1" pattern="^[0-9]+">
+              disabled type="number" class="count">
 
               <button  mat-mini-fab color="primary" (click)="sumar(i,element.tipo)">
                 <mat-icon>add</mat-icon>
@@ -170,9 +160,6 @@
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="4">No hay datos encontrados: "{{buscar}}"</td>
-          </tr>
         </table>
       </mat-tab>
     </mat-tab-group>

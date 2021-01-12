@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy} from '@angular/core';
+import { Component, OnInit, AfterViewInit , OnDestroy} from '@angular/core';
 import { ListaProducto } from "../clases/productos/lista-producto";
 import { LocalStorage } from "../clases/local-storage";
 import { ToastrService } from "ngx-toastr";
@@ -10,8 +10,6 @@ import { DataService } from '../service/data.service';
 import { updatePollo } from '../clases/productos/updatePollo';
 import { AppComponent } from '../app.component';
 import { Subject } from 'rxjs';
-import {MatTableDataSource} from '@angular/material/table';
-import { Directionality } from '@angular/cdk/bidi';
 import { takeUntil } from 'rxjs/operators';
 
 
@@ -51,7 +49,7 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
     this.unsuscribir.complete();
   }
    
-    ngAfterViewInit() {
+  ngAfterViewInit() {
       setTimeout(() => {
         this.__data.ver=false;
         this.roles.forEach(data=>{
@@ -71,10 +69,10 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
     this.carrito=new Array();
     this.productLista=new Array();
     this.local=new LocalStorage();
-    this.llenarListas();
     this.roles=this.token.getAuth();
     this.tokens=this.token.getToken();
     this.__data.nombreUsuario=this.token.getUser();
+    this.llenarListas();
     if(this.local.GetStorage('DataCarrito')){
       this.carrito=this.local.GetStorage('DataCarrito');
     }
