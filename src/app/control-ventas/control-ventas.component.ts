@@ -3,7 +3,7 @@ import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { AuthService } from '../service/auth.service';
 import { PagarService } from '../service/pagar.service';
 import { NuevoUsuario } from '../clases/usuarios/nuevoUsuario';
-import { VentasDay } from '../clases/VentasDay';
+import { VentasDay } from '../clases/factura/VentasDay';
 import { ToastrService } from 'ngx-toastr';
 import { EntreFecha } from '../clases/factura/EntreFecha';
 import {MatPaginator} from '@angular/material/paginator';
@@ -201,10 +201,9 @@ export class ControlVentasComponent implements OnInit,OnDestroy  {
     if(this.UserForm.value.usuario === 'todos'){
       this.__gastos.listarFecha(this.gastosX).
       pipe( takeUntil(this.unsuscribir)).
-      subscribe((gasto:Gastos)=>{
-      let data:any=gasto;
-      this.gastoData= new MatTableDataSource(data);
-      this.getTotalGastos(data);
+      subscribe((gasto:any)=>{
+      this.gastoData= new MatTableDataSource(gasto);
+      this.getTotalGastos(gasto);
       this.__gastos.filter("accion");
       },error=>{
         console.log(error)
@@ -212,10 +211,9 @@ export class ControlVentasComponent implements OnInit,OnDestroy  {
     }else if(this.UserForm.value.usuario !== 'todos'){
       this.__gastos.listarUserFecha(this.gastosX).
       pipe( takeUntil(this.unsuscribir)).
-      subscribe((gasto:Gastos)=>{
-        let data:any=gasto;
-        this.gastoData= new MatTableDataSource(data);
-        this.getTotalGastos(data);
+      subscribe((gasto:any)=>{
+        this.gastoData= new MatTableDataSource(gasto);
+        this.getTotalGastos(gasto);
         this.__gastos.filter("accion");
       },error=>{
         console.log(error)

@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { NuevoUsuario } from "../clases/usuarios/nuevoUsuario";
 import { LoginUsuario } from "../clases/usuarios/loginUsuario";
 import { Observable } from 'rxjs';
-import { jwtDTO } from '../clases/jwt-to';
+import { jwtDTO } from '../clases/token/jwt-to';
 import { environment } from 'src/environments/environment.prod';
 
 @Injectable({

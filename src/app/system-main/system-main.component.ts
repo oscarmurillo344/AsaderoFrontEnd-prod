@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit , OnDestroy} from '@angular/core';
 import { ListaProducto } from "../clases/productos/lista-producto";
-import { LocalStorage } from "../clases/local-storage";
+import { LocalStorage } from "../clases/token/local-storage";
 import { ToastrService } from "ngx-toastr";
 import { Router } from "@angular/router";
 import { InventarioService } from '../service/inventario.service';

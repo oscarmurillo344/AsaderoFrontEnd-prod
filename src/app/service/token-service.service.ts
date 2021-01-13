@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LocalStorage } from "../clases/local-storage";
+import { LocalStorage } from "../clases/token/local-storage";
 
 const  TOKEN_KEY="AuthToken";
 const  USERNAME_KEY="AuthUserName";

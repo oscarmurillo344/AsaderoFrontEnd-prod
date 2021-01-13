@@ -34,15 +34,16 @@ export class TablegastosComponent implements OnInit,OnDestroy {
     private toast:ToastrService,
     public dialogo:MatDialog
   ) {
+
+   }
+
+  ngOnInit(): void {
     this.tipoForm=this.crearFormThree();
     this.complete=true;
     this.__gastos.listen().subscribe(data=>{
       this.inicializarPaginatorGastos();
       this.getTotalCostosGastos();
     });
-   }
-
-  ngOnInit(): void {
   }
 
   ngOnDestroy(): void {
@@ -60,7 +61,7 @@ export class TablegastosComponent implements OnInit,OnDestroy {
     });
   }
   inicializarPaginatorGastos():void {
-   setTimeout(()=> this.DataGastos.paginator = this.paginatorGastos );
+   setTimeout(()=> this.DataGastos.paginator = this.paginatorGastos);
   }
 
   applyFilter(event: Event):void{

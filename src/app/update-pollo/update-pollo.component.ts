@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { updatePollo } from '../clases/productos/updatePollo';
 import { DataService } from '../service/data.service';
 import { InventarioService } from '../service/inventario.service';
-import { LocalStorage } from "../clases/local-storage";
+import { LocalStorage } from "../clases/token/local-storage";
 import { Router } from '@angular/router';
 import { Inventario } from '../clases/productos/inventario';
 import { Subject } from 'rxjs';

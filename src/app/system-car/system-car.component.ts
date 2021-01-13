@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { LocalStorage } from "../clases/local-storage";
+import { LocalStorage } from "../clases/token/local-storage";
 import { ListaProducto } from "../clases/productos/lista-producto";
 import { PagarService } from '../service/pagar.service';
 import { ToastrService } from 'ngx-toastr';
