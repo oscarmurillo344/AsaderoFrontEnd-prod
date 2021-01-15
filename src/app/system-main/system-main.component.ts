@@ -51,13 +51,14 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
    
   ngAfterViewInit() {
       setTimeout(() => {
-        this.__data.ver=false;
-        this.roles.forEach(data=>{
-          if(data==='ROLE_ADMIN'){
-           this.__data.ver=true;
+        this.__data.ver=false
+        this.roles.filter(data=> {
+          if(data=='ROLE_ADMIN'){
+            this.__data.ver=true
           }
-        }); 
+        });
         this.__data.notification.emit(1);
+        this.__data.nombreUsuario=this.token.getUser();
       });
     }
 
@@ -71,7 +72,6 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
     this.local=new LocalStorage();
     this.roles=this.token.getAuth();
     this.tokens=this.token.getToken();
-    this.__data.nombreUsuario=this.token.getUser();
     this.llenarListas();
     if(this.local.GetStorage('DataCarrito')){
       this.carrito=this.local.GetStorage('DataCarrito');
