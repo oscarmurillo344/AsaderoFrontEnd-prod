@@ -6,6 +6,7 @@ export class Inventario {
     extras:string;
     cantidad:number;
     cantidadExist:number;
+    estado?:boolean
 
     constructor(
         productoId:Producto,

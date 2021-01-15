@@ -17,15 +17,12 @@
                 </mat-select>
               </mat-form-field>
               <cdk-virtual-scroll-viewport *ngIf="UpdateProductForm.value.tipo === 'combos'" 
-              itemSize="10" class="contenedor mat-elevation-z2">
+              itemSize="20" class="contenedor">
               <mat-label style="padding-left: 2%; padding-right: 2%;">
                 Seleccione producto: 
               </mat-label>
-               <button mat-mini-fab color="warn" (click)="Reiniciar()">
-                <mat-icon>restore</mat-icon>
-              </button>
               <mat-checkbox class="margen" *ngFor="let producto of CombInventario"
-              (change)="ValorCambio($event)" [value]="producto.id" class="margen">
+              (change)="ValorCambio($event)" [checked]="producto.estado"  [value]="producto.id" class="margen">
                    {{ producto.productoId.nombre }}
               </mat-checkbox> 
               </cdk-virtual-scroll-viewport>

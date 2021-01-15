@@ -4,3 +4,6 @@
 .count{
     width: 15px; margin-left: 5%;margin-right: 2%;margin-bottom:5%;
 }
+tr{
+ height: 0px !important;   
+}

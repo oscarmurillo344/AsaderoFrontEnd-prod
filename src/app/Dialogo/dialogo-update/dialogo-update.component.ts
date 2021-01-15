@@ -24,7 +24,7 @@ export class DialogoUpdateComponent implements OnInit,OnDestroy {
   pro:Producto;
   ListaInventario:Array<Inventario>=new Array();
   local:LocalStorage=new LocalStorage();
-  lista:string[]=[];
+  lista:string[];
   CombInventario:Array<Inventario>;
   private unsuscribir = new Subject<void>();
 
@@ -50,7 +50,8 @@ export class DialogoUpdateComponent implements OnInit,OnDestroy {
 
   crearForm(data){
     if(data.extras!==null){
-      this.lista.push(data.extras);
+      let ex:string=data.extras;
+      this.lista=ex.split(",")
     }else{
       this.lista=[];
     }
@@ -92,30 +93,29 @@ export class DialogoUpdateComponent implements OnInit,OnDestroy {
       });
     }
   }
-  Reiniciar(){
-    this.lista=[];
-    this.mensaje.warning("Restablecio los productos","Advertencia");
-  }
   ValorCambio($event):void{
-    if($event.checked){
-      this.lista.push(""+$event.source.value);
-    }else if($event.checked===false){
-
-      this.lista.forEach((data:string,i:number)=>{
-        if(data==$event.source.value){
-          this.lista.splice(i,1);
-        }
-      });
+    if($event.checked)
+    this.lista.push(""+$event.source.value);
+    else if($event.checked===false)
+    this.lista.forEach((data:string,i:number)=> data==$event.source.value ?  this.lista.splice(i,1) : null) 
   }
-  }
-
-  CargarCombo(){
+  CargarCombo():void{
     this.CombInventario=this.local.GetStorage("listaProducto");
     this.CombInventario.forEach((data,index)=>{
       if(data.productoId.tipo=='combos'){
         this.CombInventario.splice(index,1);
       }
+     this.estadoProducto(this.lista,data)
     });
     AppComponent.OrdenarData(this.CombInventario);
 }
+  estadoProducto(ver:string[],data:any):void{
+    ver.find((filtro:any)=>{
+      if(data.id == filtro){
+        return data.estado=true
+      }else{
+        return data.estado=false
+      }
+    })
+  }
 }
