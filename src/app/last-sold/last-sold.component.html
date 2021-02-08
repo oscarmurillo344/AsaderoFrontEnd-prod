@@ -1,12 +1,10 @@
 <mat-card style="width: 100%; margin-top: 70px;">
-    <mat-card-content >
-
         <mat-form-field appearance="standard" style="width: 50%; padding-right: 5%;">
          <button mat-icon-button matSuffix (click)="buscar()">
           <mat-icon>search</mat-icon>
          </button>
           <mat-label>Buscar</mat-label>
-          <input matInput type="number" placeholder="Search"  [(ngModel)]="numeroFact">                
+          <input matInput type="number" (keyup.enter)="buscar()" placeholder="Search"  [(ngModel)]="numeroFact">                
         </mat-form-field>
 
         <button  mat-mini-fab color="warn" [disabled]="bloqueo" (click)="Eliminar()" >
@@ -30,7 +28,7 @@
           <ng-container matColumnDef="Fecha">
             <th mat-header-cell *matHeaderCellDef> Fecha  </th>
             <td mat-cell *matCellDef="let element; index as i"> 
-             {{element.fechaactual | date:'dd/MM/yyyy' }}
+             {{element.fechaactual | date:'EEE dd-MMMM-yyyy' }}
             </td>
           </ng-container>
           <ng-container matColumnDef="Hora">
@@ -42,7 +40,4 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-        
-      </mat-card-content>
-
 </mat-card>

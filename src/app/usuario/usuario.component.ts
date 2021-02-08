@@ -87,7 +87,6 @@ export class UsuarioComponent implements OnInit,OnDestroy {
           this.toast.success(data.mensaje,"Exitoso");
         }else{
           this.toast.success("consulta realizada","Exitoso");
-          console.log(da)
         }
         this.listarUser();
         this.UsuarioForm.reset();
@@ -96,7 +95,6 @@ export class UsuarioComponent implements OnInit,OnDestroy {
           this.toast.error(error.error.mensaje,"Error");
         }else{
           this.toast.error("Error en la consulta","Error");
-          console.log(error)
         }
       });
     }

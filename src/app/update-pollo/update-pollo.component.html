@@ -6,11 +6,11 @@
          <mat-card-content [formGroup]="PollosForm" >
             <mat-form-field appearance="standard" style="width: 100%;" >
                 <mat-label>Pollos</mat-label>
-                <input matInput type="number" formControlName="pollo">
+                <input matInput type="number" (keyup.enter)="ActualizarPollo()" formControlName="pollo">
               </mat-form-field>
               <mat-form-field appearance="standard" style="width: 100%;" >
                 <mat-label>Presas</mat-label>
-                <input matInput type="number" formControlName="presa">
+                <input matInput type="number" (keyup.enter)="ActualizarPollo()" formControlName="presa">
               </mat-form-field>
                 <mat-checkbox formControlName="validar">Solo editar</mat-checkbox>
          </mat-card-content>

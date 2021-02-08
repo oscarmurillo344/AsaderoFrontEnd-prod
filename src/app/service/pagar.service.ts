@@ -33,17 +33,24 @@ export class PagarService {
     return this.http.get<number>(this.pagarURL+'numero');
   }
 
-  public TotalDay(usuario:string):Observable<VentasDay>{
-    return this.http.get<VentasDay>(this.pagarURL+'totalDay/'+usuario);
+  public TotalDay(usuario:string):Observable<VentasDay[]>{
+    return this.http.get<VentasDay[]>(this.pagarURL+'totalDay/'+usuario);
   }
 
-  public TotalFechasUser(Fecha:EntreFecha):Observable<VentasDay>{
-    return this.http.post<VentasDay>(this.pagarURL+'totalfechaUser',Fecha);
+  public TotalFechasUser(Fecha:EntreFecha):Observable<VentasDay[]>{
+    return this.http.post<VentasDay[]>(this.pagarURL+'totalfechaUser',Fecha);
   }
 
-  public TotalFechas(Fecha:EntreFecha):Observable<VentasDay>{
-    return this.http.post<VentasDay>(this.pagarURL+'totalfecha',Fecha);
+  public TotalFechas(Fecha:EntreFecha):Observable<VentasDay[]>{
+    return this.http.post<VentasDay[]>(this.pagarURL+'totalfecha',Fecha);
   }
 
+  public TotalUserFechaDia(Fecha:EntreFecha):Observable<VentasDay[]>{
+    return this.http.post<VentasDay[]>(this.pagarURL+'totalfechauserdia',Fecha)
+  }
 
+  public TotalFechaDia(Fecha:EntreFecha):Observable<VentasDay[]>{
+    return this.http.post<VentasDay[]>(this.pagarURL+'totalfechadia',Fecha)
+    }
 }
+

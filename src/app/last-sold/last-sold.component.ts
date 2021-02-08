@@ -12,7 +12,7 @@ import { PagarService } from '../service/pagar.service';
 })
 export class LastSoldComponent implements OnInit ,OnDestroy{
 
-  ListaFactura:Array<Factura>=new Array();;
+  ListaFactura:Array<Factura>;
   displayedColumns=['Nombre','Cantidad','Fecha','Hora'];
   numeroFact:number=0;
   bloqueo:boolean;
@@ -23,10 +23,11 @@ export class LastSoldComponent implements OnInit ,OnDestroy{
     private toast:ToastrService,
     private route:Router
   ) { 
-    this.bloqueo=true;
   }
 
   ngOnInit() {
+    this.bloqueo=true
+    this.ListaFactura=new Array()
   }
 
   ngOnDestroy(): void {
@@ -60,7 +61,6 @@ export class LastSoldComponent implements OnInit ,OnDestroy{
       this.toast.info("numero no valido","Error");
     }
   }
-
   Eliminar(){
     if(this.numeroFact!==0){
       this.__servicioPago.eliminar(this.numeroFact)

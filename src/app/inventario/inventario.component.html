@@ -6,7 +6,7 @@
             Crear Producto
           </ng-template>
           <mat-card class="formularioInventario">
-            <mat-card-content [formGroup]="ProductForm">
+            <form [formGroup]="ProductForm">
                 <mat-form-field appearance="standard" style="width: 100%;" >
                     <mat-label>Nombre</mat-label>
                     <input matInput type="text" formControlName="nombre">
@@ -35,9 +35,9 @@
                   </mat-form-field>
                   <mat-form-field appearance="standard" style="width: 100%;" >
                     <mat-label>Presa </mat-label>
-                    <input matInput type="number" formControlName="presa">
+                    <input matInput type="number" (keyup.enter)="CrearProduct()" formControlName="presa">
                   </mat-form-field>
-              </mat-card-content>
+            </form>
               <mat-card-actions>
                 <button mat-button (click)="CrearProduct()" [disabled]="!ProductForm.valid" 
                 mat-raised-button color="warn" style="width: 100%; text-align: center;" >
