@@ -13,6 +13,7 @@ import { InventarioService } from '../service/inventario.service';
 import { DataService } from '../service/data.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-system-car',
@@ -39,22 +40,22 @@ export class SystemCarComponent implements OnInit,OnDestroy {
     private route:Router,
     private __serviceInven:InventarioService,
     private __Data:DataService) {
-
-      this.local=new LocalStorage();
-      this.lista=new Array();
-      this.verificarCarrito();
-     this.bloqueo=false;
    }
 
   ngOnInit() {
+    this.local=new LocalStorage();
+    this.lista=new Array();
+    this.verificarCarrito();
+   this.bloqueo=false;
     this.__servicioPagar.maximoValor()
     .pipe(takeUntil(this.unsuscribir))
-    .subscribe(data=>{
+    .subscribe((data:number)=>{
       this.numeroFactura=data;
       this.numeroFactura+=1;
      },error=>{
        console.log(error)
      });
+     this.diaSemana();
   }
 
   ngOnDestroy(): void {
@@ -77,6 +78,7 @@ export class SystemCarComponent implements OnInit,OnDestroy {
             this.numeroFactura,
             new Date(),
             this.token.getUser(),
+            this.diaSemana(),
             new Producto(this.lista[index].id,this.lista[index].nombre,
               this.lista[index].tipo,
               this.lista[index].precio,this.lista[index].presa),
@@ -97,7 +99,7 @@ export class SystemCarComponent implements OnInit,OnDestroy {
             if(index === this.contador){
               this.mensaje.success(this.mms.mensaje,"Exitoso");
               this.local.RemoveStorage('DataCarrito');
-              this.__serviceInven.TablePollo(this.polloMerca).subscribe(data=>{});
+              this.__serviceInven.TablePollo(this.polloMerca).subscribe(data=>null);
               this.local.SetStorage("pollos",this.polloMerca)
               this.__Data.notification.emit(1);
               this.route.navigate(['/inicio']);
@@ -159,5 +161,12 @@ export class SystemCarComponent implements OnInit,OnDestroy {
 
     wentLastControl(){
       this.route.navigate(["/lastsold"]);
+    }
+
+    public diaSemana():string{
+    let fecha=new Date();
+     let dia=new DatePipe("es");
+     let f=dia.transform(fecha,"EEEE");
+      return f;
     }
 }
