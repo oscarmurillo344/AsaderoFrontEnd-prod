@@ -191,7 +191,7 @@ export class ControlVentasComponent implements OnInit,OnDestroy  {
                 )
              }
            }else{
-            if(this.diaSelect.length){
+            if(this.diaSelect){
               this.__factura.TotalFechaDia(this.fechas).pipe(
                 takeUntil(this.unsuscribir)
               ).subscribe((data:VentasDay[])=>{
