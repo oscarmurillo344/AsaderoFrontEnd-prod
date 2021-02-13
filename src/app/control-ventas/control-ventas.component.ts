@@ -269,8 +269,6 @@ export class ControlVentasComponent implements OnInit,OnDestroy  {
   }  
   getTotalGastos(Dato:Array<any>):void{
     this.valorGasto=0;
-      Dato.forEach(ele => {
-      this.valorGasto=this.valorGasto+ele.valor;
-    });
+    Dato.forEach(ele =>this.valorGasto=this.valorGasto+ele.valor)
   }
   }
