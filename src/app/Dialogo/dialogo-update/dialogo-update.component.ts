@@ -48,14 +48,9 @@ export class DialogoUpdateComponent implements OnInit,OnDestroy {
     this.unsuscribir.complete();
   }
 
-  crearForm(data){
-    if(data.extras!==null){
-      let ex:string=data.extras;
-      this.lista=ex.split(",")
-    }else{
-      this.lista=[];
-    }
-
+  crearForm(data):FormGroup{
+    if(data.extras!==null && data.extras != "")this.lista=data.extras.split(",")
+    else this.lista=[]
     return new FormGroup({
       nombre: new FormControl(data.productoId.nombre,Validators.required),
       tipo: new FormControl(data.productoId.tipo,Validators.required),
@@ -84,7 +79,6 @@ export class DialogoUpdateComponent implements OnInit,OnDestroy {
             this.mensaje.success(date.mensaje+' e '+re.mensaje,"Exitoso");
             this.__servicioInventario.filter('Register click');
           },error=>{
-            console.log(error)
             this.mensaje.error(error.error.mensaje,"Error");
           }
           );
@@ -94,28 +88,17 @@ export class DialogoUpdateComponent implements OnInit,OnDestroy {
     }
   }
   ValorCambio($event):void{
-    if($event.checked)
-    this.lista.push(""+$event.source.value);
+    if($event.checked) this.lista.push(""+$event.source.value);
     else if($event.checked===false)
-    this.lista.forEach((data:string,i:number)=> data==$event.source.value ?  this.lista.splice(i,1) : null) 
+  this.lista.forEach((data:string,i:number)=> data==$event.source.value ?  this.lista.splice(i,1) : null) 
   }
   CargarCombo():void{
     this.CombInventario=this.local.GetStorage("listaProducto");
-    this.CombInventario.forEach((data,index)=>{
-      if(data.productoId.tipo=='combos'){
-        this.CombInventario.splice(index,1);
-      }
-     this.estadoProducto(this.lista,data)
-    });
+    this.CombInventario.forEach((data,index)=> data.productoId.tipo=='combos'? this.CombInventario.splice(index,1): undefined)
+    this.estadoProducto(this.lista,this.CombInventario)
     AppComponent.OrdenarData(this.CombInventario);
 }
   estadoProducto(ver:string[],data:any):void{
-    ver.find((filtro:any)=>{
-      if(data.id == filtro){
-        return data.estado=true
-      }else{
-        return data.estado=false
-      }
-    })
+    data.forEach(buscar=>ver.find((filtro:any)=> buscar.id == filtro ? buscar.estado=true : buscar.estado=false))
   }
 }
