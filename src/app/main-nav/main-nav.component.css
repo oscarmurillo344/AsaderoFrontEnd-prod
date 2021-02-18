@@ -1,7 +1,9 @@
 .sidenav-container {
   height: 100%;
 }
-
+.decorador{
+  text-decoration: none;color: white;
+}
 .sidenav {
   width: 180px;
 }

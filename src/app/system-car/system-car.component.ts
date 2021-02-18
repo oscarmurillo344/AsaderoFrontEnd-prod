@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { LocalStorage } from "../clases/token/local-storage";
 import { ListaProducto } from "../clases/productos/lista-producto";
 import { PagarService } from '../service/pagar.service';
 import { ToastrService } from 'ngx-toastr';
@@ -14,6 +13,7 @@ import { DataService } from '../service/data.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { DatePipe } from '@angular/common';
+import { LocalstorageService } from '../service/localstorage.service';
 
 @Component({
   selector: 'app-system-car',
@@ -22,40 +22,40 @@ import { DatePipe } from '@angular/common';
 })
 export class SystemCarComponent implements OnInit,OnDestroy {
 
-   local:LocalStorage;
    total:number;
    valor:number;
-   lista:Array<ListaProducto>;
+   lista:Array<ListaProducto>=new Array()
    factura:Factura;
-   numeroFactura:number;
+   numeroFactura:number
    mms:Mensaje;
    contador:number;
   polloMerca:updatePollo;
   bloqueo:boolean;
-  private unsuscribir = new Subject<void>();
+  private unsuscribir = new Subject<void>()
 
   constructor(private __servicioPagar:PagarService, 
     private mensaje:ToastrService,
     private token:TokenServiceService,
     private route:Router,
     private __serviceInven:InventarioService,
-    private __Data:DataService) {
+    private __Data:DataService,
+    private local:LocalstorageService) {
    }
 
   ngOnInit() {
-    this.local=new LocalStorage();
-    this.lista=new Array();
-    this.verificarCarrito();
+  this.verificarCarrito();
    this.bloqueo=false;
+   this.numeroFactura=this.local.GetStorage("nfactura") as number
+   if(this.numeroFactura==undefined){
     this.__servicioPagar.maximoValor()
     .pipe(takeUntil(this.unsuscribir))
     .subscribe((data:number)=>{
       this.numeroFactura=data;
       this.numeroFactura+=1;
-     },error=>{
-       console.log(error)
-     });
-     this.diaSemana();
+      this.local.SetStorage("nfactura",this.numeroFactura)
+     },error=>this.numeroFactura=0)
+   }
+   this.diaSemana();
   }
 
   ngOnDestroy(): void {
@@ -63,7 +63,7 @@ export class SystemCarComponent implements OnInit,OnDestroy {
     this.unsuscribir.complete();
   }
 
-  public Facturar(){
+  public Facturar():void{
     
     if(this.lista.length > 0)
     {
@@ -101,6 +101,7 @@ export class SystemCarComponent implements OnInit,OnDestroy {
               this.local.RemoveStorage('DataCarrito');
               this.__serviceInven.TablePollo(this.polloMerca).subscribe(data=>null);
               this.local.SetStorage("pollos",this.polloMerca)
+              this.local.SetStorage("nfactura",this.numeroFactura+1)
               this.__Data.notification.emit(1);
               this.route.navigate(['/inicio']);
               this.bloqueo=false;
@@ -108,7 +109,6 @@ export class SystemCarComponent implements OnInit,OnDestroy {
           },error=>{
             if(error.error.mensaje===undefined){
               this.mensaje.error("Pago no realizado","Error");
-              console.log(error)
             }else{
               this.mensaje.error(error.error.mensaje,"Error");
             }
@@ -164,9 +164,8 @@ export class SystemCarComponent implements OnInit,OnDestroy {
     }
 
     public diaSemana():string{
-    let fecha=new Date();
-     let dia=new DatePipe("es");
-     let f=dia.transform(fecha,"EEEE");
-      return f;
+    let fecha=new Date()
+     let dia=new DatePipe("es")
+     return dia.transform(fecha,"EEEE")
     }
 }

@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { ToastrService } from "ngx-toastr";
-import { LocalStorage } from "../clases/token/local-storage";
 import {MatDialog} from '@angular/material/dialog';
 import { DialogoYesNoComponent } from '../Dialogo/dialogo-yes-no/dialogo-yes-no.component';
 import { DialogoUpdateComponent } from '../Dialogo/dialogo-update/dialogo-update.component';
@@ -12,6 +11,7 @@ import { AppComponent } from '../app.component';
 import {  Subject, Subscription } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { takeUntil } from 'rxjs/operators';
+import { LocalstorageService } from '../service/localstorage.service';
 
 @Component({
   selector: 'app-inventario',
@@ -24,7 +24,6 @@ export class InventarioComponent implements OnInit,OnDestroy {
   BuscarProductForm: FormGroup;
   ListaInventario:MatTableDataSource<Inventario>;
   ComboInventario:Array<Inventario>;
-  local:LocalStorage;
   product:Producto;
   nombreBuscar:string;
   displayedColumns: string[] = ['Nombre', 'Cantidad','Editar', 'Eliminar'];
@@ -36,10 +35,10 @@ export class InventarioComponent implements OnInit,OnDestroy {
   constructor(
     private mensaje:ToastrService,
     public dialog: MatDialog,
-    private __inventarioService:InventarioService
+    private __inventarioService:InventarioService,
+    private local:LocalstorageService
     ) { 
       this.ComboInventario=new Array();
-      this.local=new LocalStorage();
       this.cargarCantidad();
       this.__inventarioService.listen().pipe(
         takeUntil(this.unsuscribir)
@@ -77,15 +76,15 @@ export class InventarioComponent implements OnInit,OnDestroy {
        
   }
   
-      CargarCombo(){
-          this.ComboInventario=this.local.GetStorage("listaProducto");
-          this.ComboInventario.forEach((data,index)=>{
-            if(data.productoId.tipo=='combos'){
-              this.ComboInventario.splice(index,1);
-            }
-          });
-          AppComponent.OrdenarData(this.ComboInventario);
-      }
+  CargarCombo(){
+      this.ComboInventario=this.local.GetStorage("listaProducto");
+      this.ComboInventario.forEach((data,index)=>{
+        if(data.productoId.tipo=='combos'){
+          this.ComboInventario.splice(index,1);
+        }
+      });
+      AppComponent.OrdenarData(this.ComboInventario);
+  }
   createForm(){
     return new FormGroup({
       nombre: new FormControl('',Validators.required),

@@ -1,6 +1,5 @@
 import { Component, OnInit, AfterViewInit , OnDestroy} from '@angular/core';
 import { ListaProducto } from "../clases/productos/lista-producto";
-import { LocalStorage } from "../clases/token/local-storage";
 import { ToastrService } from "ngx-toastr";
 import { Router } from "@angular/router";
 import { InventarioService } from '../service/inventario.service';
@@ -11,6 +10,7 @@ import { updatePollo } from '../clases/productos/updatePollo';
 import { AppComponent } from '../app.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { LocalstorageService } from '../service/localstorage.service';
 
 
 
@@ -27,7 +27,6 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
   porciones:Array<ListaProducto>;
   carrito:Array<ListaProducto>;
   productLista:Array<Inventario>;
-  local:LocalStorage;
   complete:boolean=false;
   update:updatePollo;
   buscar:string='';
@@ -41,6 +40,7 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
               private __servicioPro:InventarioService,
               private token:TokenServiceService,
               private __data:DataService,
+              private local: LocalstorageService
               ) 
   {
     }
@@ -69,7 +69,6 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
     this.porciones=new Array();
     this.carrito=new Array();
     this.productLista=new Array();
-    this.local=new LocalStorage();
     this.roles=this.token.getAuth();
     this.tokens=this.token.getToken();
     this.llenarListas();

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LocalStorage } from "../clases/token/local-storage";
+import { LocalstorageService } from './localstorage.service';
 
 const  TOKEN_KEY="AuthToken";
 const  USERNAME_KEY="AuthUserName";
@@ -11,10 +11,8 @@ const  AUTHORITIES_KEY="AuthAuthorities"
 export class TokenServiceService {
 
   roles: Array<string> = [];
-  local:LocalStorage;
 
-  constructor() {
-    this.local=new LocalStorage();
+  constructor(private local:LocalstorageService) {
    }
 
   public setToken(token:string): void{

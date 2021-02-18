@@ -4,11 +4,11 @@ import { ToastrService } from 'ngx-toastr';
 import { updatePollo } from '../clases/productos/updatePollo';
 import { DataService } from '../service/data.service';
 import { InventarioService } from '../service/inventario.service';
-import { LocalStorage } from "../clases/token/local-storage";
 import { Router } from '@angular/router';
 import { Inventario } from '../clases/productos/inventario';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { LocalstorageService } from '../service/localstorage.service';
 
 @Component({
   selector: 'app-update-pollo',
@@ -20,18 +20,17 @@ export class UpdatePolloComponent implements OnInit, OnDestroy {
   PollosForm:FormGroup;
   update:updatePollo;
   update2:updatePollo;
-  local:LocalStorage;
   productLista:Array<Inventario>=new Array();
   undescriber=new Subject<void>();
   constructor(
     private __serviceinven:InventarioService,
     private toast:ToastrService,
     private datas:DataService,
-    private route:Router
+    private route:Router,
+    private local:LocalstorageService
   ) 
   { 
 this.PollosForm=this.crearForm();
-this.local=new LocalStorage();
   }
 
   ngOnDestroy(): void {
@@ -54,13 +53,9 @@ this.local=new LocalStorage();
      this.update=new updatePollo(this.PollosForm.value.pollo,
       this.PollosForm.value.presa)
       if(!this.PollosForm.value.validar){
-        let id=0;
+        let id: number
         this.productLista=this.local.GetStorage("listaProducto");
-        this.productLista.forEach(data=>{
-          if(data.productoId.tipo==='mercaderia'){
-            id=data.id;
-          }
-        });
+        this.productLista.forEach(data=> data.productoId.tipo==='mercaderia' ?id=data.id:id=0)
         this.__serviceinven.UpdatePollo(id,this.update).
         pipe( takeUntil(this.undescriber)).
         subscribe(data=>{
@@ -71,22 +66,15 @@ this.local=new LocalStorage();
           this.PollosForm.reset();
           this.__serviceinven.TablePollo(this.update2).
           pipe( takeUntil(this.undescriber)).
-          subscribe(data=>{
-            this.route.navigate(["/inicio"]);
-          });
+          subscribe(data=>this.route.navigate(["/inicio"]));
         },error=>{
-          if(error.error.mensaje===undefined){
-            this.toast.error("Error en la consulta","Error");
-          }else{
-            this.toast.error(error.error.mensaje,"Error");
-          }
-        });
+          if(error.error.mensaje===undefined) this.toast.error("Error en la consulta","Error");
+          else this.toast.error(error.error.mensaje,"Error");
+        })
       }else{
         this.__serviceinven.TablePollo(this.update).
         pipe( takeUntil(this.undescriber)). // liberando memoria
-        subscribe(data=>{
-          this.route.navigate(["/inicio"]);
-        });
+        subscribe(data=> this.route.navigate(["/inicio"]));
         this.datas.pollo=this.PollosForm.value.pollo;
         this.datas.presa=this.PollosForm.value.presa;
         this.toast.success("Pollo actualizado","Exitoso");

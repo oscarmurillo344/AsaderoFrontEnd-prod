@@ -36,6 +36,7 @@ import { TablegastosComponent } from './control-ventas/tablegastos/tablegastos.c
 
 import localeEs from '@angular/common/locales/es';
 import {registerLocaleData  } from "@angular/common";
+import { LocalstorageService } from './service/localstorage.service';
 
 registerLocaleData(localeEs,"es")
 
@@ -88,7 +89,8 @@ providers: [
             ProductoListService,
             TokenServiceService,
             AuthService,
-            ExcelExportService
+            ExcelExportService,
+            LocalstorageService
           ],
   bootstrap: [AppComponent]
 })

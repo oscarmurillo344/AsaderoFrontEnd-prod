@@ -15,16 +15,10 @@ export class ProductoService implements CanActivate {
   ) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean{
-
     const expectedRol=route.data.expectedRol;
     const  roles= this.token.getAuth();
     this.realRol='user';
-
-    roles.forEach(rol => {
-         if(rol === 'ROLE_ADMIN'){
-          this.realRol='admin';
-         }
-    });
+    roles.forEach(rol => rol === 'ROLE_ADMIN' ? this.realRol='admin':null)
     if(!this.token.getToken() || expectedRol.indexOf(this.realRol) === -1){
       this.route.navigate(['/inicio']);
       return false;

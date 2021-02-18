@@ -2,8 +2,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil} from 'rxjs/operators';
 import { Factura } from '../clases/factura/factura';
+import { updatePollo } from '../clases/productos/updatePollo';
+import { LocalstorageService } from '../service/localstorage.service';
 import { PagarService } from '../service/pagar.service';
 
 @Component({
@@ -12,16 +14,18 @@ import { PagarService } from '../service/pagar.service';
 })
 export class LastSoldComponent implements OnInit ,OnDestroy{
 
-  ListaFactura:Array<Factura>;
-  displayedColumns=['Nombre','Cantidad','Fecha','Hora'];
-  numeroFact:number=0;
-  bloqueo:boolean;
+  ListaFactura:Array<Factura>
+  displayedColumns=['Nombre','Cantidad','Fecha','Hora']
+  numeroFact:number
+  bloqueo:boolean
+
   private unsuscribir = new Subject<void>();
 
   constructor(
     private __servicioPago:PagarService,
     private toast:ToastrService,
-    private route:Router
+    private route:Router,
+    private local:LocalstorageService
   ) { 
   }
 
@@ -39,23 +43,15 @@ export class LastSoldComponent implements OnInit ,OnDestroy{
       this.__servicioPago.listar(this.numeroFact)
       .pipe(takeUntil(this.unsuscribir))
       .subscribe(
-        data=>{
-            let da:any=data;
-            if(da.mensaje===undefined){
-            this.ListaFactura=da;
+        (data:any)=>{
+        if(data.mensaje===undefined){
+            this.ListaFactura=data;
             this.bloqueo=false;
             this.toast.success("factura encontrada","Exitoso");
-          }else{
-            this.toast.error("factura no encontrada","Exitoso");
-          }
-
+          }else this.toast.error(data.mensaje,"Exitoso")
         },error=>{
-          if(error.error.mensaje===undefined){
-            this.toast.error("factura no encontrada","Error");
-            console.log(error)
-          }else{
-            this.toast.error(error.error.mensaje,"Error");
-          }
+          if(error.error.mensaje===undefined)this.toast.error("factura no encontrada","Error");
+          else this.toast.error(error.error.mensaje,"Error");
         });
     }else{
       this.toast.info("numero no valido","Error");
@@ -70,16 +66,10 @@ export class LastSoldComponent implements OnInit ,OnDestroy{
         this.bloqueo=false;
         this.route.navigate(["/inicio"]);
       },error=>{
-        if(error.error.mensaje===undefined){
-          this.toast.error("no eliminado","Error");
-        }else{
-          this.toast.error(error.error.mensaje,"Error");
-        }
+        if(error.error.mensaje===undefined)this.toast.error("no eliminado","Error");
+         else this.toast.error(error.error.mensaje,"Error");
         this.bloqueo=false;
       });
-    }else{
-      this.toast.info("numero no valido","Error");
-    }
+    }else this.toast.info("numero no valido","Error");
   }
-
 }

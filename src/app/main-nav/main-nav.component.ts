@@ -2,9 +2,9 @@ import { Component,OnInit  } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
-import { LocalStorage } from "../clases/token/local-storage";
 import { Router } from "@angular/router";
 import { DataService } from '../service/data.service';
+import { LocalstorageService } from '../service/localstorage.service';
 
 
 @Component({
@@ -16,7 +16,6 @@ export class MainNavComponent implements OnInit  {
 
           valor :boolean;
           open :boolean;
-          local :LocalStorage;
           notificacion:number;
           Lista:any;
           vista:boolean;
@@ -29,8 +28,8 @@ export class MainNavComponent implements OnInit  {
 
   constructor(private breakpointObserver: BreakpointObserver,
             private router:Router,
-            public __Data:DataService) {
-    this.local=new LocalStorage();
+            public __Data:DataService,
+            private local:LocalstorageService) {
   } 
 
 
@@ -38,10 +37,8 @@ export class MainNavComponent implements OnInit  {
      if(this.local.GetStorage("AuthToken")){
       this.valor=false;
       this.router.navigate(["/inicio"]);
-    }else{
-       this.valor=true;
-     }
-    this.__Data.notification.subscribe(numero=>{this.verificar();});
+    }else this.valor=true;
+    this.__Data.notification.subscribe(numero=>this.verificar())
     }
 
     verificar(){
@@ -54,10 +51,6 @@ export class MainNavComponent implements OnInit  {
         }
     }
 
-    refresh(){
-      window.location.replace(window.location.origin);
-    }
-    
     logOut(){
       this.local.RemoveAll();
       this.router.navigate(['/login']);

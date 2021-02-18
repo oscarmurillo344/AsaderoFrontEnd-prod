@@ -6,10 +6,10 @@ import { ToastrService } from 'ngx-toastr';
 import { Producto } from 'src/app/clases/productos/producto';
 import { InventarioService } from 'src/app/service/inventario.service';
 import { Inventario } from 'src/app/clases/productos/inventario';
-import { LocalStorage } from 'src/app/clases/token/local-storage';
 import { AppComponent } from 'src/app/app.component';
 import { Subject} from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { LocalstorageService } from 'src/app/service/localstorage.service';
 
 
 @Component({
@@ -23,7 +23,6 @@ export class DialogoUpdateComponent implements OnInit,OnDestroy {
   producto:Inventario;
   pro:Producto;
   ListaInventario:Array<Inventario>=new Array();
-  local:LocalStorage=new LocalStorage();
   lista:string[];
   CombInventario:Array<Inventario>;
   private unsuscribir = new Subject<void>();
@@ -32,7 +31,8 @@ export class DialogoUpdateComponent implements OnInit,OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data:Inventario,
     private __servicioProduct:ProductoListService,
     private __servicioInventario:InventarioService,
-    private mensaje:ToastrService
+    private mensaje:ToastrService,
+    private local:LocalstorageService
   ) { 
     this.UpdateProductForm=this.crearForm(data);
     this.producto=data;
@@ -46,11 +46,16 @@ export class DialogoUpdateComponent implements OnInit,OnDestroy {
   ngOnDestroy(): void {
     this.unsuscribir.next();
     this.unsuscribir.complete();
-  }
+  } 
 
-  crearForm(data):FormGroup{
-    if(data.extras!==null && data.extras != "")this.lista=data.extras.split(",")
-    else this.lista=[]
+  crearForm(data){
+    if(data.extras!==null && data.extras != ""){
+      let ex:string=data.extras;
+      this.lista=ex.split(",")
+    }else{
+      this.lista=[]
+    }
+
     return new FormGroup({
       nombre: new FormControl(data.productoId.nombre,Validators.required),
       tipo: new FormControl(data.productoId.tipo,Validators.required),
@@ -88,9 +93,10 @@ export class DialogoUpdateComponent implements OnInit,OnDestroy {
     }
   }
   ValorCambio($event):void{
-    if($event.checked) this.lista.push(""+$event.source.value);
+    if($event.checked)
+    this.lista.push(""+$event.source.value)
     else if($event.checked===false)
-  this.lista.forEach((data:string,i:number)=> data==$event.source.value ?  this.lista.splice(i,1) : null) 
+    this.lista.forEach((data:string,i:number)=> data==$event.source.value ?  this.lista.splice(i,1) : null) 
   }
   CargarCombo():void{
     this.CombInventario=this.local.GetStorage("listaProducto");
@@ -98,7 +104,15 @@ export class DialogoUpdateComponent implements OnInit,OnDestroy {
     this.estadoProducto(this.lista,this.CombInventario)
     AppComponent.OrdenarData(this.CombInventario);
 }
-  estadoProducto(ver:string[],data:any):void{
-    data.forEach(buscar=>ver.find((filtro:any)=> buscar.id == filtro ? buscar.estado=true : buscar.estado=false))
+  estadoProducto(ver:string[],data:Inventario[]):void{
+    data.forEach(da=>{
+      ver.find((filtro:any)=>{
+        if(da.id == filtro){
+          return da.estado=true
+        }else{
+          return da.estado=false
+        }
+      })
+    })
   }
 }
