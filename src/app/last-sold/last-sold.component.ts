@@ -65,6 +65,7 @@ export class LastSoldComponent implements OnInit ,OnDestroy{
         this.toast.success(data.mensaje,"Exitoso");
         this.bloqueo=false;
         this.route.navigate(["/inicio"]);
+        this.local.SetStorage("nfactura",undefined)
       },error=>{
         if(error.error.mensaje===undefined)this.toast.error("no eliminado","Error");
          else this.toast.error(error.error.mensaje,"Error");
