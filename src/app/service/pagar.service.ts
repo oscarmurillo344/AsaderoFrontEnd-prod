@@ -26,7 +26,7 @@ export class PagarService {
   }
 
   public eliminar(numero:number,presa:number): Observable<Mensaje>{
-    return this.http.delete<Mensaje>(this.pagarURL+'delete/'+numero+'1/pollo/'+presa);
+    return this.http.delete<Mensaje>(this.pagarURL+'delete/'+numero+'/pollo/'+presa);
   }
 
   public maximoValor(): Observable<number>{
