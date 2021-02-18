@@ -25,8 +25,8 @@ export class PagarService {
     return this.http.get<Factura>(this.pagarURL+'lista/'+numero);
   }
 
-  public eliminar(numero:number): Observable<Mensaje>{
-    return this.http.delete<Mensaje>(this.pagarURL+'delete/'+numero);
+  public eliminar(numero:number,presa:number): Observable<Mensaje>{
+    return this.http.delete<Mensaje>(this.pagarURL+'delete/'+numero+'1/pollo/'+presa);
   }
 
   public maximoValor(): Observable<number>{

@@ -102,8 +102,8 @@ export class SystemCarComponent implements OnInit,OnDestroy {
               this.__serviceInven.TablePollo(this.polloMerca).subscribe(data=>null);
               this.local.SetStorage("pollos",this.polloMerca)
               this.local.SetStorage("nfactura",this.numeroFactura+1)
-              this.__Data.notification.emit(1);
-              this.route.navigate(['/inicio']);
+              this.__Data.notification.emit(1)
+              this.route.navigate(['/inicio'])
               this.bloqueo=false;
             }
           },error=>{
