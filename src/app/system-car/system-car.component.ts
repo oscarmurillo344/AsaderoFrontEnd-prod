@@ -74,28 +74,18 @@ export class SystemCarComponent implements OnInit,OnDestroy {
         this.bloqueo=true;
         for (let index = 0; index < this.lista.length; index++)
          {
-          this.factura=new Factura(
-            this.numeroFactura,
-            new Date(),
-            this.token.getUser(),
-            this.diaSemana(),
-            new Producto(this.lista[index].id,this.lista[index].nombre,
-              this.lista[index].tipo,
-              this.lista[index].precio,this.lista[index].presa),
-            this.lista[index].cantidad,
-            this.lista[index].extra);
+          this.factura=new Factura(this.numeroFactura,new Date(),this.token.getUser(),this.diaSemana(),
+          new Producto(this.lista[index].id,this.lista[index].nombre,this.lista[index].tipo,
+          this.lista[index].precio,this.lista[index].presa),this.lista[index].cantidad,this.lista[index].extra)
           this.__servicioPagar.pagar(this.factura)
           .pipe(takeUntil(this.unsuscribir))
           .subscribe(data=>{
             this.mms=data;
-            //validacion de pollos y presas con la vista
             count=this.lista[index].presa*this.lista[index].cantidad;
             while (this.polloMerca.presa <= count) {
               this.polloMerca.pollo--;
               this.polloMerca.presa+=8;
-            }
-              this.polloMerca.presa-=count;
-              //fin
+            }this.polloMerca.presa-=count;
             if(index === this.contador){
               this.mensaje.success(this.mms.mensaje,"Exitoso");
               this.local.RemoveStorage('DataCarrito');
