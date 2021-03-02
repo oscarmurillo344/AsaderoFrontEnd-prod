@@ -34,24 +34,24 @@ export class GastosService {
     return this.http.delete<Mensaje>(this.URLgasto+'delete/'+id);
   }
 
-  public Listar(): Observable<Gastos>{
-    return this.http.get<Gastos>(this.URLgasto+'lista');
+  public Listar(): Observable<Gastos[]>{
+    return this.http.get<Gastos[]>(this.URLgasto+'lista');
   }
 
-  public ListarTipoFecha(gasto:GastosX): Observable<Gastos>{
-    return this.http.post<Gastos>(this.URLgasto+'listaTipo/',gasto);
+  public ListarTipoFecha(gasto:GastosX): Observable<Gastos[]>{
+    return this.http.post<Gastos[]>(this.URLgasto+'listaTipo/',gasto);
   }
 
-  public listarTipoUserFecha(gasto:GastosX): Observable<Gastos>{
-    return this.http.post<Gastos>(this.URLgasto+'listaTipoUserFecha/',gasto);
+  public listarTipoUserFecha(gasto:GastosX): Observable<Gastos[]>{
+    return this.http.post<Gastos[]>(this.URLgasto+'listaTipoUserFecha/',gasto);
   }
 
-  public listarUserFecha(gasto:GastosX): Observable<Gastos>{
-    return this.http.post<Gastos>(this.URLgasto+'listaUserFecha/',gasto);
+  public listarUserFecha(gasto:GastosX): Observable<Gastos[]>{
+    return this.http.post<Gastos[]>(this.URLgasto+'listaUserFecha/',gasto);
   }
 
-  public listarFecha(gasto:GastosX): Observable<Gastos>{
-    return this.http.post<Gastos>(this.URLgasto+'listaFecha/',gasto);
+  public listarFecha(gasto:GastosX): Observable<Gastos[]>{
+    return this.http.post<Gastos[]>(this.URLgasto+'listaFecha/',gasto);
   }
 
 }

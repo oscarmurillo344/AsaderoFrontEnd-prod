@@ -24,8 +24,8 @@ export class AuthService {
     return this.http.post<jwtDTO>(this.authURL+'login',login);
   }
 
-  public ListarUsuario(){
-    return this.http.get<NuevoUsuario>(this.authURL+'listaUsu');
+  public ListarUsuario():Observable<NuevoUsuario[]>{
+    return this.http.get<NuevoUsuario[]>(this.authURL+'listaUsu');
   }
 }
 

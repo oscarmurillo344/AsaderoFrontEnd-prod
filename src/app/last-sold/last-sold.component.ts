@@ -1,10 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Subject } from 'rxjs';
-import { takeUntil} from 'rxjs/operators';
 import { Factura } from '../clases/factura/factura';
-import { updatePollo } from '../clases/productos/updatePollo';
+import { Mensaje } from '../clases/mensaje';
 import { LocalstorageService } from '../service/localstorage.service';
 import { PagarService } from '../service/pagar.service';
 
@@ -12,14 +10,12 @@ import { PagarService } from '../service/pagar.service';
   selector: 'app-last-sold',
   templateUrl: './last-sold.component.html'
 })
-export class LastSoldComponent implements OnInit ,OnDestroy{
+export class LastSoldComponent implements OnInit{
 
   ListaFactura:Array<Factura>
   displayedColumns=['Nombre','Cantidad','Fecha','Hora']
   numeroFact:number
   bloqueo:boolean
-
-  private unsuscribir = new Subject<void>();
 
   constructor(
     private __servicioPago:PagarService,
@@ -33,26 +29,16 @@ export class LastSoldComponent implements OnInit ,OnDestroy{
     this.bloqueo=true
     this.ListaFactura=new Array()
   }
-
-  ngOnDestroy(): void {
-    this.unsuscribir.next();
-    this.unsuscribir.complete();
-  }
   buscar(){
     if(this.numeroFact!==0){
       this.__servicioPago.listar(this.numeroFact)
-      .pipe(takeUntil(this.unsuscribir))
-      .subscribe(
-        (data:any)=>{
+      .subscribe((data:any)=>{
         if(data.mensaje===undefined){
             this.ListaFactura=data;
             this.bloqueo=false;
             this.toast.success("factura encontrada","Exitoso");
           }else this.toast.error(data.mensaje,"Exitoso")
-        },error=>{
-          if(error.error.mensaje===undefined)this.toast.error("factura no encontrada","Error");
-          else this.toast.error(error.error.mensaje,"Error");
-        });
+        },error=> this.mensajeError(error));
     }else{
       this.toast.info("numero no valido","Error");
     }
@@ -60,17 +46,19 @@ export class LastSoldComponent implements OnInit ,OnDestroy{
   Eliminar(){
     if(this.numeroFact!==0){
       this.__servicioPago.eliminar(this.numeroFact)
-      .pipe(takeUntil(this.unsuscribir))
-      .subscribe(data=>{
+      .subscribe((data:Mensaje)=>{
         this.toast.success(data.mensaje,"Exitoso");
         this.bloqueo=false;
         this.route.navigate(["/inicio"]);
         this.local.SetStorage("nfactura",undefined)
       },error=>{
-        if(error.error.mensaje===undefined)this.toast.error("no eliminado","Error");
-         else this.toast.error(error.error.mensaje,"Error");
+        this.mensajeError(error)
         this.bloqueo=false;
       });
     }else this.toast.info("numero no valido","Error");
+  }
+  mensajeError(error){
+    if(error.error.mensaje===undefined)this.toast.error("no eliminado","Error");
+         else this.toast.error(error.error.mensaje,"Error");
   }
 }

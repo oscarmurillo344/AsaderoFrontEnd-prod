@@ -13,7 +13,7 @@
                   </mat-form-field>
                   <mat-form-field appearance="standard" style="width: 100%;">
                     <mat-label>Selecciona: </mat-label>
-                    <mat-select formControlName="tipo" (selectionChange)="value($event)" >
+                    <mat-select formControlName="tipo">
                       <mat-option value="platos">plato</mat-option>
                       <mat-option value="bebidas">bebida</mat-option>
                       <mat-option value="combos">combo</mat-option>
@@ -90,9 +90,6 @@
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-               <tr class="mat-row" *matNoDataRow>
-                <td class="mat-cell" colspan="4">No hay datos encontrados: "{{filtro}}"</td>
-              </tr>
               </table>
         </mat-tab>
       

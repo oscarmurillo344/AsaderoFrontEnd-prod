@@ -17,7 +17,7 @@ export class MainNavComponent implements OnInit  {
           valor :boolean;
           open :boolean;
           notificacion:number;
-          Lista:any;
+          Lista:any[];
           vista:boolean;
           
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
@@ -38,16 +38,14 @@ export class MainNavComponent implements OnInit  {
       this.valor=false;
       this.router.navigate(["/inicio"]);
     }else this.valor=true;
-    this.__Data.notification.subscribe(numero=>this.verificar())
+    this.__Data.notification.subscribe(numero=>this.verificarNotificacion())
     }
 
-    verificar(){
+    verificarNotificacion(){
         this.notificacion=0;
-       if(this.local.GetStorage('DataCarrito') != null){
+       if(this.local.GetStorage('DataCarrito')){
          this.Lista=this.local.GetStorage('DataCarrito');
-         for(var i=0;i<this.Lista.length && this.Lista!=null;i++){
-           this.notificacion+=this.Lista[i].cantidad
-         }
+         this.Lista.forEach(element => this.notificacion+=element.cantidad)
         }
     }
 

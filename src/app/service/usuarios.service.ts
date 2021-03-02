@@ -19,8 +19,8 @@ export class UsuariosService {
     return this.http.post<Mensaje>(this.ProductURL+'nuevo',newUser);
   }
 
-  public ListaUser(): Observable<NuevoUsuario>{
-    return this.http.get<NuevoUsuario>(this.ProductURL+'listaUsu');
+  public ListaUser(): Observable<NuevoUsuario[]>{
+    return this.http.get<NuevoUsuario[]>(this.ProductURL+'listaUsu');
   }
 
   public EliminarUser(id:number): Observable<Mensaje>{

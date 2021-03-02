@@ -15,8 +15,9 @@
             <mat-form-field appearance="fill" class="cuadro">
               <mat-label>Seleccione rango: </mat-label>
               <mat-select formControlName="Seleccion" (selectionChange)="select($event.value)">
-                <mat-option value="dia">Dia</mat-option>
-                <mat-option value="semanas">Multiples</mat-option>
+                <mat-option value="hoy">Hoy</mat-option>
+                <mat-option value="semanas">Semanas</mat-option>
+                <mat-option value="semanas-dia">Semanas-Dias</mat-option>
               </mat-select>
             </mat-form-field>
     
@@ -30,7 +31,7 @@
                 </mat-option>
               </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="fill" *ngIf="vista" style="width: 70%;">
+            <mat-form-field appearance="fill" *ngIf="vista_fecha" style="width: 70%;">
                 <mat-label>Ingrese rango de fechas: </mat-label>
                 <mat-date-range-input [rangePicker]="picker">
                   <input matStartDate formControlName="start" placeholder="Start date">
@@ -44,8 +45,8 @@
              style="width: 10%; margin-left: 2%; margin-right: 2%;" (click)="ExportarExcel()" [disabled]="!UserForm.valid">
               <mat-icon>import_export</mat-icon>
             </button>
-            <div style="width: 100%; padding-bottom: 3%;" *ngIf="vista">
-              <mat-checkbox style="margin-left: 2%;" *ngFor="let dia of semana; index as i" (change)="diaSeleccion($event,i)" [value]="dia">
+            <div style="width: 100%; padding-bottom: 3%;" *ngIf="vista_dia">
+              <mat-checkbox style="margin-left: 2%;" *ngFor="let dia of semana; index as i" (change)="diaSeleccion($event)" [value]="dia">
                 {{dia}}
               </mat-checkbox>
             </div>

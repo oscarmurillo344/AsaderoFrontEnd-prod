@@ -20,12 +20,13 @@
           </mat-error>
         </form>
     <mat-card-actions >
-        <button (click)="LogIn()" [disabled]="!UserForm.valid" mat-raised-button color="warn" style="width: 100%; text-align: center; margin: 0% 0% 3% 0;" >
+        <button (click)="LogIn()" [disabled]="!UserForm.valid" mat-raised-button color="warn"class="botonLogin" >
           <mat-icon>login</mat-icon>
           Login</button>
       </mat-card-actions>
 </mat-card>
 </div>
 <ng-template #progress >
-  <mat-spinner color="warn" style="margin: auto; margin-top: 200px;"></mat-spinner>
+  <mat-spinner color="warn" class="spinner" ></mat-spinner>
+  <img src="../../assets/imagenes/pollo.webp" class="imgspiner" width="150" alt="Logotipo Da&ntilde;ado">
 </ng-template>

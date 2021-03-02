@@ -7,6 +7,7 @@ import { AuthService } from "../service/auth.service";
 import { LoginUsuario } from '../clases/usuarios/loginUsuario';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { jwtDTO } from '../clases/token/jwt-to';
 
 @Component({
   selector: 'app-login',
@@ -42,20 +43,14 @@ export class LoginComponent implements OnInit,OnDestroy {
     this.unsuscribir.complete();
   }
   ngOnInit() {
-    if(this.token.getToken()){
-      this.roles=this.token.getAuth();
-    }
-    
+    if(this.token.getToken())this.roles=this.token.getAuth()
   }
 
   LogIn(){
     if(this.UserForm.valid){
       this.completar=false;
     this.loginusu=new LoginUsuario(this.minuscula(this.UserForm.value.usuario),this.UserForm.value.contrasena);
-    this.Servicio_login.LogIn(this.loginusu)
-    .pipe(takeUntil(this.unsuscribir))
-    .subscribe(
-      data =>{
+    this.Servicio_login.LogIn(this.loginusu).subscribe((data:jwtDTO) =>{
         this.Validar=false;
         this.token.setToken(data.token);
         this.token.setUser(data.nombreUsuario);
@@ -70,17 +65,11 @@ export class LoginComponent implements OnInit,OnDestroy {
     err =>{
       this.Validar=true;
       this.completar=true;
-      this.mensaje.error("error en la sesion",err.error.message);
-    }
-    );
-     
+      this.mensaje.error(err.error.message,"Error");
+    })  
     }
   }
-
   public minuscula(texto:string):string{
    return texto.toLocaleLowerCase();
   }
-
-
-
 }

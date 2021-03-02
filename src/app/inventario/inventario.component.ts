@@ -8,10 +8,11 @@ import { Producto } from '../clases/productos/producto';
 import { InventarioService } from "../service/inventario.service";
 import { Inventario } from '../clases/productos/inventario';
 import { AppComponent } from '../app.component';
-import {  Subject, Subscription } from 'rxjs';
+import {  forkJoin, Subject, Subscription } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { takeUntil } from 'rxjs/operators';
 import { LocalstorageService } from '../service/localstorage.service';
+import { Mensaje } from '../clases/mensaje';
 
 @Component({
   selector: 'app-inventario',
@@ -21,15 +22,11 @@ import { LocalstorageService } from '../service/localstorage.service';
 
 export class InventarioComponent implements OnInit,OnDestroy {
   ProductForm :FormGroup;
-  BuscarProductForm: FormGroup;
   ListaInventario:MatTableDataSource<Inventario>;
-  ComboInventario:Array<Inventario>;
+  ComboInventario:Array<Inventario>=new Array();
   product:Producto;
-  nombreBuscar:string;
   displayedColumns: string[] = ['Nombre', 'Cantidad','Editar', 'Eliminar'];
   lista:string[]=[];
-  undescribe:Subscription;
-  filtro:string='';
   private unsuscribir = new Subject<void>();
   
   constructor(
@@ -38,15 +35,6 @@ export class InventarioComponent implements OnInit,OnDestroy {
     private __inventarioService:InventarioService,
     private local:LocalstorageService
     ) { 
-      this.ComboInventario=new Array();
-      this.cargarCantidad();
-      this.__inventarioService.listen().pipe(
-        takeUntil(this.unsuscribir)
-      ).subscribe((m:any)=>{
-      this.cargarCantidad();
-      });
-    this.ProductForm=this.createForm();
-    this.nombreBuscar='';
   }
   ngOnDestroy(): void {
     this.unsuscribir.next();
@@ -54,35 +42,30 @@ export class InventarioComponent implements OnInit,OnDestroy {
   }
 
   ngOnInit() {
+    this.ProductForm=this.createForm();
+    this.cargarCantidad();
+    this.__inventarioService.listen().pipe(takeUntil(this.unsuscribir)
+    ).subscribe((m:any)=>this.cargarCantidad())
   }
   
   aplicarFiltro(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    if(this.ListaInventario !== undefined){
-      this.ListaInventario.filter = filterValue.trim().toLowerCase();
-    }
+    if(this.ListaInventario !== undefined)this.ListaInventario.filter = filterValue.trim().toLowerCase();
   }
 
   cargarCantidad(){
    this.__inventarioService.listarInventartio()
-   .pipe( takeUntil(this.unsuscribir))
-   .subscribe(
-      (data:any)=>{
+   .subscribe((data:Inventario[])=>{
         this.ListaInventario=new MatTableDataSource(data);
         this.local.SetStorage("listaProducto",data);
         this.CargarCombo();
         AppComponent.OrdenarData(this.ListaInventario.filteredData);
-      });
-       
+      },error=> this.MensajeError(error));
   }
   
   CargarCombo(){
       this.ComboInventario=this.local.GetStorage("listaProducto");
-      this.ComboInventario.forEach((data,index)=>{
-        if(data.productoId.tipo=='combos'){
-          this.ComboInventario.splice(index,1);
-        }
-      });
+      this.ComboInventario.forEach((data,index)=> data.productoId.tipo=='combos' ? this.ComboInventario.splice(index,1):undefined)
       AppComponent.OrdenarData(this.ComboInventario);
   }
   createForm(){
@@ -101,44 +84,22 @@ export class InventarioComponent implements OnInit,OnDestroy {
         this.ProductForm.value.tipo,
         this.ProductForm.value.precio,
         this.ProductForm.value.presa);
-     this.__inventarioService.ingresarInventario(new Inventario(this.product,this.lista.toString(),0,0))
-     .pipe( takeUntil(this.unsuscribir))
-     .subscribe(d=>{
-        this.mensaje.success(d.mensaje,"Exitoso");
+    forkJoin(this.__inventarioService.ingresarInventario(new Inventario(this.product,this.lista.toString(),0,0)),
+    this.__inventarioService.listarInventartio())
+     .subscribe((data:[Mensaje,Inventario[]])=>{
+      this.mensaje.success(data[0].mensaje,"Exitoso")
       this.ProductForm.reset();
-        this.__inventarioService.listarInventartio().
-        pipe( takeUntil(this.unsuscribir))
-        .subscribe((da:any)=>
-          {
-            
-            this.local.SetStorage("listaProducto",da);
-           this.ListaInventario=new MatTableDataSource(da)
-          }
-           );
-      },error=>{
-       if(error.error.mensaje!== undefined){
-        this.mensaje.error(error.error.mensaje,"Error");
-       }else{
-        this.mensaje.error("Error en la consulta","Error");
-       }
-      
-      });
-      
+      AppComponent.OrdenarData(data[1])
+      this.local.SetStorage("listaProducto",data[1])
+      this.ListaInventario=new MatTableDataSource(data[1])
+      },error=>this.MensajeError(error))
     }
-  }
-  public value($event){
-    this.lista=[];
   }
   public valueChange($event){
     if($event.checked){
       this.lista.push($event.source.value);
     }else if($event.checked===false){
-
-      this.lista.forEach((data:string,i:number)=>{
-        if(data==$event.source.value){
-          this.lista.splice(i,1);
-        }
-      });
+      this.lista.forEach((data:string,i:number)=> data==$event.source.value ? this.lista.splice(i,1):undefined)
     }
   }
 
@@ -158,19 +119,15 @@ export class InventarioComponent implements OnInit,OnDestroy {
         .subscribe(data =>{
         this.mensaje.success(data.mensaje,"Exitoso");
        this.cargarCantidad();
-      },error =>{
-        if(error.error.mensaje!==undefined){
-          this.mensaje.error(error.error.mensaje,"Error");
-        }else{
-          this.mensaje.error("Error en la consulta","Error");
-        }
-      }
-      );
+      },error => this.MensajeError(error))
     }else{
       resultado.close();
     }
    });
     
   }
-
+  MensajeError(error){
+    if(error.error.mensaje!== undefined) this.mensaje.error(error.error.mensaje,"Error")
+     else this.mensaje.error("Error en la consulta","Error");
+  }
 }

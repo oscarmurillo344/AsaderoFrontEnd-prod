@@ -1,33 +1,54 @@
 <mat-card style="margin-top: 70px; ">
     <mat-card-title >Carrito N° {{numeroFactura}} </mat-card-title>
     <mat-card-subtitle class="letra">Subtotal: ({{total}} productos) $ {{valor}} 
-      <button mat-stroked-button color="warn" (click)=wentLastControl() class="derecha">
+      <button mat-stroked-button color="warn" [routerLink]="['/lastsold']" class="derecha">
         <mat-icon>history</mat-icon>
         eliminar factura</button>
     </mat-card-subtitle>
-    <mat-card-content>
-      <mat-list>
-        <mat-list-item *ngFor="let list of lista; index as i" >
-          <button mat-mini-fab color="primary"  (click)="Eliminar(i);"  >
+      <table mat-table [dataSource]="lista" style="width: 100%;">
+
+        <ng-container matColumnDef="eliminar"  >
+          <th mat-header-cell *matHeaderCellDef> </th>
+          <td mat-cell *matCellDef="let element ;index as i" style="width: 20%;"> 
+            <button mat-mini-fab color="primary" (click)="Eliminar(i);"  >
               <mat-icon >delete</mat-icon>
            </button>
-          <p style="margin-right:2%; margin-left: 2%;">{{list.nombre}} </p>
-            
-           <button  mat-mini-fab color="primary"  (click)="restar(i)">
-             <mat-icon> remove</mat-icon>
-           </button>
+       </td>
+        </ng-container>
 
-           <input [(ngModel)]="list.cantidad" disabled type="number" style="width: 12px; margin: 2%;" min="0" max="1">
+        <ng-container matColumnDef="nombre" >
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element ;index as i"> 
+            {{element.nombre}}
+       </td>
+        </ng-container>
 
-           <button  mat-mini-fab color="primary" (click)="sumar(i)">
-             <mat-icon> add</mat-icon>
-           </button>
-           <mat-divider></mat-divider>
-         </mat-list-item>
-      </mat-list>
+        <ng-container matColumnDef="restar"  >
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element ;index as i"  style="width: 10%;"> 
+            <button  mat-mini-fab color="primary"  (click)="restar(i)">
+              <mat-icon> remove</mat-icon>
+            </button>
+       </td>
+        </ng-container>
+        <ng-container matColumnDef="cantidad" >
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element ;index as i" style="width: 5%;"> 
+            {{element.cantidad}}
+       </td>
+        </ng-container>
+        <ng-container matColumnDef="sumar" >
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element ;index as i" style="width: 10%;"> 
+            <button  mat-mini-fab color="primary" (click)="sumar(i)">
+              <mat-icon> add</mat-icon>
+            </button>
+       </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
       <mat-card-actions>
         <button mat-raised-button (click)="Facturar()"  [disabled]="bloqueo" style="width: 100%; margin-top: 2%;">Pagar</button>
       </mat-card-actions>
-    </mat-card-content>
 </mat-card>
-<router-outlet></router-outlet>

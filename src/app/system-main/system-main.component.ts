@@ -1,7 +1,6 @@
 import { Component, OnInit, AfterViewInit , OnDestroy} from '@angular/core';
 import { ListaProducto } from "../clases/productos/lista-producto";
 import { ToastrService } from "ngx-toastr";
-import { Router } from "@angular/router";
 import { InventarioService } from '../service/inventario.service';
 import { Inventario } from '../clases/productos/inventario';
 import { TokenServiceService } from '../service/token-service.service';
@@ -36,7 +35,6 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
   private unsuscribir = new Subject<void>();
  
   constructor(private mensaje:ToastrService,
-              private navegacion:Router,
               private __servicioPro:InventarioService,
               private token:TokenServiceService,
               private __data:DataService,
@@ -52,11 +50,7 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
   ngAfterViewInit() {
       setTimeout(() => {
         this.__data.ver=false
-        this.roles.filter(data=> {
-          if(data=='ROLE_ADMIN'){
-            this.__data.ver=true
-          }
-        });
+        this.roles.filter(data=> data=='ROLE_ADMIN'? this.__data.ver=true:null)
         this.__data.notification.emit(1);
         this.__data.nombreUsuario=this.token.getUser();
       });
@@ -72,18 +66,8 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
     this.roles=this.token.getAuth();
     this.tokens=this.token.getToken();
     this.llenarListas();
-    if(this.local.GetStorage('DataCarrito')){
-      this.carrito=this.local.GetStorage('DataCarrito');
-    }
-    if(!this.tokens)
-    {
-      this.navegacion.navigate(['/login',{}]);
-      this.local.RemoveAll()
-    }else{
-      this.navegacion.navigate(['/inicio',{}]);
-    }
-    this.__servicioPro.listarpollo().
-    pipe( takeUntil(this.unsuscribir))
+    if(this.local.GetStorage('DataCarrito'))this.carrito=this.local.GetStorage('DataCarrito');
+    this.__servicioPro.listarpollo()
     .subscribe(data=>{
       if(data.pollo!==undefined){
        this.__data.pollo=data.pollo;
@@ -94,9 +78,7 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
        this.__data.pollo=0;
        this.local.SetStorage("pollos",new updatePollo(0,0));
       }
-     },error=>{
-       this.local.SetStorage("pollos",new updatePollo(0,0));
-     });
+     },error=>this.local.SetStorage("pollos",new updatePollo(0,0)));
   }
 
   llenarListas():void
@@ -129,7 +111,6 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
           this.platos.push(new ListaProducto(data[index].productoId.id,
             data[index].productoId.nombre,
             data[index].productoId.tipo,
-            1,
             data[index].cantidadExist,
             data[index].productoId.precio,
             data[index].productoId.presa,
@@ -142,7 +123,6 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
           this.bebidas.push(new ListaProducto(data[index].productoId.id,
             data[index].productoId.nombre,
             data[index].productoId.tipo,
-            1,
             data[index].cantidadExist,
             data[index].productoId.precio,
             data[index].productoId.presa,
@@ -155,7 +135,6 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
           this.combos.push(new ListaProducto(data[index].productoId.id,
             data[index].productoId.nombre,
             data[index].productoId.tipo,
-            1,
             data[index].cantidadExist,
             data[index].productoId.precio,
             data[index].productoId.presa,
@@ -169,7 +148,6 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
           this.porciones.push(new ListaProducto(data[index].productoId.id,
             data[index].productoId.nombre,
             data[index].productoId.tipo,
-            1,
             data[index].cantidadExist,
             data[index].productoId.precio,
             data[index].productoId.presa,
@@ -203,79 +181,45 @@ export class SystemMainComponent implements OnInit, AfterViewInit,OnDestroy  {
   restar(val,pla):void{
     switch (pla) {
       case 'platos':
-        if(this.platos[val].cantidad > 1){
-          this.platos[val].cantidad--; 
-        }
+        if(this.platos[val].cantidad > 1) this.platos[val].cantidad--; 
         break;
       case 'bebidas':
-        if(this.bebidas[val].cantidad > 1){
-          this.bebidas[val].cantidad--; 
-        }
+        if(this.bebidas[val].cantidad > 1)this.bebidas[val].cantidad--; 
       break;
       case 'combos':
-        if(this.combos[val].cantidad > 1){
-          this.combos[val].cantidad--;
-        }
-        
+        if(this.combos[val].cantidad > 1) this.combos[val].cantidad--;        
        break;
        case 'porciones':
-         if(this.porciones[val].cantidad > 1){
-          this.porciones[val].cantidad--; 
-        }
+         if(this.porciones[val].cantidad > 1)this.porciones[val].cantidad--; 
          break;
-          }
+     }
   }
 
   AgregarCarrito(index,tipo):void{
 
     switch (tipo) {
       case 'platos': 
-          if(this.verificar(index,tipo)){
-            this.carrito.push(this.platos[index]);
-          }
-          if(this.platos[index].cantidadExiste <= 0){
-            this.mensaje.warning('Actualice inventario de '+this.platos[index].nombre,'Advertencia');
-          }else{
-            this.mensaje.success('Se agrego '+this.platos[index].nombre+' al carrito','Exitoso');
-          }
-        
-                
+          if(this.verificar(index,tipo))this.carrito.push(this.platos[index]);
+          if(this.platos[index].cantidadExiste <= 0)this.mensaje.warning('Actualice inventario de '+this.platos[index].nombre,'Advertencia');
+          else this.mensaje.success('Se agrego '+this.platos[index].nombre+' al carrito','Exitoso');
         break;
     
       case 'bebidas':
-        if(this.verificar(index,tipo)){
-          this.carrito.push(this.bebidas[index]);
-        }
-        if(this.bebidas[index].cantidadExiste <= 0){
-          this.mensaje.warning('Actualice inventario de '+this.bebidas[index].nombre,'Advertencia');
-        }else{
-          this.mensaje.success('Se agrego '+this.bebidas[index].nombre+' al carrito','Exitoso');
-        }     
-        
+        if(this.verificar(index,tipo)) this.carrito.push(this.bebidas[index]);
+        if(this.bebidas[index].cantidadExiste <= 0)this.mensaje.warning('Actualice inventario de '+this.bebidas[index].nombre,'Advertencia');
+        else this.mensaje.success('Se agrego '+this.bebidas[index].nombre+' al carrito','Exitoso');
         break;
 
       case 'combos':
-        if(this.verificar(index,tipo)){
-          this.carrito.push(this.combos[index]);
-        }
-
-        if(this.combos[index].cantidadExiste <= 0){
-          this.mensaje.warning('Actualice inventario de '+this.combos[index].nombre,'Advertencia');
-        }else{
-          this.mensaje.success('Se agrego '+this.combos[index].nombre+' al carrito','Exitoso');
-        }
+        if(this.verificar(index,tipo))this.carrito.push(this.combos[index])
+        if(this.combos[index].cantidadExiste <= 0)this.mensaje.warning('Actualice inventario de '+this.combos[index].nombre,'Advertencia');
+        else this.mensaje.success('Se agrego '+this.combos[index].nombre+' al carrito','Exitoso');
         break;
 
         case 'porciones':
-          if(this.verificar(index,tipo)){
-            this.carrito.push(this.porciones[index]);
-          }
-
-          if(this.porciones[index].cantidadExiste <= 0){
-            this.mensaje.warning('Actualice inventario de '+this.porciones[index].nombre,'Advertencia');
-          }else{
-            this.mensaje.success('Se agrego '+this.porciones[index].nombre+' al carrito','Exitoso');
-          }
+          if(this.verificar(index,tipo))this.carrito.push(this.porciones[index])
+          if(this.porciones[index].cantidadExiste <= 0)this.mensaje.warning('Actualice inventario de '+this.porciones[index].nombre,'Advertencia');
+          else this.mensaje.success('Se agrego '+this.porciones[index].nombre+' al carrito','Exitoso');
           break;
     }
        this.local.SetStorage('DataCarrito',this.carrito);

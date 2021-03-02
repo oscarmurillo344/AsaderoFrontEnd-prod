@@ -18,8 +18,8 @@ export class InventarioService {
   public ingresarInventario(inven:Inventario):Observable<Mensaje>{
     return this.http.post<Mensaje>(this.urlInven+'addInventario',inven);
   }
-  public listarInventartio():Observable<Inventario>{
-    return this.http.get<Inventario>(this.urlInven+'lista');
+  public listarInventartio():Observable<Inventario[]>{
+    return this.http.get<Inventario[]>(this.urlInven+'lista');
   }
 
   public UpdateInventario(id:number,inven:Inventario):Observable<Mensaje>{

@@ -40,10 +40,12 @@ export class TablegastosComponent implements OnInit,OnDestroy {
   ngOnInit(): void {
     this.tipoForm=this.crearFormThree();
     this.complete=true;
-    this.__gastos.listen().subscribe(data=>{
-      this.inicializarPaginatorGastos();
-      this.getTotalCostosGastos();
-    });
+    this.__gastos.listen().
+    pipe( takeUntil(this.unsuscribir))
+    .subscribe(data=>{
+      this.inicializarPaginatorGastos()
+      this.getTotalCostosGastos()
+    })
   }
 
   ngOnDestroy(): void {
@@ -57,7 +59,6 @@ export class TablegastosComponent implements OnInit,OnDestroy {
       usuario:new FormControl('',Validators.required),
       start:new FormControl(new Date(),Validators.required),
       end:new FormControl(new Date(),Validators.required)
-
     });
   }
   inicializarPaginatorGastos():void {
@@ -78,10 +79,8 @@ export class TablegastosComponent implements OnInit,OnDestroy {
   getTotalCostosGastos():void{
    setTimeout(()=>{
     this.valorGasto=0;
-    this.DataGastos.filteredData.forEach(ele => {
-      this.valorGasto=this.valorGasto+ele.valor;
-    } );  
-   });
+    this.DataGastos.filteredData.forEach(ele => this.valorGasto=this.valorGasto+ele.valor)  
+   })
   }
 
   ListarGastos2():void{
@@ -97,60 +96,52 @@ export class TablegastosComponent implements OnInit,OnDestroy {
       if(this.tipoForm.value.elegir !== 'todo' && this.tipoForm.value.usuario !=='todo'){
         this.__gastos.listarTipoUserFecha(this.gastosx).
         pipe( takeUntil(this.unsuscribir)).
-        subscribe(data=>{
-          let datos:any=data;
-          this.DataGastos=new MatTableDataSource(datos);
+        subscribe((data:Gastos[])=>{
+          this.DataGastos=new MatTableDataSource(data);
           this.inicializarPaginatorGastos();
           this.getTotalCostosGastos();
           this.complete=true;
           this.cerrado=undefined;
-        });
+        },error=>this.mensajeError(error))
       }else if(this.tipoForm.value.elegir ==='todo' && this.tipoForm.value.usuario !=='todo'){
         this.__gastos.listarUserFecha(this.gastosx).
         pipe( takeUntil(this.unsuscribir)).
-        subscribe(data=>{
-          let datos:any=data;
-          this.DataGastos=new MatTableDataSource(datos);
+        subscribe((data:Gastos[])=>{
+          this.DataGastos=new MatTableDataSource(data);
           this.inicializarPaginatorGastos();
           this.getTotalCostosGastos();
           this.complete=true;
           this.cerrado=undefined;
-        });
+        },error=>this.mensajeError(error))
       }else if(this.tipoForm.value.elegir==='todo' && this.tipoForm.value.usuario==='todo'){
         this.__gastos.listarFecha(this.gastosx).
         pipe( takeUntil(this.unsuscribir))
-        .subscribe(data=>{
-          let datos:any=data;
-          this.DataGastos=new MatTableDataSource(datos);
+        .subscribe((data:Gastos[])=>{
+          this.DataGastos=new MatTableDataSource(data);
           this.inicializarPaginatorGastos();
           this.getTotalCostosGastos();
           this.complete=true;
           this.cerrado=undefined; 
-        });
+        },error=>this.mensajeError(error))
       }else if(this.tipoForm.value.elegir !=='todo' && this.tipoForm.value.usuario==='todo'){
         this.__gastos.ListarTipoFecha(this.gastosx).
         pipe( takeUntil(this.unsuscribir)).
-        subscribe(data=>{
-          let datos:any=data;
-          this.DataGastos=new MatTableDataSource(datos);
+        subscribe((data:Gastos[])=>{
+          this.DataGastos=new MatTableDataSource(data);
           this.inicializarPaginatorGastos();
           this.getTotalCostosGastos();
           this.complete=true;
           this.cerrado=undefined;
-        });
+        },error=>this.mensajeError(error))
       }
      }
   }
   
   Eliminar(i:number):void{
-    try {
-      let nuevo:number;
-    if(this.DataGastos.paginator.pageIndex !==0){
-       nuevo= Math.abs(this.DataGastos.paginator.pageSize+i);
-    }else{
-       nuevo=i;
-    }
-    let id=this.DataGastos.filteredData[nuevo].id;
+      let nuevo:number,id:number;
+    if(this.DataGastos.paginator.pageIndex !==0)nuevo=Math.abs(this.DataGastos.paginator.pageSize+i)
+    else nuevo=i;
+    id=this.DataGastos.filteredData[nuevo].id;
     this.DataGastos.filteredData.splice(nuevo,1);
     this.__gastos.Eliminar(id).
     pipe( takeUntil(this.unsuscribir)).
@@ -158,16 +149,11 @@ export class TablegastosComponent implements OnInit,OnDestroy {
       this.toast.success(data.mensaje,"Exitoso");
       this.inicializarPaginatorGastos();
       this.getTotalCostosGastos();
-    },error=>{
-      if(error.error.mensaje===undefined){
-        this.toast.error("Error en la consulta","Error");
-      }else{
-        this.toast.error(error.error.mensaje,"Error");
-      }
-    });
-    } catch (error) {
-      console.log(error)
-    }
-    
+    },error=>this.mensajeError(error)) 
+  }
+
+  mensajeError(error:any){
+    if(error.error.mensaje===undefined)this.toast.error("Error en la consulta","Error");
+      else this.toast.error(error.error.mensaje,"Error");
   }
 }

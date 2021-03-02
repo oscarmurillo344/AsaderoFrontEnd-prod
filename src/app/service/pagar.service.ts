@@ -52,5 +52,9 @@ export class PagarService {
   public TotalFechaDia(Fecha:EntreFecha):Observable<VentasDay[]>{
     return this.http.post<VentasDay[]>(this.pagarURL+'totalfechadia',Fecha)
     }
+
+  public TotalFechasComp(Fecha:EntreFecha):Observable<VentasDay[]>{
+    return this.http.post<VentasDay[]>(this.pagarURL+'totalfechasComp',Fecha)
+    }
 }
 

@@ -7,6 +7,7 @@ import {MatDialog} from '@angular/material/dialog';
 import { DialogoYesNoComponent } from '../Dialogo/dialogo-yes-no/dialogo-yes-no.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { Mensaje } from '../clases/mensaje';
 
 
 
@@ -52,12 +53,7 @@ export class UsuarioComponent implements OnInit,OnDestroy {
   listarUser(){
     this.__serviceUser.ListaUser().
     pipe(takeUntil(this.unsuscribir)).
-    subscribe(data=>{
-      let datas:any=data;
-      if(datas!==undefined){
-        this.ListaUsuario=datas;
-      }
-    });
+    subscribe((data:NuevoUsuario[])=> this.ListaUsuario=data)
   }
 
   CrearUser(){
@@ -81,9 +77,8 @@ export class UsuarioComponent implements OnInit,OnDestroy {
       }
       this.__serviceUser.nuevoUser(this.User).
       pipe(takeUntil(this.unsuscribir))
-      .subscribe(data=>{
-        let da:any=data;
-        if(da.mensaje!==undefined){
+      .subscribe((data:Mensaje)=>{
+        if(data.mensaje!==undefined){
           this.toast.success(data.mensaje,"Exitoso");
         }else{
           this.toast.success("consulta realizada","Exitoso");

@@ -25,6 +25,7 @@ export class SystemCarComponent implements OnInit,OnDestroy {
    total:number;
    valor:number;
    lista:Array<ListaProducto>=new Array()
+   displayedColumns=['eliminar','nombre','restar','cantidad','sumar']
    factura:Factura;
    numeroFactura:number
    mms:Mensaje;
@@ -48,7 +49,6 @@ export class SystemCarComponent implements OnInit,OnDestroy {
    this.numeroFactura=this.local.GetStorage("nfactura") as number
    if(this.numeroFactura==undefined){
     this.__servicioPagar.maximoValor()
-    .pipe(takeUntil(this.unsuscribir))
     .subscribe((data:number)=>{
       this.numeroFactura=data;
       this.numeroFactura+=1;
@@ -67,46 +67,39 @@ export class SystemCarComponent implements OnInit,OnDestroy {
     
     if(this.lista.length > 0)
     {
-      this.contador=this.lista.length-1;
       this.polloMerca=this.local.GetStorage("pollos");
-      let count=0;
-      if( this.polloMerca.pollo > 0){
-        this.bloqueo=true;
+      if(this.ValidarPollo()){
+        this.contador=this.lista.length-1;
         for (let index = 0; index < this.lista.length; index++)
          {
-          this.factura=new Factura(this.numeroFactura,new Date(),this.token.getUser(),this.diaSemana(),
-          new Producto(this.lista[index].id,this.lista[index].nombre,this.lista[index].tipo,
-          this.lista[index].precio,this.lista[index].presa),this.lista[index].cantidad,this.lista[index].extra)
+          this.factura=new Factura(
+            this.numeroFactura,
+            new Date(),
+            this.token.getUser(),
+            this.diaSemana(),
+           this.lista[index] as Producto,
+            this.lista[index].cantidad,
+            this.lista[index].extra);
           this.__servicioPagar.pagar(this.factura)
-          .pipe(takeUntil(this.unsuscribir))
           .subscribe(data=>{
             this.mms=data;
-            count=this.lista[index].presa*this.lista[index].cantidad;
-            while (this.polloMerca.presa <= count) {
-              this.polloMerca.pollo--;
-              this.polloMerca.presa+=8;
-            }this.polloMerca.presa-=count;
             if(index === this.contador){
               this.mensaje.success(this.mms.mensaje,"Exitoso");
               this.local.RemoveStorage('DataCarrito');
-              this.__serviceInven.TablePollo(this.polloMerca).subscribe(data=>null);
-              this.local.SetStorage("pollos",this.polloMerca)
-              this.local.SetStorage("nfactura",this.numeroFactura+1)
-              this.__Data.notification.emit(1)
-              this.route.navigate(['/inicio'])
+              this.__serviceInven.TablePollo(this.polloMerca).subscribe(data=>null)
+              this.local.SetStorage("nfactura",undefined)
+              this.__Data.notification.emit(1);
+              this.route.navigate(['/inicio']);
               this.bloqueo=false;
             }
           },error=>{
-            if(error.error.mensaje===undefined){
-              this.mensaje.error("Pago no realizado","Error");
-            }else{
-              this.mensaje.error(error.error.mensaje,"Error");
-            }
+            if(error.error.mensaje===undefined)this.mensaje.error("Pago no realizado","Error");
+           else this.mensaje.error(error.error.mensaje,"Error");
             this.bloqueo=false;
           });
-         }
+      }
       }else{
-        this.mensaje.error("No existen pollos","Error");
+        this.mensaje.error("No existen pollos","Error");this.bloqueo=false
       }
     }else{
       this.mensaje.error("No existe productos en el carrito","Error");
@@ -114,7 +107,7 @@ export class SystemCarComponent implements OnInit,OnDestroy {
   }
     verificarCarrito()
     {
-    if(this.local.GetStorage('DataCarrito') != null)
+    if(this.local.GetStorage('DataCarrito'))
     {
       this.lista=this.local.GetStorage('DataCarrito');
       this.total=0;this.valor=0;
@@ -148,14 +141,26 @@ export class SystemCarComponent implements OnInit,OnDestroy {
         this.__Data.notification.emit(1);
       }
     }
-
-    wentLastControl(){
-      this.route.navigate(["/lastsold"]);
-    }
-
     public diaSemana():string{
     let fecha=new Date()
      let dia=new DatePipe("es")
      return dia.transform(fecha,"EEEE")
     }
+
+    ValidarPollo():boolean{
+      let count:number=0,estado:boolean
+      this.lista.forEach(data=>{
+      count=data.presa*data.cantidad;
+      while (this.polloMerca.presa <= count && this.polloMerca.pollo > 0) {
+        this.polloMerca.pollo--
+        this.polloMerca.presa+=8
+      }
+      if(this.polloMerca.presa >= count && this.polloMerca.pollo > 0 ){
+        this.polloMerca.presa-=count
+         estado=true
+      }
+      else estado=false
+     })
+     return  estado
+   }
 }

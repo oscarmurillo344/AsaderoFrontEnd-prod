@@ -1,9 +1,9 @@
 export class EntreFecha{
 
-     usuario:string;
+     usuario?:string;
      fechaFirst:Date;
      fechaSecond:Date;
-     dia:string;
+     dia?:string;
 
      constructor(usuario:string,
         FechaFirst:Date,
